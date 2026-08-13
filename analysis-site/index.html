@@ -1227,15 +1227,28 @@ dsh --profile myprofile</code></pre>
       </div>
 
       <div class="tier">
-        <h3><span class="tier-badge">层次 5</span>Fork 定制并回流</h3>
+        <h3><span class="tier-badge">层次 5</span>Fork 定制（注意：回流不走 PR）</h3>
         <p>
           要长期定制，<strong>建议不要改 <code>packages/</code></strong>，而是新建自己的 bundle 包叠一个 patch 层——
           这正是它架构设计的用意，也让上游同步（<code>git pull upstream</code>）几乎无冲突。
         </p>
-        <p style="margin-bottom:0">
+        <p>
           真要改核心，仓库的门禁很严：<code>pnpm run test:coverage</code>（逐文件 100%）、<code>test:snapshot</code>、
           <code>doc-sync</code>、<code>hygiene</code>，而且非平凡改动必须在同一个 PR 里附一份 Agent Note。
         </p>
+        <div class="callout" style="margin-bottom:0">
+          <span class="tag">别指望把改动提回上游</span>
+          <p>
+            <code>CONTRIBUTING.md</code> 写得很直接：<strong>"我们目前无法接受外部 PR"</strong>。
+            公开仓库 <code>deepseek-ai/deepseek-harness</code> 的 PR 数确实是 0，而它有一万两千多个提交——
+            开发在私有仓库进行，公开仓库是发布镜像。
+          </p>
+          <p style="margin-bottom:0">
+            官方指定的参与路径是另外三条：在 Discussions 报问题并投票、<strong>做插件并打 <code>dsh-plugin</code> topic</strong>、写文章和教程。
+            官方原话："我们并不认为官方仓库中的包天然就比社区开发的包更重要……可以将本仓库看作一种理念、一份官方示例以及一处灵感来源，
+            而不是我们要求社区遵循的方向。"所以定制的正道是<strong>在旁边造，而不是往里改</strong>。
+          </p>
+        </div>
       </div>
     </section>
 
@@ -1368,12 +1381,45 @@ dsh --profile myprofile</code></pre>
             <td>append-only 日志 + fork/resume + 无密钥 snapshot 回放，本身就是一套评测底座。想研究"Code Mode 相对逐次 tool call 省多少 token"这类问题，它是少见的能直接开跑的开源生产级 harness。</td>
           </tr>
           <tr>
-            <td><strong>抢生态位</strong></td>
-            <td>官方建议插件仓库打 <code>dsh-plugin</code> topic，而这个 topic 现在近乎空白。做一个高质量插件（某云厂商工具集、某垂直领域 skill 包、某个 IDE 的 ACP 集成）成本不高，卡位很早。</td>
+            <td><strong>找生态缺口</strong></td>
+            <td>由于官方不收外部 PR，插件生态是唯一的贡献路径，因此它起步就不冷清：<code>dsh-plugin</code> topic 下已有 <strong>419 个公开仓库</strong>（TypeScript 238 / JavaScript 112 / Python 25）。但分布很不均——头部集中在<strong>消费向</strong>（角色扮演、内容发现、技能生成），<strong>工程向的垂直工具集仍然稀疏</strong>。缺口在后者，不在"没人做"。</td>
           </tr>
         </tbody>
       </table>
       </div>
+
+      <h3>生态现状：别人已经拿它做了什么</h3>
+      <p>
+        因为官方不接受外部 PR，社区的全部能量都流向了插件与技能。截至本文，<code>dsh-plugin</code> topic 下有
+        <strong>419 个公开仓库</strong>。挑几个有代表性的，能看出这个生态目前的重心：
+      </p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>项目</th><th>形态</th><th>做什么</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><a href="https://github.com/titanwings/colleague-skill"><code>dot-skill</code></a><br><span style="color:var(--fg-faint);font-size:12.5px">≈21k star</span></td>
+            <td>技能（跨宿主）</td>
+            <td>把一个人的思维方式蒸馏成可复用的 AI 人格。<strong>同时兼容 Claude Code、Codex、OpenClaw 与 dsh</strong>——装进 <code>~/.dsh/skills/</code> 即可。技能这层是跨产品可移植的，这是它能一份代码通吃多个宿主的原因</td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/liustack/modlens"><code>modlens</code></a><br><span style="color:var(--fg-faint);font-size:12.5px">≈662 star</span></td>
+            <td>dsh 插件</td>
+            <td><strong>给纯文本模型加眼睛。</strong>DeepSeek 与 GLM 没有原生视觉，它把粘贴的图片转成带 OCR、版面与语义的结构化 JSON 证据喂给模型，并注册出"DeepSeek-V4-Flash (modlens vision)"这样的新模型变体。<code>dsh plugin add @liustack/modlens</code> 一行装上</td>
+          </tr>
+          <tr>
+            <td><code>OpenBiliClaw</code> / <code>MuseAI</code> / <code>mobius</code></td>
+            <td>上层产品</td>
+            <td>内容发现 agent、角色创作平台、自演化 Agent OS——都是把 dsh 当底座造自己的产品，而不是改它</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+      <p style="margin-bottom:0">
+        <code>modlens</code> 值得单独看一眼：它是<strong>第三方用 LLM 适配器接缝补官方能力缺口</strong>的实例。
+        模型不支持视觉是模型的事，但因为适配器是可注册的插件，社区可以在不碰任何官方代码的前提下把这个洞补上，
+        还能让补丁以"一个新模型选项"的形式出现在 UI 里。这比任何架构文档都更能说明"一切皆插件"落地之后是什么样。
+      </p>
 
       <h3>下一步：一条具体路径</h3>
       <p>如果这个项目让你有点心动但不知道从哪下手，按这个节奏走，每一步都有可验证的产出：</p>
