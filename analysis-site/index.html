@@ -182,6 +182,72 @@ figcaption { font-size: 13.5px; color: var(--fg-faint); margin-top: 10px; }
 .diagram-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; padding: 20px; background: var(--bg-soft); }
 .diagram-scroll svg { min-width: 620px; font-family: var(--sans); }
 
+/* ---------- data-viz tokens (validated palette; see footer note) ---------- */
+:root {
+  --viz-surface: #f6f7f9;
+  --series-1: #2a78d6;   /* blue   — 核心骨架 */
+  --series-2: #eb6834;   /* orange — 组装外壳 */
+  --series-3: #1baf7a;   /* aqua   — 能力族 */
+  --viz-neutral: #8a929e;
+  --viz-track: #e6e9ee;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --viz-surface: #151922;
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --viz-neutral: #6f7986;
+    --viz-track: #232a35;
+  }
+}
+:root[data-theme="dark"] {
+  --viz-surface: #151922;
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --viz-neutral: #6f7986;
+  --viz-track: #232a35;
+}
+
+/* horizontal bar chart, built in plain HTML */
+.chart { border: 1px solid var(--line); border-radius: 12px; padding: 20px 22px; background: var(--viz-surface); margin: 0 0 12px; }
+.chart-title { font-size: 15px; font-weight: 650; margin: 0 0 2px; }
+.chart-sub { font-size: 13px; color: var(--fg-faint); margin: 0 0 16px; }
+.bar-row { display: grid; grid-template-columns: minmax(96px, 200px) 1fr 38px; align-items: center; gap: 12px; margin: 0 0 7px; }
+.bar-name { font-family: var(--mono); font-size: 12.5px; color: var(--fg-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar-track { background: var(--viz-track); border-radius: 4px; height: 15px; overflow: hidden; }
+.bar-fill { display: block; height: 100%; background: var(--series-1); border-radius: 0 4px 4px 0; }
+.bar-val { font-size: 12.5px; color: var(--fg); text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+
+/* hero stat — one number that outranks a chart */
+.hero-stat {
+  display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap;
+  border: 1px solid var(--line); border-left: 3px solid var(--series-1);
+  border-radius: 12px; padding: 18px 22px; margin: 0 0 20px; background: var(--viz-surface);
+}
+.hero-stat b { font-size: 38px; line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.hero-stat span { color: var(--fg-muted); font-size: 14.5px; max-width: 56ch; }
+
+/* seam / tier chips */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  font-family: var(--mono); font-size: 12px; padding: 3px 9px; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--bg); color: var(--fg-muted); white-space: nowrap;
+}
+.tier-band {
+  border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; margin: 0 0 8px;
+  background: var(--bg); border-left-width: 4px; border-left-style: solid;
+}
+.tier-band.t-base { border-left-color: var(--viz-neutral); }
+.tier-band.t-core { border-left-color: var(--series-1); }
+.tier-band.t-cap  { border-left-color: var(--series-3); }
+.tier-band.t-shell{ border-left-color: var(--series-2); }
+.tier-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 9px; flex-wrap: wrap; }
+.tier-head b { font-size: 15px; }
+.tier-head em { font-style: normal; font-size: 12.5px; color: var(--fg-faint); }
+.tier-flow { text-align: center; color: var(--fg-faint); font-size: 18px; line-height: 1; margin: 2px 0 8px; }
+
 /* SVG styling stays in CSS so the theme tokens actually resolve */
 .d-frame { fill: none; stroke: var(--line); stroke-width: 1.4; stroke-dasharray: 5 4; }
 .d-box { fill: var(--bg-soft); stroke: var(--line); stroke-width: 1.2; }
@@ -192,6 +258,14 @@ figcaption { font-size: 13.5px; color: var(--fg-faint); margin-top: 10px; }
 .d-label { fill: var(--fg); font-size: 12.5px; }
 .d-mark { fill: var(--accent); font-size: 13px; font-weight: 600; font-family: var(--mono); }
 .d-note { fill: var(--fg-faint); font-size: 12px; }
+.d-role-1 { fill: none; stroke: var(--series-1); stroke-width: 1.6; }
+.d-role-2 { fill: none; stroke: var(--series-3); stroke-width: 1.6; }
+.d-role-3 { fill: none; stroke: var(--series-2); stroke-width: 1.6; }
+.d-cap-1 { fill: var(--series-1); font-size: 12.5px; font-weight: 650; }
+.d-cap-2 { fill: var(--series-3); font-size: 12.5px; font-weight: 650; }
+.d-cap-3 { fill: var(--series-2); font-size: 12.5px; font-weight: 650; }
+.d-mono { fill: var(--fg); font-size: 12px; font-family: var(--mono); }
+.d-mono-faint { fill: var(--fg-faint); font-size: 11.5px; font-family: var(--mono); }
 
 footer {
   border-top: 1px solid var(--line); margin-top: 80px; padding: 32px 0 64px;
@@ -237,7 +311,13 @@ footer p { margin: 0 0 8px; }
     <ol>
       <li><a href="#what">这是什么</a></li>
       <li class="sub"><a href="#concepts">三个核心概念</a></li>
+      <li class="sub"><a href="#seam">能力接缝</a></li>
+      <li class="sub"><a href="#layers">配置层叠</a></li>
       <li class="sub"><a href="#loop">主循环形状</a></li>
+      <li><a href="#subsystems">子系统全景</a></li>
+      <li><a href="#deps">包依赖结构</a></li>
+      <li class="sub"><a href="#tiers">分层与依赖方向</a></li>
+      <li class="sub"><a href="#fanin">谁被依赖得最多</a></li>
       <li><a href="#features">功能盘点</a></li>
       <li class="sub"><a href="#tools">模型可见工具集</a></li>
       <li><a href="#usage">能够怎么用</a></li>
@@ -282,6 +362,105 @@ footer p { margin: 0 0 8px; }
         </tbody>
       </table>
       </div>
+
+      <h3 id="seam">能力接缝：三个角色缺一不可</h3>
+      <p>
+        这是理解整个仓库最省力的一把钥匙。任何一项能力都被拆成三个角色，分别住在不同的包里；
+        只实现其中一个不叫接缝，添加一项能力意味着三个角色一起设计。
+      </p>
+
+      <figure>
+        <div class="diagram-scroll">
+          <svg viewBox="0 0 720 236" role="img" aria-label="能力接缝的三个角色：Service Definition、Service Provider、Consumer">
+            <rect class="d-role-1" x="14" y="30" width="204" height="76" rx="10"/>
+            <rect class="d-role-2" x="258" y="30" width="204" height="76" rx="10"/>
+            <rect class="d-role-3" x="502" y="30" width="204" height="76" rx="10"/>
+
+            <text class="d-cap-1" x="30" y="22">Service Definition</text>
+            <text class="d-cap-2" x="274" y="22">Service Provider</text>
+            <text class="d-cap-3" x="518" y="22">Consumer</text>
+
+            <text class="d-label" x="30" y="58">声明接口与词汇</text>
+            <text class="d-note" x="30" y="80">注册 ctx 服务键</text>
+            <text class="d-note" x="30" y="97">不含任何实现</text>
+
+            <text class="d-label" x="274" y="58">实现它，可有多个</text>
+            <text class="d-note" x="274" y="80">本地 / 远程 / 沙箱</text>
+            <text class="d-note" x="274" y="97">换它 = 换产品行为</text>
+
+            <text class="d-label" x="518" y="58">使用它</text>
+            <text class="d-note" x="518" y="80">通常是模型可见的工具</text>
+            <text class="d-note" x="518" y="97">对 provider 无感</text>
+
+            <line class="d-arrow" marker-end="url(#arw)" x1="222" y1="68" x2="252" y2="68"/>
+            <line class="d-arrow" marker-end="url(#arw)" x1="466" y1="68" x2="496" y2="68"/>
+
+            <text class="d-note" x="14" y="140">三个真实例子：</text>
+            <text class="d-mono" x="14" y="164">dsh-fs</text>
+            <text class="d-mono-faint" x="14" y="182">ctx.fs</text>
+            <text class="d-mono" x="258" y="164">dsh-fs-local / dsh-e2b-fs</text>
+            <text class="d-mono" x="502" y="164">tool-fs（read/write/edit）</text>
+
+            <text class="d-mono" x="14" y="206">dsh-shell</text>
+            <text class="d-mono-faint" x="14" y="224">ctx.shell</text>
+            <text class="d-mono" x="258" y="206">dsh-bash-local / dsh-pwsh-local</text>
+            <text class="d-mono" x="502" y="206">tool-bash / tool-pwsh</text>
+          </svg>
+        </div>
+        <figcaption>
+          这就是"换一个 provider 就换掉整个产品"的机制：<code>fs</code> 与 <code>subprocess</code> 的 provider 同时指向 E2B，
+          Bash、PTY、LSP 全部跟着搬进远程沙箱，而 Consumer 侧的工具代码一行不改。
+        </figcaption>
+      </figure>
+
+      <h3 id="layers">配置层叠：运行时是怎么被拼出来的</h3>
+      <p>
+        <code>dsh</code> 启动时不存在"默认配置文件"这种东西，它从<strong>空的插件树</strong>开始，按固定顺序叠加补丁层。
+        后面的层按行 <code>id</code> 覆盖前面的，且是整块替换 <code>config</code>——没有深合并。
+      </p>
+
+      <figure>
+        <div class="diagram-scroll">
+          <svg viewBox="0 0 720 260" role="img" aria-label="profile 启动时的配置层叠顺序">
+            <g>
+              <rect class="d-box" x="60" y="14" width="600" height="34" rx="8"/>
+              <text class="d-label" x="76" y="36">空的插件树（根）</text>
+              <text class="d-note" x="560" y="36">起点</text>
+            </g>
+            <line class="d-arrow" marker-end="url(#arw)" x1="360" y1="50" x2="360" y2="64"/>
+
+            <g>
+              <rect class="d-role-1" x="60" y="66" width="600" height="38" rx="8"/>
+              <text class="d-label" x="76" y="83">① 各 bundle 的 cordis.patch.yml</text>
+              <text class="d-note" x="76" y="99">按 dsh.profile.bundles 的顺序，例如 dsh-base → dsh-web-app</text>
+            </g>
+            <line class="d-arrow" marker-end="url(#arw)" x1="360" y1="106" x2="360" y2="120"/>
+
+            <g>
+              <rect class="d-box" x="60" y="122" width="600" height="34" rx="8"/>
+              <text class="d-label" x="76" y="137">② profile 自己的 cordis.patch.yml</text>
+              <text class="d-note" x="76" y="151">$DSH_HOME/profiles/&lt;name&gt;/</text>
+            </g>
+            <line class="d-arrow" marker-end="url(#arw)" x1="360" y1="158" x2="360" y2="170"/>
+
+            <g>
+              <rect class="d-box" x="60" y="172" width="600" height="34" rx="8"/>
+              <text class="d-label" x="76" y="187">③ home 级 cordis.patch.yml</text>
+              <text class="d-note" x="76" y="201">$DSH_HOME/ — 机器本地偏好，优先于 profile 层</text>
+            </g>
+            <line class="d-arrow" marker-end="url(#arw)" x1="360" y1="208" x2="360" y2="220"/>
+
+            <g>
+              <rect class="d-role-3" x="60" y="222" width="600" height="34" rx="8"/>
+              <text class="d-label" x="76" y="243">④ 命令行 --patch 覆盖（按 argv 顺序，最后说了算）</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption>
+          用 <code>dsh --profile web --dump-config</code> 可以打印最终组装结果，且会标注每一行来自哪个文件、被哪些覆盖层改过——
+          调试组合问题时这是第一个该跑的命令。
+        </figcaption>
+      </figure>
 
       <h3 id="loop">主循环的形状</h3>
       <p>
@@ -345,8 +524,263 @@ footer p { margin: 0 0 8px; }
     </section>
 
     <!-- ============ 2 ============ -->
+    <section id="subsystems">
+      <h2><span class="num">02</span>子系统全景</h2>
+      <p>
+        <code>docs/subsystems/</code> 下有 <strong>44 篇</strong>子系统参考文档，每篇对应一个能力域。
+        下面按"平面"把它们归拢，并标出各自在 Cordis 容器上注册的服务键——<strong>看 <code>ctx</code> 键就知道谁提供什么、谁能被替换</strong>。
+        标 <code>—</code> 的表示该子系统不注册独立服务键，而是通过事件或既有服务参与。
+      </p>
+
+      <h3>控制骨架</h3>
+      <p>模型请求的组织者。这一层被改动的代价最高，扩展点也最密集。</p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>子系统</th><th><code>ctx</code> 键</th><th>负责</th></tr></thead>
+        <tbody>
+          <tr><td><code>core</code></td><td><code>ctx.agents</code> / <code>ctx.agentLoop</code></td><td>Agent 接口、活跃注册表、唯一的具体循环驱动</td></tr>
+          <tr><td><code>session</code></td><td><code>ctx.sessions</code></td><td>append-only 事件日志与内存存储</td></tr>
+          <tr><td><code>tools</code></td><td><code>ctx.tools</code></td><td>分层作用域的工具注册表与受保护执行管线</td></tr>
+          <tr><td><code>system-prompt</code></td><td><code>ctx.systemPrompt</code></td><td>prompt 分节与 tool schema 组装</td></tr>
+          <tr><td><code>llm-streaming</code></td><td><code>ctx.llm</code></td><td>消息与内容块词汇、流式分块协议、适配器接缝</td></tr>
+          <tr><td><code>token-meter</code></td><td><code>ctx.tokenMeter</code></td><td>回放感知的 token 计量</td></tr>
+          <tr><td><code>scope</code></td><td>—</td><td>按 agent 隔离注册的原语（库，无服务键）</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>执行世界</h3>
+      <p>agent 真正"动手"的地方。这一组 provider 换成远程实现，整个执行世界就整体搬家。</p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>子系统</th><th><code>ctx</code> 键</th><th>负责</th></tr></thead>
+        <tbody>
+          <tr><td><code>filesystem</code></td><td><code>ctx.fs</code></td><td>文件读写接缝与 <code>fs/*</code> 策略事件</td></tr>
+          <tr><td><code>shell</code></td><td><code>ctx.shell</code> / <code>ctx.shellEnv</code></td><td>bash / pwsh 执行器接缝与受管环境变量</td></tr>
+          <tr><td><code>subprocess</code></td><td><code>ctx.subprocess</code></td><td>进程树生成与回收</td></tr>
+          <tr><td><code>terminal</code></td><td><code>ctx.terminals</code></td><td>owner 隔离的持久 PTY 会话</td></tr>
+          <tr><td><code>sandbox</code></td><td><code>ctx.sandbox</code> / <code>ctx.sandboxPolicy</code></td><td>进程隔离后端与按会话持久化的策略</td></tr>
+          <tr><td><code>code-runtime</code></td><td><code>ctx.codeRuntime</code></td><td>执行模型编写的程序（Code Mode 的后端）</td></tr>
+          <tr><td><code>lsp</code></td><td><code>ctx.lsp</code></td><td>语言服务器接缝与 stdio provider</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>任务与编排</h3>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>子系统</th><th><code>ctx</code> 键</th><th>负责</th></tr></thead>
+        <tbody>
+          <tr><td><code>subagent</code></td><td><code>ctx.subagents</code></td><td>子 agent provider 注册、委派、续跑；后端可为进程内/ACP/Codex/Claude Code</td></tr>
+          <tr><td><code>workflow</code></td><td><code>ctx.workflowEngine</code></td><td>模型编写的编排脚本在 worker 线程中执行</td></tr>
+          <tr><td><code>jobs</code></td><td><code>ctx.jobs</code></td><td>与种类无关的后台作业运行时（bash / PTY / subagent 共用）</td></tr>
+          <tr><td><code>goal</code></td><td><code>ctx.goals</code></td><td>同会话目标的持久化与生命周期</td></tr>
+          <tr><td><code>plan</code></td><td>—</td><td>计划模式作为被记录的状态，带评审式退出</td></tr>
+          <tr><td><code>schedule</code></td><td>—</td><td>会话内的定时跟进</td></tr>
+          <tr><td><code>invariants</code></td><td><code>ctx.invariants</code></td><td>运行时不变量注册与断言（每个包都要提供 <code>./invariant</code>）</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>上下文与知识</h3>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>子系统</th><th><code>ctx</code> 键</th><th>负责</th></tr></thead>
+        <tbody>
+          <tr><td><code>skills</code></td><td><code>ctx.skills</code></td><td>技能 provider 注册表与目录合并（本地/打包/远程）</td></tr>
+          <tr><td><code>compaction</code></td><td><code>ctx.compaction</code></td><td>上下文压缩策略</td></tr>
+          <tr><td><code>spill</code></td><td><code>ctx.spillStore</code></td><td>超长工具结果外溢到存储，返回可再次读取与检索的定位符</td></tr>
+          <tr><td><code>session-query</code></td><td><code>ctx.sessionQuery</code></td><td>受权限约束的会话检索、血缘、SQLite 全文搜索</td></tr>
+          <tr><td><code>session-reference</code></td><td><code>ctx.sessionReferenceResolver</code></td><td>其他会话的有界快照</td></tr>
+          <tr><td><code>attachment</code></td><td><code>ctx.attachments</code></td><td>持久附件身份、校验、内容寻址存储</td></tr>
+          <tr><td><code>web</code></td><td><code>ctx.web</code></td><td>搜索与抓取的 provider 接缝</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>数据面</h3>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>子系统</th><th><code>ctx</code> 键</th><th>负责</th></tr></thead>
+        <tbody>
+          <tr><td><code>persistence</code></td><td><code>ctx.sessionPersistence</code></td><td>JSONL / SQLite 持久化后端</td></tr>
+          <tr><td><code>session-projection</code></td><td><code>ctx.sessionProjections</code></td><td>从事件流派生的只读视图</td></tr>
+          <tr><td><code>session-title</code></td><td><code>ctx.sessionTitle</code></td><td>由日志生成会话标题（唯一 provider）</td></tr>
+          <tr><td><code>session-telemetry</code></td><td>—</td><td>OTLP 导出，默认关闭</td></tr>
+          <tr><td><code>storage</code></td><td><code>ctx.storage</code> / <code>ctx.storageDomain</code></td><td>非会话存储枢纽与域划分</td></tr>
+          <tr><td><code>workspace</code></td><td><code>ctx.workspaceRegistry</code></td><td>工作区实体</td></tr>
+          <tr><td><code>settings</code></td><td><code>ctx.settings</code></td><td>用户设置接缝与文件后端</td></tr>
+          <tr><td><code>credentials</code></td><td><code>ctx.credentials</code></td><td>凭据引用接缝（env 优先于 <code>.env</code>）</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>人机协作</h3>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>子系统</th><th><code>ctx</code> 键</th><th>负责</th></tr></thead>
+        <tbody>
+          <tr><td><code>approval</code></td><td><code>ctx.approval</code></td><td>一次性批准决策的协调</td></tr>
+          <tr><td><code>user-questions</code></td><td><code>ctx.userQuestions</code></td><td>provider 无关的提问/回答接缝</td></tr>
+          <tr><td><code>permission-presets</code></td><td><code>ctx.permissionPresets</code></td><td>面向用户的权限预设呈现与持久化</td></tr>
+          <tr><td><code>commands</code></td><td><code>ctx.commands</code></td><td>人类命令的注册与派发（不经过模型轮次）</td></tr>
+          <tr><td><code>feedback</code></td><td><code>ctx.messageFeedback</code></td><td>人工反馈</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>平台与集成</h3>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>子系统</th><th><code>ctx</code> 键</th><th>负责</th></tr></thead>
+        <tbody>
+          <tr><td><code>web-server</code></td><td><code>ctx.webServer</code> / <code>ctx.apiProxy</code></td><td>HTTP 路由服务与 API 网关</td></tr>
+          <tr><td><code>client-modules</code></td><td><code>ctx.uiSlots</code> 等</td><td>浏览器半边：外壳、连线、对象服务、插槽</td></tr>
+          <tr><td><code>typert</code></td><td><code>ctx.typert</code> / <code>ctx.typertGateway</code></td><td>类型图生成、产物加载、运行时注册表</td></tr>
+          <tr><td><code>extensions</code></td><td><code>ctx.dynamicCordisRunner</code></td><td>agent 自我修改：动态包定义、运行、撤回</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <!-- ============ 3 ============ -->
+    <section id="deps">
+      <h2><span class="num">03</span>包依赖结构</h2>
+      <p>
+        下面的数字是从仓库里 219 个 <code>package.json</code> 的
+        <code>dependencies</code> 与 <code>peerDependencies</code> 现算的，只统计 <code>@deepseek-ai/dsh-*</code> 内部依赖。
+        仓库自己也生成一份完整图：<code>docs/module-graph.md</code>（1638 行 mermaid）——那份是全量，这里是能一眼看懂的聚合。
+      </p>
+
+      <div class="hero-stat">
+        <b>218 / 219</b>
+        <span>
+          <code>dsh-invariants</code> 被除自己以外的<strong>每一个包</strong>依赖。
+          这不是巧合，是仓库规约的硬性要求：每个包都必须提供 <code>./invariant</code> companion，
+          注册运行时不变量或写明"为什么没有"。这是全仓库唯一的普遍依赖。
+        </span>
+      </div>
+
+      <h3 id="tiers">分层与依赖方向</h3>
+      <p>
+        把 49 个包组按依赖方向压成四层后，结构非常干净：<strong>依赖只向下流</strong>，上层可以随意换，下层几乎不动。
+      </p>
+
+      <div class="tier-band t-shell">
+        <div class="tier-head"><b>组装与外壳</b><em>把上面这些拼成能跑的产品</em></div>
+        <div class="chips">
+          <span class="chip">bundle</span><span class="chip">client · 39 包</span><span class="chip">host</span>
+          <span class="chip">apps/cli</span><span class="chip">apps/web</span><span class="chip">sdk</span>
+          <span class="chip">acp</span><span class="chip">boot</span><span class="chip">preset</span><span class="chip">examples</span>
+        </div>
+      </div>
+      <div class="tier-flow">↓ 依赖</div>
+
+      <div class="tier-band t-cap">
+        <div class="tier-head"><b>能力族</b><em>每族一套 Definition / Provider / Consumer</em></div>
+        <div class="chips">
+          <span class="chip">fs</span><span class="chip">shell</span><span class="chip">subprocess</span><span class="chip">sandbox</span>
+          <span class="chip">terminal</span><span class="chip">lsp</span><span class="chip">web</span><span class="chip">skill</span>
+          <span class="chip">subagent</span><span class="chip">workflow</span><span class="chip">jobs</span><span class="chip">goal</span>
+          <span class="chip">compaction</span><span class="chip">spill</span><span class="chip">storage</span><span class="chip">session-query</span>
+          <span class="chip">interaction</span><span class="chip">context</span><span class="chip">hooks</span><span class="chip">mcp</span>
+          <span class="chip">code-runtime</span><span class="chip">extensions</span><span class="chip">…</span>
+        </div>
+      </div>
+      <div class="tier-flow">↓ 依赖</div>
+
+      <div class="tier-band t-core">
+        <div class="tier-head"><b>核心骨架</b><em>产品 API 主干，被上面所有层依赖</em></div>
+        <div class="chips">
+          <span class="chip">core · agent</span><span class="chip">core · agent-loop</span><span class="chip">core · session</span>
+          <span class="chip">core · tools</span><span class="chip">core · system-prompt</span><span class="chip">core · scope</span>
+          <span class="chip">llm</span><span class="chip">session（数据面）</span>
+        </div>
+      </div>
+      <div class="tier-flow">↓ 依赖</div>
+
+      <div class="tier-band t-base">
+        <div class="tier-head"><b>基础层</b><em>零依赖工具与全局不变量</em></div>
+        <div class="chips">
+          <span class="chip">runtime-diagnostics · invariants</span><span class="chip">util · brand</span>
+          <span class="chip">util · timeout</span><span class="chip">util · home-paths</span>
+          <span class="chip">util · atomic-write</span><span class="chip">util · launch-environment</span>
+        </div>
+      </div>
+
+      <p style="margin-top:22px">最重的几条跨组依赖边（边权 = 该组内有多少个包依赖到目标组）：</p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>从</th><th>到</th><th style="text-align:right">边权</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td><code>client</code></td><td><code>runtime-diagnostics</code></td><td style="text-align:right">39</td><td>浏览器半边每个包都带不变量 companion</td></tr>
+          <tr><td><code>bundle</code></td><td><code>client</code></td><td style="text-align:right">33</td><td>web-app bundle 要把全部 UI 插件装进树里</td></tr>
+          <tr><td><code>subagent</code></td><td><code>core</code></td><td style="text-align:right">23</td><td>子 agent 后端都要驱动 Agent 与 Session</td></tr>
+          <tr><td><code>client</code></td><td><code>api</code></td><td style="text-align:right">19</td><td>UI 通过生成的 RPC 契约与 host 对话</td></tr>
+          <tr><td><code>session</code></td><td><code>core</code></td><td style="text-align:right">16</td><td>持久化与投影都建立在事件日志之上</td></tr>
+          <tr><td><code>extensions</code></td><td><code>client</code></td><td style="text-align:right">13</td><td>自我修改子系统有浏览器半边</td></tr>
+          <tr><td><code>workflow</code></td><td><code>core</code></td><td style="text-align:right">12</td><td>编排要 parent 出子 agent</td></tr>
+          <tr><td><code>interaction</code></td><td><code>core</code></td><td style="text-align:right">11</td><td>批准与提问挂在 agent 生命周期上</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3 id="fanin">谁被依赖得最多</h3>
+      <p>
+        排除掉那个人人依赖的 <code>invariants</code> 之后，扇入排名基本就是这个项目的"重心图"。
+        <strong>前四名 <code>session</code> / <code>llm</code> / <code>agent</code> / <code>tools</code> 就是核心骨架本身</strong>——
+        这四个包的接口一变，全仓库跟着动。
+      </p>
+
+      <div class="chart">
+        <p class="chart-title">被多少个包依赖（扇入 top 15）</p>
+        <p class="chart-sub">统计口径：内部 <code>dependencies</code> + <code>peerDependencies</code>；已排除扇入 218 的 <code>dsh-invariants</code></p>
+        <div class="bar-row"><span class="bar-name">dsh-session</span><span class="bar-track"><span class="bar-fill" style="width:100.0%"></span></span><span class="bar-val">84</span></div>
+        <div class="bar-row"><span class="bar-name">dsh-llm</span><span class="bar-track"><span class="bar-fill" style="width:97.6%"></span></span><span class="bar-val">82</span></div>
+        <div class="bar-row"><span class="bar-name">dsh-agent</span><span class="bar-track"><span class="bar-fill" style="width:72.6%"></span></span><span class="bar-val">61</span></div>
+        <div class="bar-row"><span class="bar-name">dsh-tools</span><span class="bar-track"><span class="bar-fill" style="width:56.0%"></span></span><span class="bar-val">47</span></div>
+        <div class="bar-row"><span class="bar-name">dsh-client-ui-slots</span><span class="bar-track"><span class="bar-fill" style="width:41.7%"></span></span><span class="bar-val">35</span></div>
+        <div class="bar-row"><span class="bar-name">dsh-client-runtime</span><span class="bar-track"><span class="bar-fill" style="width:40.5%"></span></span><span class="bar-val">34</span></div>
+        <div class="bar-row"><span class="bar-name">dsh-system-prompt</span><span class="bar-track"><span class="bar-fill" style="width:35.7%"></span></span><span class="bar-val">30</span></div>
+        <div class="bar-row"><span class="bar-name">dsh-brand</span><span class="bar-track"><span class="bar-fill" style="width:35.7%"></span></span><span class="bar-val">30</span></div>
+        <div class="bar-row"><span class="bar-name">dsh-client-ui-primitives</span><span class="bar-track"><span class="bar-fill" style="width:34.5%"></span></span><span class="bar-val">29</span></div>
+        <div class="bar-row"><span class="bar-name">dsh-client-locale</span><span class="bar-track"><span class="bar-fill" style="width:32.1%"></span></span><span class="bar-val">27</span></div>
+        <div class="bar-row"><span class="bar-name">dsh-api-remotes</span><span class="bar-track"><span class="bar-fill" style="width:27.4%"></span></span><span class="bar-val">23</span></div>
+        <div class="bar-row"><span class="bar-name">dsh-timeout</span><span class="bar-track"><span class="bar-fill" style="width:27.4%"></span></span><span class="bar-val">23</span></div>
+        <div class="bar-row"><span class="bar-name">dsh-client-connection</span><span class="bar-track"><span class="bar-fill" style="width:22.6%"></span></span><span class="bar-val">19</span></div>
+        <div class="bar-row"><span class="bar-name">dsh-settings</span><span class="bar-track"><span class="bar-fill" style="width:21.4%"></span></span><span class="bar-val">18</span></div>
+        <div class="bar-row"><span class="bar-name">dsh-subagent</span><span class="bar-track"><span class="bar-fill" style="width:21.4%"></span></span><span class="bar-val">18</span></div>
+      </div>
+
+      <div class="chart">
+        <p class="chart-title">各包组的包数量（top 12，共 49 组 / 219 包）</p>
+        <p class="chart-sub"><code>client</code> 一组占了 39 个包——整个浏览器 UI 也是按"一个功能一个插件"拆的</p>
+        <div class="bar-row"><span class="bar-name">client</span><span class="bar-track"><span class="bar-fill" style="width:100.0%"></span></span><span class="bar-val">39</span></div>
+        <div class="bar-row"><span class="bar-name">session</span><span class="bar-track"><span class="bar-fill" style="width:33.3%"></span></span><span class="bar-val">13</span></div>
+        <div class="bar-row"><span class="bar-name">subagent</span><span class="bar-track"><span class="bar-fill" style="width:28.2%"></span></span><span class="bar-val">11</span></div>
+        <div class="bar-row"><span class="bar-name">shell</span><span class="bar-track"><span class="bar-fill" style="width:23.1%"></span></span><span class="bar-val">9</span></div>
+        <div class="bar-row"><span class="bar-name">core</span><span class="bar-track"><span class="bar-fill" style="width:20.5%"></span></span><span class="bar-val">8</span></div>
+        <div class="bar-row"><span class="bar-name">host</span><span class="bar-track"><span class="bar-fill" style="width:20.5%"></span></span><span class="bar-val">8</span></div>
+        <div class="bar-row"><span class="bar-name">fs</span><span class="bar-track"><span class="bar-fill" style="width:17.9%"></span></span><span class="bar-val">7</span></div>
+        <div class="bar-row"><span class="bar-name">util</span><span class="bar-track"><span class="bar-fill" style="width:17.9%"></span></span><span class="bar-val">7</span></div>
+        <div class="bar-row"><span class="bar-name">test-support</span><span class="bar-track"><span class="bar-fill" style="width:15.4%"></span></span><span class="bar-val">6</span></div>
+        <div class="bar-row"><span class="bar-name">web</span><span class="bar-track"><span class="bar-fill" style="width:15.4%"></span></span><span class="bar-val">6</span></div>
+        <div class="bar-row"><span class="bar-name">interaction</span><span class="bar-track"><span class="bar-fill" style="width:12.8%"></span></span><span class="bar-val">5</span></div>
+        <div class="bar-row"><span class="bar-name">llm</span><span class="bar-track"><span class="bar-fill" style="width:12.8%"></span></span><span class="bar-val">5</span></div>
+      </div>
+
+      <div class="callout">
+        <span class="tag">这张图怎么用</span>
+        <p>
+          想加东西时，先看你要挂的扩展点落在哪一层：落在<strong>能力族</strong>及以上（绝大多数情况），写插件就行，不会牵动别人；
+          一旦要改<strong>核心骨架</strong>那四个包的接口，扇入 47–84 意味着影响面是全仓库级的，仓库规约也要求同时更新 <code>docs/architecture.md</code>。
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ 4 ============ -->
     <section id="features">
-      <h2><span class="num">02</span>功能盘点</h2>
+      <h2><span class="num">04</span>功能盘点</h2>
 
       <h3>1. 内核骨架 <code>packages/core/</code></h3>
       <div class="table-wrap">
@@ -452,9 +886,9 @@ footer p { margin: 0 0 8px; }
       </p>
     </section>
 
-    <!-- ============ 3 ============ -->
+    <!-- ============ 5 ============ -->
     <section id="usage">
-      <h2><span class="num">03</span>能够怎么用</h2>
+      <h2><span class="num">05</span>能够怎么用</h2>
 
       <h3>A. 当成通用编码 agent（最省事）</h3>
       <pre><code>npx @deepseek-ai/dsh web          # Web UI，默认 http://127.0.0.1:3080</code></pre>
@@ -523,9 +957,9 @@ dsh --profile myprofile</code></pre>
       <p>官方建议给插件仓库打 <code>dsh-plugin</code> topic 便于被发现。</p>
     </section>
 
-    <!-- ============ 4 ============ -->
+    <!-- ============ 6 ============ -->
     <section id="integrate">
-      <h2><span class="num">04</span>和你的 GitHub 项目怎么结合</h2>
+      <h2><span class="num">06</span>和你的 GitHub 项目怎么结合</h2>
       <p>按投入从低到高分五层。前两层今天就能用，不改一行业务代码。</p>
 
       <div class="tier">
@@ -605,9 +1039,9 @@ dsh --profile myprofile</code></pre>
       </div>
     </section>
 
-    <!-- ============ 5 ============ -->
+    <!-- ============ 7 ============ -->
     <section id="verdict">
-      <h2><span class="num">05</span>总结与取舍</h2>
+      <h2><span class="num">07</span>总结与取舍</h2>
       <blockquote>
         <p>
           它对你最直接的价值排序：<strong>① 直接当 DeepSeek 版 Claude Code 用（Web / CLI）→ ② 用 AGENTS.md + skills 让它读懂你的项目
@@ -628,9 +1062,9 @@ dsh --profile myprofile</code></pre>
       </div>
     </section>
 
-    <!-- ============ 6 ============ -->
+    <!-- ============ 8 ============ -->
     <section id="method">
-      <h2><span class="num">06</span>分析方法</h2>
+      <h2><span class="num">08</span>分析方法</h2>
       <p>
         本页结论来自对仓库源码与文档的静态阅读：<code>docs/architecture.md</code>、各 package 组的 README、
         生成的 <code>docs/tool-catalog.md</code>、<code>apps/cli/reference/README.md</code>、
@@ -640,6 +1074,19 @@ dsh --profile myprofile</code></pre>
         <strong>没有构建或运行过这套系统</strong>（分析环境没有 API key），所以运行时行为、性能与实际模型效果不在本文的证据范围内；
         涉及推测的地方（例如 GitHub Actions 那段 workflow）已在正文中标注。包数量与代码行数由
         <code>find</code> 与 <code>wc -l</code> 统计得出。
+      </p>
+      <h3>图表的数据来源</h3>
+      <p>
+        「包依赖结构」一章的所有数字都是脚本现算的，不是抄文档：遍历 <code>packages/&lt;group&gt;/&lt;pkg&gt;/package.json</code>，
+        取 <code>dependencies</code> 与 <code>peerDependencies</code> 中以 <code>@deepseek-ai/dsh-</code> 开头的条目，
+        据此统计扇入、按组聚合跨组边权、统计各组包数。仓库自带的 <code>docs/module-graph.md</code> 只用
+        <code>peerDependencies</code>（它声明那是运行时依赖的规范信号），口径比这里窄，所以两边的绝对数会有出入；
+        本文取并集是为了反映"实际会被装进去的东西"。
+      </p>
+      <p>
+        分层图里的四层是我按依赖方向做的聚合判断，不是仓库里既有的分类——仓库官方的分组是
+        <code>packages/README.md</code> 里那 49 个组。配色经过色觉安全校验（对比度、色盲可分辨度），
+        且所有色块都带可见文字标签，不依赖颜色单独传达信息。
       </p>
     </section>
 
