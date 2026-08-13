@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-13T23:26:33.056Z",
+  "generatedAt": "2026-08-13T23:46:24.840Z",
   "upstream": {
     "name": "deepseek-ai/deepseek-harness",
     "url": "https://github.com/deepseek-ai/deepseek-harness",
     "description": "DeepSeek Harness: Everything is a Plugin.",
-    "stars": 39721,
-    "forks": 3107,
+    "stars": 40158,
+    "forks": 3137,
     "openIssues": 0,
     "pushedAt": "2026-08-13T13:00:21Z",
     "license": "MIT",
@@ -65,12 +65,12 @@
   ],
   "plugins": {
     "topic": "dsh-plugin",
-    "total": 706,
+    "total": 708,
     "top": [
       {
         "name": "titanwings/colleague-skill",
         "url": "https://github.com/titanwings/colleague-skill",
-        "stars": 21072,
+        "stars": 21080,
         "language": "Python",
         "description": "将冰冷的离别化为温暖的 Skill，欢迎加入数字生命1.0！Transforming cold farewells into warm skills? It's giving rebirth era. Welcome to Digital Life 1.0. 🫶",
         "pushedAt": "2026-08-13T15:00:28Z",
@@ -79,7 +79,7 @@
       {
         "name": "Devin-AXIS/iPolloWork",
         "url": "https://github.com/Devin-AXIS/iPolloWork",
-        "stars": 3581,
+        "stars": 3587,
         "language": "HTML",
         "description": "A next-generation, source-available AI workspace with a self-evolving agent runtime for editable code, design, presentations, websites, and video—a Codex alternative that integrates DeepSeek Harness for subagent delegati",
         "pushedAt": "2026-08-13T20:15:08Z",
@@ -88,7 +88,7 @@
       {
         "name": "whiteguo233/OpenBiliClaw",
         "url": "https://github.com/whiteguo233/OpenBiliClaw",
-        "stars": 1934,
+        "stars": 1937,
         "language": "Python",
         "description": "本地私有、开源的跨平台 AI 内容发现 Agent：先理解你，再主动从 B站、小红书、抖音、YouTube、X、知乎、Reddit、微博等平台与开放 Web 寻找内容。 | Local-first open-source cross-platform AI content discovery agent: understands you, then proactively finds content across Bilibili, X",
         "pushedAt": "2026-08-13T19:06:47Z",
@@ -97,7 +97,7 @@
       {
         "name": "paean-ai/deeptide",
         "url": "https://github.com/paean-ai/deeptide",
-        "stars": 1017,
+        "stars": 1018,
         "language": "Rust",
         "description": "Built by DeepSeek, for DeepSeek — a Swift-native macOS coding agent",
         "pushedAt": "2026-07-08T09:37:30Z",
@@ -106,7 +106,7 @@
       {
         "name": "nutshellai-tech/mobius",
         "url": "https://github.com/nutshellai-tech/mobius",
-        "stars": 916,
+        "stars": 917,
         "language": "TypeScript",
         "description": "The first self-evolving open-source Agent OS, connecting your team, AI agents, devices, and compute",
         "pushedAt": "2026-08-13T12:12:15Z",
@@ -115,34 +115,34 @@
       {
         "name": "liustack/modlens",
         "url": "https://github.com/liustack/modlens",
-        "stars": 708,
+        "stars": 711,
         "language": "TypeScript",
         "description": "The first vision plugin for DeepSeek Harness, and the vision bridge for every text-only coding agent. Paste an image, get structured JSON evidence (OCR, layout, semantics).",
         "pushedAt": "2026-08-13T19:34:36Z",
         "createdAt": "2026-02-22T07:12:00Z"
       },
       {
+        "name": "zhu1090093659/dsh-web-ui",
+        "url": "https://github.com/zhu1090093659/dsh-web-ui",
+        "stars": 533,
+        "language": "TypeScript",
+        "description": "Plugin and skin collection for DeepSeek Harness (DSH) Web UI - task board, git graph, right-side panel, remote mobile UI, pet, live token stats, and skin center.",
+        "pushedAt": "2026-08-13T23:36:02Z",
+        "createdAt": "2026-08-12T05:15:20Z"
+      },
+      {
         "name": "Anionex/agent-vision-toolkit",
         "url": "https://github.com/Anionex/agent-vision-toolkit",
-        "stars": 525,
+        "stars": 529,
         "language": "Python",
         "description": "为纯文本模型\"看图“设计更好的视觉工具箱和技能，支持多图理解，图片问答，前端UI还原、GUI 自动化等，并可选无缝接入多个主流agent，直接识别粘贴图片｜ A vision toolkit and skill designed for text-only llms — image Q&A, long-screenshot OCR, frontend UI restoration, and GUI automation, with op",
         "pushedAt": "2026-08-13T18:30:45Z",
         "createdAt": "2026-08-01T10:00:13Z"
       },
       {
-        "name": "zhu1090093659/dsh-web-ui",
-        "url": "https://github.com/zhu1090093659/dsh-web-ui",
-        "stars": 521,
-        "language": "TypeScript",
-        "description": "Plugin and skin collection for DeepSeek Harness (DSH) Web UI - task board, git graph, right-side panel, remote mobile UI, pet, live token stats, and skin center.",
-        "pushedAt": "2026-08-13T17:34:26Z",
-        "createdAt": "2026-08-12T05:15:20Z"
-      },
-      {
         "name": "AdamPlatin123/awesome-dsh-plugins",
         "url": "https://github.com/AdamPlatin123/awesome-dsh-plugins",
-        "stars": 306,
+        "stars": 312,
         "language": "Shell",
         "description": "前部索引仓库（Radar）：自动扫描发现的所有 dsh 插件候选；经测试合格的将移入后序精选目录仓库",
         "pushedAt": "2026-08-13T20:46:33Z",
@@ -160,7 +160,7 @@
       {
         "name": "PM-Shawn/Abu-Cowork",
         "url": "https://github.com/PM-Shawn/Abu-Cowork",
-        "stars": 283,
+        "stars": 285,
         "language": "TypeScript",
         "description": "Open-source alternative to Claude Cowork — a local-first AI agent desktop app · multi-model · self-evolving skills · privacy-first",
         "pushedAt": "2026-08-13T21:56:46Z",
@@ -178,94 +178,94 @@
     ],
     "recentlyActive": [
       {
+        "name": "ccch1mneyyy/dsh-cc-tui",
+        "url": "https://github.com/ccch1mneyyy/dsh-cc-tui",
+        "stars": 210,
+        "language": "TypeScript",
+        "description": "解决DSH 官方尚无终端 TUI 痛点的补位之作，献给偏爱cli的各位极客：Claude Code 风格全屏交互终端插件——像素鲸鱼顶栏、实时工作状态行、思考流式展开、双击 Esc 回滚、上下文进度条 + TPS 仪表。npm 一键安装。",
+        "pushedAt": "2026-08-13T23:46:03Z",
+        "createdAt": "2026-08-13T12:49:31Z"
+      },
+      {
+        "name": "rsagacom/dsh-ajw",
+        "url": "https://github.com/rsagacom/dsh-ajw",
+        "stars": 1,
+        "language": "JavaScript",
+        "description": "DS安甲网 (ds.ajw.cn) · 为你的 DeepSeek Harness 机器人 安装上所需功能的装甲吧 — 每日聚合 DeepSeek Harness / DSH 插件生态开源项目",
+        "pushedAt": "2026-08-13T23:46:01Z",
+        "createdAt": "2026-08-13T16:07:47Z"
+      },
+      {
+        "name": "CrazyShout/dsh-ssh-remote",
+        "url": "https://github.com/CrazyShout/dsh-ssh-remote",
+        "stars": 1,
+        "language": "TypeScript",
+        "description": "SSH remote workspaces for DeepSeek Harness: browse/read/write remote files, run remote commands, with connection status dots.",
+        "pushedAt": "2026-08-13T23:45:14Z",
+        "createdAt": "2026-08-13T19:30:54Z"
+      },
+      {
+        "name": "YELEBAI/dsh-plugin-marketplace",
+        "url": "https://github.com/YELEBAI/dsh-plugin-marketplace",
+        "stars": 0,
+        "language": "JavaScript",
+        "description": "Verified plugin marketplace and autonomous registry for DeepSeek Harness",
+        "pushedAt": "2026-08-13T23:45:07Z",
+        "createdAt": "2026-08-13T22:30:42Z"
+      },
+      {
+        "name": "orriduck/dsh-tui",
+        "url": "https://github.com/orriduck/dsh-tui",
+        "stars": 2,
+        "language": "TypeScript",
+        "description": "A small, session-aware terminal UI for DeepSeek Harness",
+        "pushedAt": "2026-08-13T23:44:08Z",
+        "createdAt": "2026-08-13T13:59:33Z"
+      },
+      {
         "name": "zp-home/dsh-recommend",
         "url": "https://github.com/zp-home/dsh-recommend",
         "stars": 1,
         "language": "JavaScript",
         "description": "DSH 插件生态透明排行与推荐：每日自动抓取 dsh-plugin 话题 + 公开评分模型 + 排行/推荐插件与静态站",
-        "pushedAt": "2026-08-13T23:26:08Z",
+        "pushedAt": "2026-08-13T23:43:30Z",
         "createdAt": "2026-08-13T21:56:48Z"
       },
       {
-        "name": "csiroqa/dsh-archive-viewer",
-        "url": "https://github.com/csiroqa/dsh-archive-viewer",
+        "name": "liuup/dsh-latex-tools",
+        "url": "https://github.com/liuup/dsh-latex-tools",
         "stars": 0,
         "language": "TypeScript",
-        "description": "DeepSeek Harness（DSH）归档增强插件：自动定期归档、文件夹归档整理、LLM 摘要沉淀经验库、会话收藏与便签、会话删除与优雅关机。Archive enhancement plugin for DeepSeek Harness: auto-archive, folder organization, LLM knowledge library, bookmarks & notes, session delete.",
-        "pushedAt": "2026-08-13T23:26:14Z",
-        "createdAt": "2026-08-13T18:36:38Z"
+        "description": "♾️ Copy and export the LaTeX in DeepSeek Harness",
+        "pushedAt": "2026-08-13T23:42:40Z",
+        "createdAt": "2026-08-13T21:48:37Z"
       },
       {
-        "name": "PivotStackIntelligence/dsh-github",
-        "url": "https://github.com/PivotStackIntelligence/dsh-github",
-        "stars": 2,
-        "language": "TypeScript",
-        "description": "",
-        "pushedAt": "2026-08-13T23:23:45Z",
-        "createdAt": "2026-08-13T17:31:00Z"
-      },
-      {
-        "name": "cking000bigdemon/dsh-toolbelt",
-        "url": "https://github.com/cking000bigdemon/dsh-toolbelt",
-        "stars": 1,
-        "language": "TypeScript",
-        "description": "Eight DeepSeek Harness plugins: persona, language guard, per-request vision fallback, python/windows write guards, cross-agent memory, image generation, and skill shell injection.",
-        "pushedAt": "2026-08-13T23:22:31Z",
-        "createdAt": "2026-08-13T14:23:43Z"
-      },
-      {
-        "name": "kejixiaoliang/awesome-dsh-plugins",
-        "url": "https://github.com/kejixiaoliang/awesome-dsh-plugins",
+        "name": "ChisaAlter/Deepseek-Harness-Desktop",
+        "url": "https://github.com/ChisaAlter/Deepseek-Harness-Desktop",
         "stars": 1,
         "language": "JavaScript",
-        "description": "DeepSeek Harness (DSH) 插件精选目录 — 14 类 280+ 个社区插件，覆盖 MCP / Skill / TUI / 多 Agent / 上下文记忆 / UI 皮肤，点链接直达仓库。Curated directory of dsh plugins for DeepSeek Harness.",
-        "pushedAt": "2026-08-13T23:22:09Z",
-        "createdAt": "2026-08-13T19:54:28Z"
+        "description": "Electron desktop shell for DeepSeek Harness web UI",
+        "pushedAt": "2026-08-13T23:42:02Z",
+        "createdAt": "2026-08-13T13:21:50Z"
       },
       {
-        "name": "dsh-plugin/dsh-plugin.github.io",
-        "url": "https://github.com/dsh-plugin/dsh-plugin.github.io",
+        "name": "rxa3c/chat2skill",
+        "url": "https://github.com/rxa3c/chat2skill",
         "stars": 1,
-        "language": "HTML",
-        "description": "DeepSeek Harness community plugin workshop and directory",
-        "pushedAt": "2026-08-13T23:21:11Z",
-        "createdAt": "2026-08-13T21:00:28Z"
+        "language": "Python",
+        "description": "Extracting and iterating skills from daily conversations with AI",
+        "pushedAt": "2026-08-13T23:41:46Z",
+        "createdAt": "2026-06-10T14:18:09Z"
       },
       {
-        "name": "qing3a/dsh-plugin-verify",
-        "url": "https://github.com/qing3a/dsh-plugin-verify",
-        "stars": 0,
-        "language": "TypeScript",
-        "description": "验证 DSH 插件的 CLI：一条命令跑 mock-llm 完整 agent 循环，检查 waterfall 链与零副作用，产出验证报告",
-        "pushedAt": "2026-08-13T23:20:43Z",
-        "createdAt": "2026-08-13T20:36:48Z"
-      },
-      {
-        "name": "pingfanfan/hello-dsh",
-        "url": "https://github.com/pingfanfan/hello-dsh",
-        "stars": 0,
-        "language": "HTML",
-        "description": "从零开始，看懂 DeepSeek Harness 的「万物皆可插件」— 零基础插件开发教程（含 22 个中文技能实例）| Zero-to-plugin tutorial for DeepSeek Harness",
-        "pushedAt": "2026-08-13T23:20:38Z",
-        "createdAt": "2026-08-13T16:11:07Z"
-      },
-      {
-        "name": "tttnny/DSH-Launcher",
-        "url": "https://github.com/tttnny/DSH-Launcher",
+        "name": "Isekai-Mfu/dsh-mimo-vision-hint",
+        "url": "https://github.com/Isekai-Mfu/dsh-mimo-vision-hint",
         "stars": 1,
-        "language": "Swift",
-        "description": "DSH Launcher — macOS menu bar app that manages the DeepSeek Harness web service via launchd",
-        "pushedAt": "2026-08-13T23:19:38Z",
-        "createdAt": "2026-08-13T23:07:00Z"
-      },
-      {
-        "name": "ZASENJC/dsh-plugins-store",
-        "url": "https://github.com/ZASENJC/dsh-plugins-store",
-        "stars": 0,
-        "language": "Astro",
-        "description": "自动收录和分类 GitHub dsh-plugin Topic 项目的静态目录网站",
-        "pushedAt": "2026-08-13T23:17:10Z",
-        "createdAt": "2026-08-13T22:16:37Z"
+        "language": "JavaScript",
+        "description": "DSH plugin: dispatch image-recognition tasks to an opencode-go mimo-v2.5 subagent via system-prompt injection",
+        "pushedAt": "2026-08-13T23:40:35Z",
+        "createdAt": "2026-08-13T22:11:51Z"
       }
     ]
   }
