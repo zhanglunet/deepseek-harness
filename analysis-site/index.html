@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DeepSeek Harness 源码分析</title>
+<meta name="description" content="DeepSeek Harness (dsh) 源码分析：插件化 agent harness 的架构、功能盘点、使用方式，以及与自有 GitHub 项目的五层集成路径。">
+<style>
+:root {
+  --bg: #ffffff;
+  --bg-soft: #f6f7f9;
+  --bg-code: #f4f5f7;
+  --fg: #1c1f26;
+  --fg-muted: #5b6472;
+  --fg-faint: #8a929e;
+  --line: #e3e6ea;
+  --line-soft: #eef0f3;
+  --accent: #3b5bfd;
+  --accent-soft: #eaeeff;
+  --shadow: 0 1px 2px rgba(16, 20, 30, .05), 0 8px 24px rgba(16, 20, 30, .04);
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB",
+          "Microsoft YaHei", "Noto Sans SC", Roboto, Helvetica, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1116;
+    --bg-soft: #151922;
+    --bg-code: #161b23;
+    --fg: #e4e7ec;
+    --fg-muted: #a2abb8;
+    --fg-faint: #6f7986;
+    --line: #232a35;
+    --line-soft: #1c222c;
+    --accent: #7d93ff;
+    --accent-soft: #1a2140;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .28);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1116;
+  --bg-soft: #151922;
+  --bg-code: #161b23;
+  --fg: #e4e7ec;
+  --fg-muted: #a2abb8;
+  --fg-faint: #6f7986;
+  --line: #232a35;
+  --line-soft: #1c222c;
+  --accent: #7d93ff;
+  --accent-soft: #1a2140;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .28);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 24px; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.75;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- layout ---------- */
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+.layout { display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 56px; align-items: start; }
+main { min-width: 0; padding-bottom: 96px; }
+
+/* ---------- hero ---------- */
+header.hero {
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--bg-soft), var(--bg));
+  padding: 72px 0 56px;
+  margin-bottom: 56px;
+}
+.eyebrow {
+  font-size: 13px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--accent); font-weight: 600; margin: 0 0 14px;
+}
+h1 { font-size: clamp(30px, 5vw, 46px); line-height: 1.2; margin: 0 0 18px; letter-spacing: -.02em; font-weight: 700; }
+.lede { font-size: 18px; color: var(--fg-muted); max-width: 62ch; margin: 0 0 32px; }
+.lede code { font-size: .92em; }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; max-width: 860px; }
+.stat {
+  background: var(--bg); border: 1px solid var(--line); border-radius: 12px;
+  padding: 16px 18px; box-shadow: var(--shadow);
+}
+.stat b { display: block; font-size: 22px; line-height: 1.3; letter-spacing: -.01em; }
+.stat span { font-size: 13px; color: var(--fg-faint); }
+
+/* ---------- toc ---------- */
+nav.toc { position: sticky; top: 24px; font-size: 14px; }
+nav.toc h2 {
+  font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--fg-faint); margin: 0 0 12px; font-weight: 600;
+}
+nav.toc ol { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--line); }
+nav.toc li a {
+  display: block; padding: 6px 0 6px 16px; margin-left: -1px;
+  border-left: 2px solid transparent; color: var(--fg-muted); text-decoration: none;
+}
+nav.toc li a:hover { color: var(--fg); }
+nav.toc li a.active { color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
+nav.toc li.sub a { padding-left: 28px; font-size: 13px; }
+
+/* ---------- prose ---------- */
+section { scroll-margin-top: 24px; }
+section + section { margin-top: 64px; }
+h2 {
+  font-size: 27px; letter-spacing: -.01em; margin: 0 0 8px; padding-bottom: 12px;
+  border-bottom: 1px solid var(--line); font-weight: 700;
+}
+h2 .num { color: var(--fg-faint); font-weight: 500; margin-right: 10px; font-variant-numeric: tabular-nums; }
+h3 { font-size: 19px; margin: 40px 0 10px; font-weight: 650; letter-spacing: -.005em; }
+h4 { font-size: 16px; margin: 28px 0 8px; font-weight: 650; color: var(--fg); }
+p { margin: 0 0 16px; }
+ul, ol { margin: 0 0 16px; padding-left: 22px; }
+li { margin: 5px 0; }
+li > ul { margin-top: 5px; margin-bottom: 6px; }
+a { color: var(--accent); text-underline-offset: 2px; }
+strong { font-weight: 650; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 40px 0; }
+
+code {
+  font-family: var(--mono); font-size: .875em;
+  background: var(--bg-code); border: 1px solid var(--line-soft);
+  padding: .12em .38em; border-radius: 5px; word-break: break-word;
+}
+pre {
+  background: var(--bg-code); border: 1px solid var(--line); border-radius: 12px;
+  padding: 16px 18px; overflow-x: auto; margin: 0 0 18px; line-height: 1.65;
+}
+pre code { background: none; border: 0; padding: 0; font-size: 13.5px; }
+.pre-label {
+  display: inline-block; font-size: 12px; color: var(--fg-faint); font-family: var(--mono);
+  margin-bottom: 6px;
+}
+
+.table-wrap { overflow-x: auto; margin: 0 0 20px; border: 1px solid var(--line); border-radius: 12px; }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+th, td { text-align: left; padding: 11px 16px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+th { background: var(--bg-soft); font-weight: 650; white-space: nowrap; color: var(--fg); }
+tbody tr:last-child td { border-bottom: 0; }
+td code { white-space: nowrap; }
+
+blockquote {
+  margin: 0 0 18px; padding: 14px 18px; border-left: 3px solid var(--accent);
+  background: var(--accent-soft); border-radius: 0 10px 10px 0; color: var(--fg-muted);
+}
+blockquote p:last-child { margin-bottom: 0; }
+
+.callout {
+  border: 1px solid var(--line); background: var(--bg-soft); border-radius: 12px;
+  padding: 16px 18px; margin: 0 0 20px;
+}
+.callout p:last-child { margin-bottom: 0; }
+.callout .tag {
+  display: inline-block; font-size: 12px; font-weight: 650; letter-spacing: .04em;
+  color: var(--accent); margin-bottom: 6px;
+}
+
+/* ---------- tier cards ---------- */
+.tier {
+  border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px;
+  margin: 0 0 16px; background: var(--bg); box-shadow: var(--shadow);
+}
+.tier > h3 { margin-top: 0; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.tier-badge {
+  font-size: 12px; font-weight: 650; color: var(--accent); background: var(--accent-soft);
+  border-radius: 999px; padding: 3px 11px; letter-spacing: .02em; white-space: nowrap;
+}
+.tier p:last-child, .tier ul:last-child, .tier pre:last-child { margin-bottom: 0; }
+
+/* ---------- diagram ---------- */
+figure { margin: 24px 0 28px; }
+figure svg { display: block; width: 100%; height: auto; }
+figcaption { font-size: 13.5px; color: var(--fg-faint); margin-top: 10px; }
+.diagram-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; padding: 20px; background: var(--bg-soft); }
+.diagram-scroll svg { min-width: 620px; font-family: var(--sans); }
+
+/* SVG styling stays in CSS so the theme tokens actually resolve */
+.d-frame { fill: none; stroke: var(--line); stroke-width: 1.4; stroke-dasharray: 5 4; }
+.d-box { fill: var(--bg-soft); stroke: var(--line); stroke-width: 1.2; }
+.d-box-inner { fill: var(--bg); stroke: var(--line); stroke-width: 1.2; }
+.d-step { fill: none; stroke: var(--accent); stroke-width: 1.4; }
+.d-arrow { stroke: var(--fg-faint); stroke-width: 1.3; fill: none; }
+.d-arrow-head { fill: var(--fg-faint); }
+.d-label { fill: var(--fg); font-size: 12.5px; }
+.d-mark { fill: var(--accent); font-size: 13px; font-weight: 600; font-family: var(--mono); }
+.d-note { fill: var(--fg-faint); font-size: 12px; }
+
+footer {
+  border-top: 1px solid var(--line); margin-top: 80px; padding: 32px 0 64px;
+  color: var(--fg-faint); font-size: 14px;
+}
+footer p { margin: 0 0 8px; }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  nav.toc { position: static; margin-bottom: 40px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+  nav.toc ol { columns: 2; column-gap: 24px; border-left: 0; }
+  nav.toc li a { border-left: 0; padding-left: 0; }
+  nav.toc li a.active { border-left: 0; }
+  nav.toc li.sub { display: none; }
+  header.hero { padding: 48px 0 40px; margin-bottom: 40px; }
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">源码分析 · Source Analysis</p>
+    <h1>DeepSeek Harness</h1>
+    <p class="lede">
+      DeepSeek AI 开源的 <strong>agent harness</strong>（智能体运行时框架）。不是一个聊天机器人，而是"把 LLM 变成能干活的 agent"的整套底座，
+      外加一个产品化的 CLI 与 Web 应用。核心设计是 <strong>一切皆插件</strong>——连 agent 主循环本身都是一行可替换的配置。
+    </p>
+    <div class="stats">
+      <div class="stat"><b>219</b><span>workspace 包</span></div>
+      <div class="stat"><b>~22.8 万</b><span>行 TypeScript</span></div>
+      <div class="stat"><b>0.1.0-rc.5</b><span>developer preview</span></div>
+      <div class="stat"><b>MIT</b><span>许可证</span></div>
+      <div class="stat"><b>Cordis</b><span>底层 DI 框架</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap layout">
+
+  <nav class="toc">
+    <h2>目录</h2>
+    <ol>
+      <li><a href="#what">这是什么</a></li>
+      <li class="sub"><a href="#concepts">三个核心概念</a></li>
+      <li class="sub"><a href="#loop">主循环形状</a></li>
+      <li><a href="#features">功能盘点</a></li>
+      <li class="sub"><a href="#tools">模型可见工具集</a></li>
+      <li><a href="#usage">能够怎么用</a></li>
+      <li><a href="#integrate">和你的项目结合</a></li>
+      <li><a href="#verdict">总结与取舍</a></li>
+      <li><a href="#method">分析方法</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <!-- ============ 1 ============ -->
+    <section id="what">
+      <h2><span class="num">01</span>这是什么</h2>
+
+      <p>
+        DeepSeek Harness（命令名 <code>dsh</code>）跑在 vendored 的
+        <a href="https://github.com/cordiverse/cordis">Cordis</a> 依赖注入框架上。
+        <code>docs/architecture.md</code> 写得很直白：<strong>没有特权内核可以打补丁</strong>——模型适配器、工具注册表、
+        会话日志、agent 主循环全部是插件，都能从配置里替换。你扩展它的方式不是改核心，而是在旁边挂一个插件；
+        所有注册都是可回收的 effect，插件卸载时自动解除。
+      </p>
+
+      <h3 id="concepts">三个贯穿全局的概念</h3>
+
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>概念</th><th>含义</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Capability seam</strong><br><span style="color:var(--fg-faint);font-size:13px">能力接缝</span></td>
+            <td>每个能力必须凑齐三个角色：<strong>Service Definition</strong>（接口）/ <strong>Service Provider</strong>（实现）/ <strong>Consumer</strong>（通常是模型可见的工具）。只有一个角色不叫接缝。换一个 provider 就换掉整个产品行为——比如把 fs 与 subprocess 同时指向 E2B 远程沙箱，Bash、PTY、LSP 会全部跟着搬家，工具代码一行不改。</td>
+          </tr>
+          <tr>
+            <td><strong>Profile / Bundle / Patch</strong></td>
+            <td>运行时 = 有序叠加的配置层：各 bundle 的 <code>cordis.patch.yml</code> → profile 自己的 patch → home 级 patch → 命令行 <code>--patch</code> 覆盖。后面的层按行 id 覆盖前面的（整块替换 <code>config</code>，不做深合并）。<code>dsh --profile web --dump-config</code> 可以打印真实组装出的插件树。</td>
+          </tr>
+          <tr>
+            <td><strong>Model-visible ⟺ logged</strong></td>
+            <td>任何进入模型请求的内容<strong>必须</strong>能从 append-only 的 session log 重建，有运行时不变量断言这一点。所以 fork、resume、回放、遥测、UI 全部是同一条事件流的投影；新增一种模型可见输入就必须新增一个 session 事件。</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3 id="loop">主循环的形状</h3>
+      <p>
+        一个 <strong>step</strong> = 一次模型请求加上它触发的工具调用；一个 <strong>turn</strong> = 零或多个 step，
+        在第一份输入被认领前开启，在没有任何欠账时关闭。
+      </p>
+
+      <figure>
+        <div class="diagram-scroll">
+          <svg viewBox="0 0 720 300" role="img" aria-label="turn 与 step 生命周期示意图">
+            <defs>
+              <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path class="d-arrow-head" d="M0,0 L10,5 L0,10 z"/>
+              </marker>
+            </defs>
+
+            <rect class="d-frame" x="12" y="14" width="696" height="272" rx="12"/>
+            <text class="d-mark" x="28" y="38">turn/start</text>
+            <text class="d-mark" x="606" y="38">turn/end</text>
+
+            <rect class="d-box" x="32" y="58" width="150" height="40" rx="8"/>
+            <rect class="d-box" x="212" y="58" width="180" height="40" rx="8"/>
+            <rect class="d-box" x="422" y="58" width="256" height="40" rx="8"/>
+            <text class="d-label" x="46" y="83">认领 inbox 输入</text>
+            <text class="d-label" x="226" y="83">agent/pre-step（可拒绝）</text>
+            <text class="d-label" x="436" y="83">组装 prompt 分节 + tool schema</text>
+
+            <line class="d-arrow" marker-end="url(#arw)" x1="184" y1="78" x2="206" y2="78"/>
+            <line class="d-arrow" marker-end="url(#arw)" x1="394" y1="78" x2="416" y2="78"/>
+
+            <rect class="d-step" x="32" y="122" width="646" height="112" rx="10"/>
+            <text class="d-mark" x="46" y="144">step/start … step/end</text>
+
+            <rect class="d-box-inner" x="48" y="158" width="140" height="36" rx="8"/>
+            <rect class="d-box-inner" x="212" y="158" width="150" height="36" rx="8"/>
+            <rect class="d-box-inner" x="386" y="158" width="130" height="36" rx="8"/>
+            <rect class="d-box-inner" x="540" y="158" width="122" height="36" rx="8"/>
+            <text class="d-label" x="61" y="181">从日志推导历史</text>
+            <text class="d-label" x="225" y="181">agent/request</text>
+            <text class="d-label" x="399" y="181">llm/stream</text>
+            <text class="d-label" x="553" y="181">tool/call*</text>
+
+            <line class="d-arrow" marker-end="url(#arw)" x1="190" y1="176" x2="206" y2="176"/>
+            <line class="d-arrow" marker-end="url(#arw)" x1="364" y1="176" x2="380" y2="176"/>
+            <line class="d-arrow" marker-end="url(#arw)" x1="518" y1="176" x2="534" y2="176"/>
+
+            <text class="d-note" x="48" y="220">工具仍欠一次请求，或新的 next-step 输入到达 → 认领 → 下一个 step</text>
+            <text class="d-note" x="32" y="264">tools/pre-execute → tools/execute → tools/post-execute（waterfall，监听器必须调用 next() 才会向下委派）</text>
+          </svg>
+        </div>
+        <figcaption>
+          <code>turn/*</code>、<code>step/*</code>、<code>user/message</code>、<code>assistant/*</code>、<code>tool/*</code> 是持久化的 session 事件；
+          <code>agent/pre-step</code>、<code>agent/request</code>、<code>llm/stream</code> 与三个 <code>tools/*</code> 是 waterfall 扩展点。
+        </figcaption>
+      </figure>
+
+      <p>
+        <code>agent-loop</code> 是<strong>整个仓库里唯一</strong>含有具体循环逻辑的包，其余一律是挂在扩展点上的插件。
+        被拒绝或改写为空的首次认领<em>仍然</em>会关闭一个没有花费 step 的持久 turn——这样日志里保留了这次尝试。
+      </p>
+    </section>
+
+    <!-- ============ 2 ============ -->
+    <section id="features">
+      <h2><span class="num">02</span>功能盘点</h2>
+
+      <h3>1. 内核骨架 <code>packages/core/</code></h3>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>包</th><th>职责</th><th><code>ctx</code> key</th></tr></thead>
+        <tbody>
+          <tr><td><code>session</code></td><td>append-only 的 <code>SessionEvent</code> 日志与内存存储</td><td><code>ctx.sessions</code></td></tr>
+          <tr><td><code>system-prompt</code></td><td>prompt 分节与 tool schema 组装</td><td><code>ctx.systemPrompt</code></td></tr>
+          <tr><td><code>tools</code></td><td>分层作用域的工具注册表 + 受保护的执行管线</td><td><code>ctx.tools</code></td></tr>
+          <tr><td><code>agent</code></td><td><code>Agent</code> 接口、活跃注册表、<code>agent/*</code> 事件</td><td><code>ctx.agents</code></td></tr>
+          <tr><td><code>agent-loop</code></td><td>实现该接口的默认驱动（唯一的具体循环）</td><td><code>ctx.agentLoop</code></td></tr>
+          <tr><td><code>scope</code></td><td>按 agent 隔离注册的原语</td><td>库，无 key</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>2. 模型接入 <code>packages/llm/</code></h3>
+      <ul>
+        <li><code>llm-deepseek</code> — DeepSeek 直连适配器</li>
+        <li><code>llm-pi-ai</code> — 多厂商适配：Anthropic、OpenAI、Bedrock、Vertex、Azure、Codex，以及任意 OpenAI 兼容的自建网关。手写的模型默认按纯文本处理，需要视觉能力时在 <code>settings.yaml</code> 里给该模型加 <code>input: [text, image]</code></li>
+        <li><code>llm-retry</code>（provider 级重试策略）、<code>token-meter</code>（回放感知的 token 计量）</li>
+      </ul>
+
+      <h3 id="tools">3. 模型可见的工具集</h3>
+      <p>
+        <code>docs/tool-catalog.md</code> 是自动生成的完整 JSON Schema 目录（1873 行）。生成器会真的<strong>启动每个工具插件</strong>再读
+        <code>ctx.tools.schemas()</code>，因为 schema 不是静态可知的；同时有一道 glob 门禁，新增工具包却漏进目录会直接失败。
+      </p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>域</th><th>工具</th></tr></thead>
+        <tbody>
+          <tr><td>文件</td><td><code>read</code> <code>write</code> <code>edit</code> <code>read_image</code>、<code>str_replace_editor</code>、<code>glob</code> <code>grep</code>（内置 <code>@vscode/ripgrep</code>，不依赖宿主 rg，也不经过 shell 层）</td></tr>
+          <tr><td>执行</td><td><code>bash</code>（一次性，带沙箱）、<code>pwsh</code>（Windows 分支）、持久 PTY 的 <code>bash</code> 与 <code>terminal_open/read/send/signal/list/close</code></td></tr>
+          <tr><td>后台作业</td><td><code>job_list</code> <code>job_output</code> <code>job_kill</code>——后台 bash、PTY send、subagent 共用同一套管控</td></tr>
+          <tr><td>代码智能</td><td><code>lsp</code>（provider 无关；没有注册 provider 时返回结构化的 <code>LSP_UNAVAILABLE</code> 而不是改变 schema）</td></tr>
+          <tr><td>网络</td><td><code>web_search</code> <code>web_fetch</code></td></tr>
+          <tr><td>任务组织</td><td><code>todo_write</code>、<code>exit_plan_mode</code>（计划模式）、<code>create_goal</code> <code>update_goal</code> <code>get_goal</code>、<code>schedule_create/list/delete</code>（会话内定时提醒）</td></tr>
+          <tr><td>委派</td><td><code>subagent</code> <code>subagent_fork</code>、<code>send_message</code> <code>interrupt_agent</code> <code>list_agents</code>、子 agent 侧的 <code>report</code></td></tr>
+          <tr><td>编排</td><td><code>workflow</code>（模型自己写编排脚本，在 worker 线程里执行）、<code>ralph</code>（固定策略：每轮开一个全新子 agent 迭代）</td></tr>
+          <tr><td>会话检索</td><td><code>session_search</code> <code>session_trace</code> <code>session_event_read</code> <code>session_event_search</code> <code>session_event_trace</code>——SQLite 全文检索，独立于上下文压缩</td></tr>
+          <tr><td>技能</td><td><code>skill</code>（技能目录 + 载入器）</td></tr>
+          <tr><td>人机</td><td><code>ask_user_question</code>——挂起该次工具调用，直到真人回答</td></tr>
+          <tr><td>自举</td><td><code>cordis_define</code> <code>cordis_run</code> <code>cordis_inspect_*</code> <code>cordis_undefine</code>——<strong>agent 修改自己正在运行的插件树</strong>。默认不在任何发行树里，必须显式 opt-in</td></tr>
+          <tr><td>Code Mode</td><td><code>run_code</code>——把所有工具生成成一份 SDK，让模型写程序批量调用，而不是一次次 tool call。<code>DSH_TOOLS_MODE=native|code|both</code></td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>4. 安全与执行环境</h3>
+      <p>
+        <code>sandbox</code> 接缝 + 本地后端（Linux bwrap / Landlock、macOS Seatbelt、Windows ACL 受限令牌），
+        <code>sandbox-policy</code> 解析按会话持久化的策略，<code>fs-sandbox</code> 在 <code>ctx.fs</code> 层拦截写入，
+        <code>permission-presets</code>（新会话默认 <code>workspace-write</code>）、<code>user-approval</code>（人工批准接缝）。
+        仓库还自带 <code>native/landlock-run</code> 这个自研 Node 原生插件。
+      </p>
+      <div class="callout">
+        <span class="tag">默认姿态</span>
+        <p>
+          新会话默认 <code>workspace-write</code>：Bash 与文件系统的<em>写</em>限制在会话工作区加平台临时目录；
+          <strong>读、网络访问、进程可见性并不受限</strong>。遥测默认关闭，且发行版没有内置脱敏规则——显式开启后导出内容可能包含消息正文、工具参数与工作区路径。
+        </p>
+      </div>
+
+      <h3>5. 会话数据面</h3>
+      <p>
+        JSONL / SQLite 双持久化后端、投影接缝、由日志生成的会话标题、fork / resume、
+        <code>compaction</code>（上下文压缩）、<code>spill</code>（超长工具结果外溢到存储）、
+        <code>attachment</code>（内容寻址附件）、<code>session-telemetry</code>（OTLP，默认关闭）。
+      </p>
+
+      <h3>6. 上下文注入 <code>packages/context/</code></h3>
+      <p>
+        重点是 <code>agent-instructions</code>：兼容 <code>AGENTS.md</code> / <code>CLAUDE.md</code>，从
+        <code>$DSH_HOME/AGENTS.md</code> 一路读到当前工作目录；<strong>并且</strong>在 <code>read</code>/<code>write</code>/<code>edit</code>
+        成功之后动态发现新进入目录的嵌套指令文件，报告变更与删除（渲染预算 65,536 字节）。
+        同目录下内容完全相同的 <code>CLAUDE.md</code> 与 <code>AGENTS.md</code> 会折叠成一份，不会重复计费。
+        另有 <code>time-context</code>、<code>tmux-context</code>、<code>session-reference</code>。
+      </p>
+
+      <h3>7. 互操作层</h3>
+      <p>这一层是它和外部生态结合的关键，也是同类项目里比较少见的完整度。</p>
+      <ul>
+        <li><strong>MCP 客户端</strong>：连接任意 MCP server，工具以 <code>mcp__&lt;server&gt;__&lt;tool&gt;</code> 注册；支持 stdio / streamable-http、断线指数退避重连、HMR 热插拔</li>
+        <li><strong>ACP server</strong>：把 harness agent 暴露给 Agent Client Protocol 客户端（编辑器类集成）</li>
+        <li><strong>SDK</strong>：JSON-RPC 协议 + TypeScript 客户端 + server 插件；<strong>Python SDK</strong> 自带 Node 运行时，宿主无需安装 Node</li>
+        <li><strong>Hook 桥</strong>：直接运行你已有的 <strong>Claude Code</strong> <code>hooks.json</code> 与 <strong>Codex</strong> hook 配置，映射到 harness 的类型化拦截点</li>
+        <li><strong>子 agent 后端可以是别人家的 agent</strong>：<code>subagent-claude-code</code>（走官方 Claude Agent SDK）、<code>subagent-codex</code>、<code>subagent-acp</code>、<code>subagent-dsh-sdk</code></li>
+      </ul>
+
+      <h3>8. 产品外壳</h3>
+      <ul>
+        <li><code>apps/cli</code> — <code>dsh</code> 命令：profile 启动 / <code>web</code> / <code>headless</code> / <code>plugin</code> 包管理 / <code>--dump-config</code></li>
+        <li><code>apps/web</code> + <code>packages/host/</code> + <code>packages/client/</code> — 完整 Web UI，约 30 个 <code>ui-*</code> 浏览器端插件（会话、权限、模型设置、计划、待办、技能、子 agent、工作流、附件、主题……）</li>
+        <li><code>packages/preset/</code> — 按会话组合 agent；<code>apps/cli/config/agent-presets/</code> 下自带 <code>minimal</code> / <code>standard</code> / <code>code</code> / <code>cordis</code> 四套</li>
+      </ul>
+
+      <h3>9. 工程设施</h3>
+      <p>
+        <code>typert</code>（类型图生成器 + 运行时注册表）、<code>guard</code>（循环卫生 + 工具超时）、<code>test-support</code>，
+        以及 <code>scripts/</code> 下大量文档与目录生成器和门禁。仓库自身的工程强度很高：逐文件 100% 覆盖率门禁、
+        无密钥的 snapshot 回放测试、双语文档同步、包级运行时不变量。
+      </p>
+    </section>
+
+    <!-- ============ 3 ============ -->
+    <section id="usage">
+      <h2><span class="num">03</span>能够怎么用</h2>
+
+      <h3>A. 当成通用编码 agent（最省事）</h3>
+      <pre><code>npx @deepseek-ai/dsh web          # Web UI，默认 http://127.0.0.1:3080</code></pre>
+      <p>
+        Settings → Models 填 DeepSeek API key（存到 <code>$DSH_HOME/.credentials.yaml</code>，只写不读回，
+        页面拿到的是脱敏描述符）→ 选工作区 → 开会话。模型改动下一次请求即生效，不用重启。
+      </p>
+      <p class="pre-label">从源码运行</p>
+      <pre><code>git clone https://github.com/deepseek-ai/deepseek-harness.git
+cd deepseek-harness &amp;&amp; pnpm install &amp;&amp; pnpm run build
+pnpm dsh web</code></pre>
+
+      <h3>B. 一次性任务 / 无人值守</h3>
+      <pre><code>export DEEPSEEK_API_KEY=sk-...
+dsh --profile headless "fix the failing test in this workspace"</code></pre>
+      <p>
+        创建一个持久化会话、跑完、把最后一条 assistant 文本打到 stdout，<code>completed</code> 退出 0，否则退出 1。
+        不起任何监听端口，成功时不写 stderr。
+      </p>
+
+      <h3>C. 程序化嵌入</h3>
+      <p class="pre-label">Python</p>
+      <pre><code>from deepseek_harness import DeepSeekHarness
+
+with DeepSeekHarness(provider="deepseek-official", model="deepseek-v4-flash",
+                     cwd="/abs/workspace", session_root="/abs/sessions",
+                     cordis="examples/jsonrpc-agent/minimal.cordis.yml") as h:
+    r = h.run("Inspect the repository and fix the failing tests.", session_id="job-001")
+    print(r.final_response)</code></pre>
+      <p>
+        同一个 <code>session_id</code> 复用会保留会话独占的 bash 进程——工作目录、导出的环境变量、shell 函数都还在。
+        独立任务用新 id。TypeScript 走 SDK client，编辑器类客户端走 ACP。
+      </p>
+
+      <h3>D. 改配置定制（不写代码）</h3>
+      <p>所有定制都是往 <code>cordis.yml</code> / <code>cordis.patch.yml</code> 叠一层。例如接一个 MCP server：</p>
+      <pre><code>- id: mcp-github
+  name: '@deepseek-ai/dsh-mcp-client'
+  config:
+    serverName: github
+    transport: stdio
+    command: npx
+    args: ['-y', '@modelcontextprotocol/server-github']
+    env:
+      GITHUB_TOKEN: !!js process.env.GITHUB_TOKEN</code></pre>
+      <pre><code>dsh web --patch ./my.cordis.yml</code></pre>
+      <p>仓库里已有现成 overlay 可以照抄：</p>
+      <ul>
+        <li><code>examples/web-schedule</code> — 持久化的会话内定时提醒</li>
+        <li><code>examples/mcp-memory</code> — 通过通用 MCP 客户端接第三方记忆服务</li>
+        <li><code>examples/headless-agent/e2b.cordis.yml</code> — 把整个执行世界搬到 E2B 远程沙箱</li>
+        <li><code>examples/acp-agent</code>、<code>examples/jsonrpc-agent</code>、<code>examples/web-cordis</code></li>
+      </ul>
+
+      <h3>E. 写插件并分发</h3>
+      <p>一个 npm 包，<code>package.json</code> 里声明 bundle 清单，然后装进 profile：</p>
+      <pre><code>{
+  "name": "dsh-hello-plugin",
+  "type": "module",
+  "main": "index.js",
+  "files": ["index.js", "cordis.patch.yml"],
+  "dsh": { "bundle": { "patch": "./cordis.patch.yml" } }
+}</code></pre>
+      <pre><code>dsh plugin --profile myprofile add ./my-plugin     # 或 github:owner/repo
+dsh --profile myprofile</code></pre>
+      <p>官方建议给插件仓库打 <code>dsh-plugin</code> topic 便于被发现。</p>
+    </section>
+
+    <!-- ============ 4 ============ -->
+    <section id="integrate">
+      <h2><span class="num">04</span>和你的 GitHub 项目怎么结合</h2>
+      <p>按投入从低到高分五层。前两层今天就能用，不改一行业务代码。</p>
+
+      <div class="tier">
+        <h3><span class="tier-badge">层次 1</span>零代码：让 agent 读懂你的项目</h3>
+        <p>在你的项目根目录放这些文件即可，性价比最高：</p>
+        <ul>
+          <li><strong><code>AGENTS.md</code></strong>（或 <code>CLAUDE.md</code>）——构建命令、目录约定、代码风格、禁区。会被自动加载，并且在 agent 读写到子目录时动态加载 <code>packages/xxx/AGENTS.md</code> 这类嵌套指令</li>
+          <li><strong><code>.agents/skills/&lt;name&gt;/SKILL.md</code></strong> 或 <code>.dsh/skills/</code>——把重复流程固化成技能（发布流程、review checklist、迁移脚本）。项目根按最近的 <code>.git</code> 祖先判定，文件改动有 watcher 实时生效</li>
+          <li>已有 Claude Code 的 <code>.claude/hooks.json</code>？挂 <code>dsh-hooks-claude-code</code> 桥直接复用，不用重写</li>
+        </ul>
+        <p>技能发现的优先级（同名时序号小的层赢）：</p>
+        <div class="table-wrap">
+        <table>
+          <thead><tr><th>rank</th><th>来源</th><th>路径</th></tr></thead>
+          <tbody>
+            <tr><td>100</td><td><code>project-dsh</code></td><td><code>&lt;projectRoot&gt;/.dsh/skills</code></td></tr>
+            <tr><td>200</td><td><code>project-agents</code></td><td><code>&lt;projectRoot&gt;/.agents/skills</code></td></tr>
+            <tr><td>300</td><td><code>custom</code></td><td>配置里的 <code>customSkillDirs</code></td></tr>
+            <tr><td>400</td><td><code>user-dsh</code></td><td><code>$DSH_HOME/skills</code></td></tr>
+            <tr><td>500</td><td><code>user-agents</code></td><td><code>~/.agents/skills</code></td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p>本仓库自己就是这么做的：根 <code>AGENTS.md</code> + <code>.agents/skills/</code> 下十来个技能 + <code>.agents/notes/</code> 决策记录。</p>
+      </div>
+
+      <div class="tier">
+        <h3><span class="tier-badge">层次 2</span>CI：在 GitHub Actions 里跑 headless</h3>
+        <p>没有官方 Action，需要自己写一步：</p>
+        <pre><code>- uses: actions/setup-node@v4
+  with: { node-version: 22 }
+- run: npx -y @deepseek-ai/dsh@0.1.0-rc.5 --profile headless "${{ github.event.inputs.task }}"
+  env:
+    DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+    DSH_PERMISSION_MODE: workspace-write</code></pre>
+        <p>适合：自动修 flaky 测试、按 issue 生成补丁、批量重构、文档同步检查。两个注意点：</p>
+        <ul>
+          <li>Linux 沙箱走 bwrap / Landlock，容器化 runner 里可能需要放宽策略或换 <code>danger-full-access</code>（只在一次性 runner 里用）</li>
+          <li>首次 <code>npx</code> 会拉不小的依赖闭包，建议缓存或预装</li>
+        </ul>
+        <p style="color:var(--fg-faint);font-size:14px;margin-bottom:0">
+          注：上面这段 workflow 是按 CLI 文档写的，我没有在真实 Actions runner 上实测过。
+        </p>
+      </div>
+
+      <div class="tier">
+        <h3><span class="tier-badge">层次 3</span>把你项目的能力接进 agent</h3>
+        <ul>
+          <li><strong>已有 MCP server</strong> → 一段 <code>mcp-client</code> 配置就接上了，工具自动出现在模型面前</li>
+          <li><strong>没有</strong> → 写个 tool 插件，<code>docs/cookbook/adding-a-tool.md</code> 有完整步骤。注意本仓库要求工具在设计阶段就定好 UI 渲染意图（<code>generic</code>/<code>terminal</code>/<code>diff</code>）</li>
+        </ul>
+        <p style="margin-bottom:0">
+          判断标准：你项目的 API、内部系统适合走 MCP；只有需要访问 session 日志、agent 生命周期、权限决策这类深度能力时，才值得写原生插件。
+        </p>
+      </div>
+
+      <div class="tier">
+        <h3><span class="tier-badge">层次 4</span>把 agent 嵌进你的产品</h3>
+        <ul>
+          <li>后端是 Python → Python SDK。<code>session_id</code> 即会话身份，JSONL 日志落到你指定的目录，可直接做审计</li>
+          <li>后端是 Node / TS → SDK client，或者直接 mount 一棵 cordis 树</li>
+          <li>做 IDE / 编辑器插件 → ACP server</li>
+          <li>做多 agent 编排 → <code>subagent</code> 家族，甚至可以让 dsh 调度 Claude Code / Codex 作为子 agent</li>
+        </ul>
+      </div>
+
+      <div class="tier">
+        <h3><span class="tier-badge">层次 5</span>Fork 定制并回流</h3>
+        <p>
+          要长期定制，<strong>建议不要改 <code>packages/</code></strong>，而是新建自己的 bundle 包叠一个 patch 层——
+          这正是它架构设计的用意，也让上游同步（<code>git pull upstream</code>）几乎无冲突。
+        </p>
+        <p style="margin-bottom:0">
+          真要改核心，仓库的门禁很严：<code>pnpm run test:coverage</code>（逐文件 100%）、<code>test:snapshot</code>、
+          <code>doc-sync</code>、<code>hygiene</code>，而且非平凡改动必须在同一个 PR 里附一份 Agent Note。
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ 5 ============ -->
+    <section id="verdict">
+      <h2><span class="num">05</span>总结与取舍</h2>
+      <blockquote>
+        <p>
+          它对你最直接的价值排序：<strong>① 直接当 DeepSeek 版 Claude Code 用（Web / CLI）→ ② 用 AGENTS.md + skills 让它读懂你的项目
+          → ③ headless 进 CI 做自动化 → ④ SDK 嵌入你的产品 → ⑤ 写插件深度定制。</strong>
+        </p>
+      </blockquote>
+      <p>
+        和 Claude Code 最大的差异是：Claude Code 是封闭产品加扩展点，而 dsh 连主循环都是可替换的插件行。
+        代价是概念负担明显更重——profile / bundle / patch / capability seam 这四层概念要先理解，才能有效改它。
+      </p>
+      <div class="callout">
+        <span class="tag">现状提示</span>
+        <p>
+          仓库自我定位是 <strong>developer preview</strong>，明确写着"会有破坏兼容性的变更"。
+          <code>dsh-session</code> 的 <code>SESSION_FORMAT_VERSION</code> 停在 <code>0</code> 且不做兼容承诺，
+          后端直接拒绝旧的磁盘格式。做集成时按"接口会变"来规划，别把 on-disk 格式当契约。
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ 6 ============ -->
+    <section id="method">
+      <h2><span class="num">06</span>分析方法</h2>
+      <p>
+        本页结论来自对仓库源码与文档的静态阅读：<code>docs/architecture.md</code>、各 package 组的 README、
+        生成的 <code>docs/tool-catalog.md</code>、<code>apps/cli/reference/README.md</code>、
+        <code>docs/user/</code> 下的用户指南，以及 <code>packages/</code> 下的具体实现与配置清单。
+      </p>
+      <p>
+        <strong>没有构建或运行过这套系统</strong>（分析环境没有 API key），所以运行时行为、性能与实际模型效果不在本文的证据范围内；
+        涉及推测的地方（例如 GitHub Actions 那段 workflow）已在正文中标注。包数量与代码行数由
+        <code>find</code> 与 <code>wc -l</code> 统计得出。
+      </p>
+    </section>
+
+    <footer>
+      <p>DeepSeek Harness 源码分析 · 基于 <code>@deepseek-ai/dsh</code> 0.1.0-rc.5（MIT）</p>
+      <p>上游仓库：<a href="https://github.com/deepseek-ai/deepseek-harness">deepseek-ai/deepseek-harness</a></p>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('nav.toc a'));
+  var map = {};
+  links.forEach(function (a) {
+    var el = document.querySelector(a.getAttribute('href'));
+    if (el) map[el.id] = a;
+  });
+  var targets = Object.keys(map).map(function (id) { return document.getElementById(id); });
+  if (!('IntersectionObserver' in window) || !targets.length) return;
+
+  var visible = new Set();
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) visible.add(e.target.id);
+      else visible.delete(e.target.id);
+    });
+    var first = targets.filter(function (t) { return visible.has(t.id); })[0];
+    if (!first) return;
+    links.forEach(function (a) { a.classList.remove('active'); });
+    map[first.id].classList.add('active');
+  }, { rootMargin: '-10% 0px -70% 0px', threshold: 0 });
+
+  targets.forEach(function (t) { io.observe(t); });
+})();
+</script>
+
+</body>
+</html>
