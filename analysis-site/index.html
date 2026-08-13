@@ -342,6 +342,7 @@ footer p { margin: 0 0 8px; }
       <li class="sub"><a href="#fanin">谁被依赖得最多</a></li>
       <li><a href="#features">功能盘点</a></li>
       <li class="sub"><a href="#tools">模型可见工具集</a></li>
+      <li><a href="#replay">可重建性</a></li>
       <li><a href="#usage">能够怎么用</a></li>
       <li><a href="#integrate">和你的项目结合</a></li>
       <li><a href="#value">拿它能做什么</a></li>
@@ -910,8 +911,184 @@ footer p { margin: 0 0 8px; }
     </section>
 
     <!-- ============ 5 ============ -->
+    <section id="replay">
+      <h2><span class="num">05</span>可重建性：日志即真相</h2>
+      <p>
+        大多数 agent 框架里，日志是旁路产物——尽力而为地记一点，事后想复盘"模型当时到底看到了什么"，往往拼不回来。
+        dsh 把这件事反过来：<strong>日志是唯一真相，模型历史是从日志推导出来的，从不单独存储。</strong>
+        这条规约在仓库里叫 <em>model-visible ⟺ logged</em>，而且——这是关键——<strong>它不是文档里的承诺，是每次请求都实际执行的断言。</strong>
+      </p>
+
+      <h3>日志里存了什么</h3>
+      <p>
+        <code>SessionEventMap</code> 是 append-only 的事件词汇表，序号连续、无损 JSON，所以持久化后端可以逐字存原始日志。
+        其中有一对容易被忽略的区分：
+      </p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>事件</th><th>是什么</th><th>谁消费</th></tr></thead>
+        <tbody>
+          <tr><td><code>assistant/chunk</code></td><td>原始流式分块，token 级保真</td><td>UI 回放、replay 测试。<strong>不参与</strong>模型历史推导</td></tr>
+          <tr><td><code>assistant/message</code></td><td>该 step 组装完成的助手消息</td><td>模型历史推导用的就是它</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        两者<strong>同时</strong>在日志里，服务不同消费者：要逐字复现当时屏幕上的流式输出，读 chunk；
+        要重建下一次请求的 messages，读组装后的消息。这也是"回放 UI"和"重建请求"能各自精确的原因。
+      </p>
+
+      <h3>重建的两条折叠路径</h3>
+
+      <figure>
+        <div class="diagram-scroll">
+          <svg viewBox="0 0 720 300" role="img" aria-label="从会话日志重建模型请求的两条折叠路径与一致性断言">
+            <rect class="d-box" x="14" y="14" width="692" height="40" rx="8"/>
+            <text class="d-label" x="30" y="32">会话日志（append-only，序号连续）</text>
+            <text class="d-note" x="30" y="48">user/message · assistant/message · tool/result · assistant/chunk · request/header · turn/step 边界 · …</text>
+
+            <line class="d-arrow" marker-end="url(#arw)" x1="190" y1="56" x2="190" y2="74"/>
+            <line class="d-arrow" marker-end="url(#arw)" x1="530" y1="56" x2="530" y2="74"/>
+
+            <rect class="d-role-1" x="14" y="76" width="340" height="86" rx="8"/>
+            <text class="d-cap-1" x="30" y="96">路径 A · 消息历史</text>
+            <text class="d-note" x="30" y="116">只取带 surfaceOp 标记的节点</text>
+            <text class="d-mono-faint" x="30" y="134">deriveEventMessage 逐节点折叠</text>
+            <text class="d-note" x="30" y="153">chunk 与边界事件天然不参与</text>
+
+            <rect class="d-role-2" x="366" y="76" width="340" height="86" rx="8"/>
+            <text class="d-cap-2" x="382" y="96">路径 B · 请求头</text>
+            <text class="d-note" x="382" y="116">只在变化时记录 request/header</text>
+            <text class="d-mono-faint" x="382" y="134">foldRequestHeader 取最后一个快照</text>
+            <text class="d-note" x="382" y="153">= 当时生效的 model / system / tools …</text>
+
+            <line class="d-arrow" marker-end="url(#arw)" x1="190" y1="164" x2="190" y2="182"/>
+            <line class="d-arrow" marker-end="url(#arw)" x1="530" y1="164" x2="530" y2="182"/>
+
+            <rect class="d-box-inner" x="14" y="184" width="340" height="34" rx="8"/>
+            <text class="d-mono" x="30" y="205">重建出的 messages[]</text>
+            <rect class="d-box-inner" x="366" y="184" width="340" height="34" rx="8"/>
+            <text class="d-mono" x="382" y="205">重建出的 EpochHeader</text>
+
+            <rect class="d-step" x="14" y="238" width="692" height="48" rx="8"/>
+            <text class="d-mark" x="30" y="258">断言：每一次 llm/stream 都比对</text>
+            <text class="d-note" x="30" y="276">实际发出的请求 ≠ 日志重建结果 → 立即失败（log-reconstruction desync）</text>
+          </svg>
+        </div>
+        <figcaption>
+          两条路径都是<strong>纯函数</strong>：任何持有日志（或其前缀）的人都能离线跑出同样的结果，不需要活着的进程。
+        </figcaption>
+      </figure>
+
+      <h4>路径 A：消息历史</h4>
+      <p>
+        <code>deriveMessages()</code> 沿"surface 节点"折叠一个纯投影函数 <code>deriveEventMessage</code>。
+        只有三类事件会投影成消息：
+      </p>
+      <ul>
+        <li><code>user/message</code> — 逐字通过。人类直接输入、<code>agent.inject()</code> 注入的上下文、目标续跑轮次，三者都原样投影，靠 <code>source</code> 字段区分</li>
+        <li><code>assistant/message</code> — 逐字通过，<strong>但空内容的会被跳过</strong>：那种事件只是用来承载 max-tokens step 的 usage，不能往对话里塞一条没内容的助手轮次</li>
+        <li><code>tool/result</code> — 逐字通过</li>
+      </ul>
+      <p>
+        投影层<strong>刻意不加任何框架</strong>。像 <code>&lt;system-reminder&gt;</code> 这种包装由生产者在写入 <code>content</code> 时就烤进去
+        （<code>agent-instructions</code> 就是这么做的），投影只做 verbatim pass-through。
+        这条约束的意义是：<em>日志里长什么样，模型看到的就是什么样</em>，中间不存在第二次加工。
+      </p>
+      <p style="margin-bottom:0">
+        上下文压缩也在同一套机制里：compaction 写入的是一个 <code>replace</code> 型 surface 节点，它遮蔽掉被替换的历史范围，
+        于是推导自动排除被压掉的部分——<strong>压缩不是删日志，是在日志上加一层遮蔽</strong>，原始事件仍在，人类转写仍能读到完整对话。
+      </p>
+
+      <h4>路径 B：请求头</h4>
+      <p>
+        <code>request/header</code> 记录 model、system、temperature、maxTokens、stop、tools 这些"这次请求在什么配置下发出"的事实。
+        它<strong>只在变化时写</strong>（用 <code>headerEquals</code> 判等，避免重复记账），
+        <code>foldRequestHeader()</code> 扫一遍日志取最后一个快照，就是当时生效的头。
+      </p>
+
+      <h3>断言长什么样</h3>
+      <p>
+        <code>agent-loop</code> 的不变量伴生包在每一次 <code>llm/stream</code> 上挂了一个检查
+        （<code>global</code> + <code>prepend</code>——前置是为了防止某个会短路的 replay 监听器把检查静默掉）。
+        对每个由主循环构造的请求，它逐项验证：
+      </p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>检查</th><th>不通过意味着</th></tr></thead>
+        <tbody>
+          <tr><td>请求对象与 <code>messages</code> 数组均已冻结</td><td>有人能在发出后改写它，日志就不再是真相</td></tr>
+          <tr><td>带 <code>sessionId</code> 且能解析到活的 session</td><td>这次请求无从归属，谈不上重建</td></tr>
+          <tr><td>日志里存在 <code>step/start</code></td><td>请求发生在任何被记录的 step 之外</td></tr>
+          <tr><td>能折叠出 <code>request/header</code></td><td>配置事实没有被记录</td></tr>
+          <tr><td><strong><code>JSON.stringify(实际 messages) === JSON.stringify(deriveMessages())</code></strong></td><td><strong>发出去的和日志能重建的不是同一份东西</strong></td></tr>
+          <tr><td>头字段逐项相等：model / system / temperature / maxTokens / stop / tools</td><td>请求配置与记录的配置发散</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        第五项是全部的核心：<strong>不是"结构相似"，是 JSON 序列化后逐字节相同。</strong>
+        任何让实际请求偏离日志推导的改动——某个插件偷偷往 messages 里塞了一条、某处绕过事件直接改了历史——
+        都会在那一次请求上当场失败，并被指名为 <em>log-reconstruction desync</em>。
+      </p>
+      <div class="callout">
+        <span class="tag">为什么这值得单独讲</span>
+        <p>
+          "我们会记录日志"是所有框架都会说的话。
+          <strong>"我们在每次请求上验证日志足以重建这次请求"是一个可以被证伪的工程主张</strong>——
+          它把审计从"事后希望日志够用"变成"发散的那一刻就跑不下去"。这两者的差别，在需要对外解释 agent 行为时是决定性的。
+        </p>
+      </div>
+
+      <h3>读取端：宁可失败，也不给你一份看起来对的错误重建</h3>
+      <p>
+        <code>KNOWN_SESSION_EVENT_TYPES</code> 是生成的常量，列出当前这个 build 认识的全部事件类型。
+        读日志时遇到不认识的类型，持久化读取路径<strong>拒绝解释整份日志</strong>——除非该事件自带 <code>ignorable: true</code> 标记。
+      </p>
+      <p>
+        理由写在源码注释里：这样的日志多半是更新版本的 harness 写的，
+        而<strong>静默跳过一个必需事件会重建出一个错误的会话</strong>。所以新增事件类型时，作者必须显式决定
+        "旧版本读到它可以跳过吗"，而不是让旧版本自己猜。
+      </p>
+
+      <h3>崩溃恢复：不截断，而是留下一个不可能自然产生的标记</h3>
+      <p>
+        重载一份崩在半路的日志时，会看到有 <code>turn/start</code> 却没有 <code>turn/end</code>。后端<strong>不截断</strong>——
+        长任务的单个 turn 可能非常大，而那些事件在崩溃前已经安全落盘了。它补一个合成的
+        <code>turn/end { reason: { kind: 'interrupted' } }</code> 把 turn 配平。
+      </p>
+      <p>
+        妙处在于 <code>interrupted</code> 是<strong>唯一一个主循环永远不会发出的 <code>TurnEndReason</code></strong>
+        （取消走的是 <code>aborted</code>）。用一个不可能自然产生的值来标记合成事件，
+        读日志的人就永远不会把"崩溃恢复的痕迹"误认成"正常结束"。这是个很小的设计决定，但它保住了日志的诚实性。
+      </p>
+
+      <h3>这对你意味着什么，以及它的边界</h3>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>场景</th><th>能拿到什么</th></tr></thead>
+        <tbody>
+          <tr><td><strong>合规 / 审计</strong></td><td>能回答"当时模型看到了什么"，且这个回答由每次请求的断言背书，而不是靠日志写得够全的运气</td></tr>
+          <tr><td><strong>事故复盘</strong></td><td>agent 做了蠢事时，可以精确重建它当时的完整输入，包括注入的上下文与工具结果</td></tr>
+          <tr><td><strong>评测 / 回归</strong></td><td>fork、resume 与无密钥 snapshot 回放都建立在同一条事件流上，评测集就是真实会话</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="callout">
+        <span class="tag">边界（重要）</span>
+        <p>
+          它保证的是<strong>输入可重建</strong>，不是这两件事：
+        </p>
+        <ul style="margin:10px 0 0">
+          <li><strong>不保证输出可复现</strong>。重建的是发给模型的请求，模型本身的采样随机性不在此列</li>
+          <li><strong>不是防篡改</strong>。JSONL 后端默认写带校验和的 Zstandard 帧，那是<em>防损坏</em>（截断、坏块），不是防抵赖——日志没有签名也没有哈希链，能改文件的人就能重写日志并重算校验和。要不可抵赖，得自己在外面套一层</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ 6 ============ -->
     <section id="usage">
-      <h2><span class="num">05</span>能够怎么用</h2>
+      <h2><span class="num">06</span>能够怎么用</h2>
 
       <h3>A. 当成通用编码 agent（最省事）</h3>
       <pre><code>npx @deepseek-ai/dsh web          # Web UI，默认 http://127.0.0.1:3080</code></pre>
@@ -980,9 +1157,9 @@ dsh --profile myprofile</code></pre>
       <p>官方建议给插件仓库打 <code>dsh-plugin</code> topic 便于被发现。</p>
     </section>
 
-    <!-- ============ 6 ============ -->
+    <!-- ============ 7 ============ -->
     <section id="integrate">
-      <h2><span class="num">06</span>和你的 GitHub 项目怎么结合</h2>
+      <h2><span class="num">07</span>和你的 GitHub 项目怎么结合</h2>
       <p>按投入从低到高分五层。前两层今天就能用，不改一行业务代码。</p>
 
       <div class="tier">
@@ -1062,9 +1239,9 @@ dsh --profile myprofile</code></pre>
       </div>
     </section>
 
-    <!-- ============ 7 ============ -->
+    <!-- ============ 8 ============ -->
     <section id="value">
-      <h2><span class="num">07</span>拿它能做什么</h2>
+      <h2><span class="num">08</span>拿它能做什么</h2>
       <p>
         前面几章讲的是"它是什么、怎么接"。这一章讲接完之后<strong>能换来什么</strong>，以及按什么顺序去换。
         排序的依据是<em>单位投入产出</em>：越靠前的档位见效越快、退出成本越低。
@@ -1184,7 +1361,7 @@ dsh --profile myprofile</code></pre>
           </tr>
           <tr>
             <td><strong>可审计 / 合规场景</strong></td>
-            <td>"model-visible ⟺ logged"这条不变量的商业价值被低估了：<strong>凡是进过模型的东西都能从日志重建</strong>，还有运行时断言兜底。金融、医疗、政企这类要求"说得清 agent 当时看到了什么"的场景，这是硬通货。</td>
+            <td>"model-visible ⟺ logged"这条不变量的商业价值被低估了：<strong>凡是进过模型的东西都能从日志重建</strong>，还有运行时断言兜底。金融、医疗、政企这类要求"说得清 agent 当时看到了什么"的场景，这是硬通货。机制与边界见<a href="#replay">「可重建性」一章</a>。</td>
           </tr>
           <tr>
             <td><strong>agent 行为研究 / 评测平台</strong></td>
@@ -1247,9 +1424,9 @@ dsh --profile myprofile</code></pre>
       </div>
     </section>
 
-    <!-- ============ 8 ============ -->
+    <!-- ============ 9 ============ -->
     <section id="verdict">
-      <h2><span class="num">08</span>取舍与现状</h2>
+      <h2><span class="num">09</span>取舍与现状</h2>
       <p>
         和 Claude Code 最大的差异是：Claude Code 是封闭产品加扩展点，而 dsh 连主循环都是可替换的插件行。
         代价是概念负担明显更重——profile / bundle / patch / capability seam 这四层概念要先理解，才能有效改它。
@@ -1270,9 +1447,9 @@ dsh --profile myprofile</code></pre>
       </ul>
     </section>
 
-    <!-- ============ 9 ============ -->
+    <!-- ============ 10 ============ -->
     <section id="method">
-      <h2><span class="num">09</span>分析方法</h2>
+      <h2><span class="num">10</span>分析方法</h2>
       <p>
         本页结论来自对仓库源码与文档的静态阅读：<code>docs/architecture.md</code>、各 package 组的 README、
         生成的 <code>docs/tool-catalog.md</code>、<code>apps/cli/reference/README.md</code>、
