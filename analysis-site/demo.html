@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DeepSeek Harness 会话回放 Demo</title>
+<meta name="description" content="用仓库里真实录制的会话日志，逐事件回放 DeepSeek Harness agent 的完整行为。无需 API key，不执行任何代码。">
+<style>
+:root {
+  --bg: #ffffff; --bg-soft: #f6f7f9; --bg-code: #f4f5f7;
+  --fg: #1c1f26; --fg-muted: #5b6472; --fg-faint: #8a929e;
+  --line: #e3e6ea; --line-soft: #eef0f3;
+  --accent: #3b5bfd; --accent-soft: #eaeeff;
+  --user: #2a78d6; --tool: #1baf7a; --err: #e34948; --warn: #eb6834;
+  --shadow: 0 1px 2px rgba(16,20,30,.05), 0 8px 24px rgba(16,20,30,.04);
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB",
+          "Microsoft YaHei", "Noto Sans SC", Roboto, Helvetica, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1116; --bg-soft: #151922; --bg-code: #161b23;
+    --fg: #e4e7ec; --fg-muted: #a2abb8; --fg-faint: #6f7986;
+    --line: #232a35; --line-soft: #1c222c;
+    --accent: #7d93ff; --accent-soft: #1a2140;
+    --user: #3987e5; --tool: #199e70; --err: #e66767; --warn: #d95926;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.28);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1116; --bg-soft: #151922; --bg-code: #161b23;
+  --fg: #e4e7ec; --fg-muted: #a2abb8; --fg-faint: #6f7986;
+  --line: #232a35; --line-soft: #1c222c;
+  --accent: #7d93ff; --accent-soft: #1a2140;
+  --user: #3987e5; --tool: #199e70; --err: #e66767; --warn: #d95926;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg); font-family: var(--sans);
+  font-size: 15px; line-height: 1.7; -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+a { color: var(--accent); }
+code { font-family: var(--mono); font-size: .87em; background: var(--bg-code);
+  border: 1px solid var(--line-soft); padding: .1em .36em; border-radius: 5px; }
+
+header.top { border-bottom: 1px solid var(--line); background: var(--bg-soft); padding: 40px 0 32px; }
+.back { font-size: 13.5px; color: var(--fg-muted); text-decoration: none; }
+.back:hover { color: var(--accent); }
+h1 { font-size: clamp(24px, 4vw, 34px); margin: 12px 0 12px; letter-spacing: -.02em; }
+.lede { color: var(--fg-muted); max-width: 68ch; margin: 0; font-size: 15.5px; }
+.badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px; }
+.badge {
+  font-size: 12.5px; border: 1px solid var(--line); background: var(--bg);
+  border-radius: 999px; padding: 4px 12px; color: var(--fg-muted);
+}
+.badge b { color: var(--tool); font-weight: 650; }
+
+/* scenario picker */
+.picker { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; margin: 28px 0 0; }
+.scn {
+  text-align: left; cursor: pointer; font: inherit; font-size: 13.5px;
+  background: var(--bg); border: 1px solid var(--line); border-radius: 11px;
+  padding: 12px 14px; color: var(--fg-muted); transition: border-color .12s, color .12s;
+}
+.scn:hover { border-color: var(--accent); }
+.scn[aria-selected="true"] { border-color: var(--accent); border-width: 1.5px; color: var(--fg); background: var(--accent-soft); }
+.scn b { display: block; color: var(--fg); font-size: 14.5px; margin-bottom: 3px; }
+.scn span { font-size: 12px; color: var(--fg-faint); font-variant-numeric: tabular-nums; }
+
+/* controls */
+.controls {
+  position: sticky; top: 0; z-index: 5; background: var(--bg);
+  border-bottom: 1px solid var(--line); padding: 12px 0; margin-bottom: 22px;
+}
+.controls-inner { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+button.ctl {
+  font: inherit; font-size: 13.5px; cursor: pointer; background: var(--bg); color: var(--fg);
+  border: 1px solid var(--line); border-radius: 9px; padding: 7px 14px;
+}
+button.ctl:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+button.ctl:disabled { opacity: .4; cursor: default; }
+button.ctl.primary { background: var(--accent); border-color: var(--accent); color: #fff; min-width: 92px; }
+button.ctl.primary:hover { opacity: .9; color: #fff; }
+.progress { flex: 1; min-width: 140px; height: 5px; background: var(--line); border-radius: 3px; overflow: hidden; }
+.progress > i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .15s; }
+.counter { font-family: var(--mono); font-size: 12.5px; color: var(--fg-faint); font-variant-numeric: tabular-nums; }
+select.ctl { font: inherit; font-size: 13px; background: var(--bg); color: var(--fg);
+  border: 1px solid var(--line); border-radius: 9px; padding: 7px 10px; cursor: pointer; }
+
+/* layout */
+.stage { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 26px; align-items: start; padding-bottom: 80px; }
+.transcript { min-width: 0; }
+.rawpane { position: sticky; top: 78px; }
+.rawpane h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .1em; color: var(--fg-faint); margin: 0 0 10px; }
+.rawbox {
+  background: var(--bg-code); border: 1px solid var(--line); border-radius: 12px;
+  padding: 14px; max-height: 62vh; overflow: auto;
+}
+.rawbox pre { margin: 0; font-family: var(--mono); font-size: 11.5px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
+.rawnote { font-size: 12.5px; color: var(--fg-faint); margin-top: 10px; }
+
+/* transcript items */
+.ev { margin: 0 0 12px; opacity: .32; transition: opacity .2s; }
+.ev.on { opacity: 1; }
+.ev.cur .card, .ev.cur .divider span { outline: 2px solid var(--accent); outline-offset: 2px; }
+.card { border: 1px solid var(--line); border-radius: 12px; padding: 13px 16px; background: var(--bg); box-shadow: var(--shadow); }
+.card .who { font-size: 12px; font-weight: 650; letter-spacing: .03em; margin-bottom: 5px; display: flex; gap: 8px; align-items: center; }
+.card .who .seq { font-family: var(--mono); font-weight: 400; color: var(--fg-faint); font-size: 11px; }
+.card .body { white-space: pre-wrap; word-break: break-word; }
+.card.user { border-left: 3px solid var(--user); }
+.card.user .who { color: var(--user); }
+.card.assistant { border-left: 3px solid var(--accent); }
+.card.assistant .who { color: var(--accent); }
+.card.tool { border-left: 3px solid var(--tool); }
+.card.tool .who { color: var(--tool); }
+.card.err { border-left: 3px solid var(--err); }
+.card.err .who { color: var(--err); }
+.card.comp { border-left: 3px solid var(--warn); }
+.card.comp .who { color: var(--warn); }
+.card pre { margin: 6px 0 0; background: var(--bg-code); border: 1px solid var(--line-soft);
+  border-radius: 8px; padding: 10px 12px; overflow-x: auto; font-family: var(--mono); font-size: 12px; line-height: 1.55;
+  white-space: pre-wrap; word-break: break-word; }
+.divider { text-align: center; margin: 16px 0; position: relative; }
+.divider::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 1px solid var(--line); }
+.divider span { position: relative; background: var(--bg); padding: 0 12px; font-family: var(--mono);
+  font-size: 11.5px; color: var(--fg-faint); }
+.chunks { font-size: 12.5px; color: var(--fg-faint); padding: 6px 4px; font-style: normal; }
+.chunks b { color: var(--fg-muted); font-family: var(--mono); font-weight: 600; }
+
+footer { border-top: 1px solid var(--line); padding: 28px 0 60px; color: var(--fg-faint); font-size: 13.5px; }
+footer p { margin: 0 0 10px; max-width: 80ch; }
+footer strong { color: var(--fg-muted); }
+
+@media (max-width: 940px) {
+  .stage { grid-template-columns: minmax(0, 1fr); }
+  .rawpane { position: static; }
+  .rawbox { max-height: 340px; }
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="back" href="./">← 回到源码分析</a>
+    <h1>会话回放 Demo</h1>
+    <p class="lede">
+      这里回放的是 DeepSeek Harness 仓库中<strong>真实录制并提交的会话日志</strong>——
+      不是模拟数据，也不是我编的示例。仓库自带的 <code>test:snapshot</code> 就是无密钥回放这批 golden，本页做的是同一件事，只不过渲染给人看。
+    </p>
+    <div class="badges">
+      <span class="badge"><b>不需要</b> API key</span>
+      <span class="badge"><b>不执行</b> 任何代码</span>
+      <span class="badge"><b>纯静态</b> 页面</span>
+      <span class="badge">5 个真实场景</span>
+    </div>
+    <div class="picker" id="picker"></div>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="wrap controls-inner">
+    <button class="ctl" id="reset" title="重置">⏮</button>
+    <button class="ctl" id="prev" title="上一步（←）">◀</button>
+    <button class="ctl primary" id="play" title="播放 / 暂停（空格）">▶ 播放</button>
+    <button class="ctl" id="next" title="下一步（→）">▶</button>
+    <select class="ctl" id="speed" title="播放速度">
+      <option value="1100">慢</option>
+      <option value="650" selected>正常</option>
+      <option value="280">快</option>
+    </select>
+    <div class="progress"><i id="bar"></i></div>
+    <span class="counter" id="counter">0 / 0</span>
+  </div>
+</div>
+
+<div class="wrap stage">
+  <div class="transcript" id="transcript"></div>
+  <aside class="rawpane">
+    <h3>当前事件的日志原文</h3>
+    <div class="rawbox"><pre id="raw">选择一个场景开始。</pre></div>
+    <p class="rawnote">
+      左边渲染出来的每一条，都来自右边这段日志事件——这正是<a href="./#replay">「可重建性」</a>那一章讲的：
+      模型看到的一切都能从日志重建。
+    </p>
+  </aside>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>
+      <strong>数据来源</strong>：<code>examples/headless-agent/tests/snapshots/&lt;场景&gt;/stream-json.expected.jsonl</code>，
+      即仓库中提交的快照期望输出。它们由 <code>DSH_SNAPSHOT=record</code> 对真实 API 录制生成，此后作为 golden 供无密钥回放比对。
+    </p>
+    <p>
+      <strong>已被规范化的字段</strong>：会话 id、工作目录、时间戳、系统提示词、工具 schema 与 token 计数在提交前会被替换为占位符或归零，
+      所以本页<strong>不展示 token 数字</strong>，它们在 golden 里不是真实值。文本内容、工具名、参数与结果是原样的。
+    </p>
+    <p>
+      <strong>本页不做什么</strong>：不连接任何模型 API，不接受也不存储任何密钥，不在服务端执行任何代码。
+      想真正跑起来，一条命令就够：<code>npx @deepseek-ai/dsh web</code>。
+    </p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var picker = document.getElementById('picker')
+  var transcript = document.getElementById('transcript')
+  var rawEl = document.getElementById('raw')
+  var bar = document.getElementById('bar')
+  var counter = document.getElementById('counter')
+  var btnPlay = document.getElementById('play')
+  var btnNext = document.getElementById('next')
+  var btnPrev = document.getElementById('prev')
+  var btnReset = document.getElementById('reset')
+  var speedEl = document.getElementById('speed')
+
+  var scenarios = []
+  var current = null
+  var cursor = 0
+  var timer = null
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]
+    })
+  }
+
+  function prettyArgs(args) {
+    if (args == null) return ''
+    try { return JSON.stringify(JSON.parse(args), null, 2) } catch (e) { return String(args) }
+  }
+
+  function truncate(s, n) {
+    s = String(s == null ? '' : s)
+    return s.length > n ? s.slice(0, n) + '\n…（截断，完整内容见右侧日志原文）' : s
+  }
+
+  function render(ev, i) {
+    var d = document.createElement('div')
+    d.className = 'ev'
+    d.dataset.i = String(i)
+    var seq = '<span class="seq">seq ' + ev.seq + '</span>'
+    var html = ''
+
+    switch (ev.kind) {
+      case 'turn-start':
+        html = '<div class="divider"><span>turn ' + ev.turn + ' 开始</span></div>'; break
+      case 'turn-end':
+        html = '<div class="divider"><span>turn ' + ev.turn + ' 结束 · ' + esc(ev.reason) + '</span></div>'; break
+      case 'step-start':
+        html = '<div class="divider"><span>step ' + ev.turn + '.' + ev.step + '</span></div>'; break
+      case 'step-end':
+        html = '<div class="divider"><span>step ' + ev.turn + '.' + ev.step + ' 结束</span></div>'; break
+      case 'chunks':
+        html = '<div class="chunks">↳ <b>' + ev.n + '</b> 条 <code>assistant/chunk</code> 原始流式分块已折叠 —— 它们只用于回放保真，<em>不参与</em>模型历史推导</div>'
+        break
+      case 'user':
+        html = '<div class="card user"><div class="who">用户消息' +
+          (ev.source && ev.source !== 'user' ? ' · ' + esc(ev.source) : '') + seq +
+          '</div><div class="body">' + esc(truncate(ev.text, 1200)) + '</div></div>'
+        break
+      case 'assistant': {
+        var inner = ''
+        if (ev.text) inner += '<div class="body">' + esc(truncate(ev.text, 1200)) + '</div>'
+        if (ev.calls && ev.calls.length) {
+          inner += ev.calls.map(function (c) {
+            return '<div class="body" style="margin-top:6px">请求调用 <code>' + esc(c.name) + '</code></div>' +
+              '<pre>' + esc(truncate(prettyArgs(c.args), 700)) + '</pre>'
+          }).join('')
+        }
+        html = '<div class="card assistant"><div class="who">助手消息' + seq + '</div>' + inner + '</div>'
+        break
+      }
+      case 'tool-call':
+        html = '<div class="card tool"><div class="who">工具调用 · ' + esc(ev.name) + seq +
+          '</div><pre>' + esc(truncate(prettyArgs(ev.args), 700)) + '</pre></div>'
+        break
+      case 'tool-result':
+        html = '<div class="card ' + (ev.isError ? 'err' : 'tool') + '"><div class="who">' +
+          (ev.isError ? '工具失败' : '工具结果') + seq + '</div><div class="body">' +
+          esc(truncate(ev.text, 900)) + '</div></div>'
+        break
+      case 'header':
+        html = '<div class="card"><div class="who">请求头 · ' + esc(ev.reason) + seq +
+          '</div><div class="body"><code>' + esc(ev.provider) + '</code> / <code>' + esc(ev.model) + '</code></div></div>'
+        break
+      case 'compaction':
+        html = '<div class="card comp"><div class="who">上下文压缩' + seq + '</div>' +
+          '<div class="body">' + esc(truncate(ev.summary, 700)) + '</div>' +
+          '<div class="body" style="margin-top:6px;color:var(--fg-faint);font-size:13px">遮蔽了 seq ' +
+          esc((ev.shadowed || []).join(', ')) + '（约 ' + esc(ev.shadowedTokens) +
+          ' token）—— 这些事件仍在日志里，只是不再进入模型历史</div></div>'
+        break
+      default:
+        html = '<div class="card"><div class="who">' + esc(ev.type) + seq + '</div></div>'
+    }
+    if (!html) return null
+    d.innerHTML = html
+    return d
+  }
+
+  function paint() {
+    var nodes = transcript.children
+    for (var i = 0; i < nodes.length; i++) {
+      var idx = Number(nodes[i].dataset.i)
+      nodes[i].classList.toggle('on', idx < cursor)
+      nodes[i].classList.toggle('cur', idx === cursor - 1)
+    }
+    var total = current ? current.events.length : 0
+    counter.textContent = cursor + ' / ' + total
+    bar.style.width = total ? (cursor / total * 100) + '%' : '0'
+    btnPrev.disabled = cursor === 0
+    btnNext.disabled = cursor >= total
+    var ev = current && cursor > 0 ? current.events[cursor - 1] : null
+    rawEl.textContent = ev
+      ? (ev.raw || '（这一条是本页折叠出来的分块计数，日志里对应 ' + ev.n + ' 条 assistant/chunk 事件）')
+      : '按「播放」或「▶」开始。'
+    var cur = transcript.querySelector('.ev.cur')
+    if (cur) {
+      var r = cur.getBoundingClientRect()
+      if (r.top < 90 || r.bottom > window.innerHeight - 20) {
+        cur.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+    }
+  }
+
+  function step(delta) {
+    if (!current) return
+    cursor = Math.max(0, Math.min(current.events.length, cursor + delta))
+    if (cursor >= current.events.length) stop()
+    paint()
+  }
+
+  function stop() {
+    if (timer) { clearInterval(timer); timer = null }
+    btnPlay.textContent = '▶ 播放'
+  }
+
+  function play() {
+    if (!current) return
+    if (timer) return stop()
+    if (cursor >= current.events.length) cursor = 0
+    btnPlay.textContent = '⏸ 暂停'
+    timer = setInterval(function () { step(1) }, Number(speedEl.value))
+  }
+
+  function load(id) {
+    stop()
+    fetch('./demo-data/' + id + '.json')
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json() })
+      .then(function (data) {
+        current = data
+        cursor = 0
+        transcript.innerHTML = ''
+        data.events.forEach(function (ev, i) {
+          var node = render(ev, i)
+          if (node) transcript.appendChild(node)
+        })
+        var head = document.createElement('div')
+        head.className = 'ev on'
+        head.dataset.i = '-1'
+        head.innerHTML = '<div class="card"><div class="who">这个场景在做什么</div><div class="body">' +
+          esc(data.desc) + '</div><div class="body" style="margin-top:8px;color:var(--fg-muted);font-size:14px">' +
+          esc(data.teaches) + '</div></div>'
+        transcript.insertBefore(head, transcript.firstChild)
+        Array.prototype.forEach.call(picker.children, function (b) {
+          b.setAttribute('aria-selected', String(b.dataset.id === id))
+        })
+        paint()
+      })
+      .catch(function (e) {
+        transcript.innerHTML = '<div class="card err"><div class="who">加载失败</div><div class="body">' +
+          esc(String(e)) + '\n\n本页需要通过 HTTP 访问（fetch 读取同源 JSON），直接用 file:// 打开会被浏览器拦截。</div></div>'
+      })
+  }
+
+  btnPlay.addEventListener('click', play)
+  btnNext.addEventListener('click', function () { stop(); step(1) })
+  btnPrev.addEventListener('click', function () { stop(); step(-1) })
+  btnReset.addEventListener('click', function () { stop(); cursor = 0; paint() })
+  speedEl.addEventListener('change', function () { if (timer) { stop(); play() } })
+  document.addEventListener('keydown', function (e) {
+    if (e.target && /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) return
+    if (e.key === 'ArrowRight') { stop(); step(1); e.preventDefault() }
+    else if (e.key === 'ArrowLeft') { stop(); step(-1); e.preventDefault() }
+    else if (e.key === ' ') { play(); e.preventDefault() }
+  })
+
+  fetch('./demo-data/index.json')
+    .then(function (r) { return r.json() })
+    .then(function (list) {
+      scenarios = list
+      list.forEach(function (s) {
+        var b = document.createElement('button')
+        b.className = 'scn'
+        b.type = 'button'
+        b.dataset.id = s.id
+        b.setAttribute('aria-selected', 'false')
+        b.innerHTML = '<b>' + esc(s.title) + '</b><span>' + s.steps + ' 步</span>'
+        b.addEventListener('click', function () { load(s.id) })
+        picker.appendChild(b)
+      })
+      if (list.length) load(list[0].id)
+    })
+    .catch(function (e) {
+      picker.innerHTML = '<div class="card err"><div class="who">场景清单加载失败</div><div class="body">' +
+        esc(String(e)) + '</div></div>'
+    })
+})()
+</script>
+
+</body>
+</html>
