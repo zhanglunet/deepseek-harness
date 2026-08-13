@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DeepSeek Harness 插件目录</title>
+<meta name="description" content="dsh-plugin topic 下的全部公开仓库：说明、分类、star、安装方式。每日自动更新。">
+<style>
+:root {
+  --bg: rgb(255, 255, 255); --bg-soft: rgb(249, 250, 251); --bg-code: rgb(241, 243, 245);
+  --fg: rgb(15, 17, 21); --fg-muted: rgb(97, 102, 107); --fg-faint: rgb(129, 133, 140);
+  --line: rgba(0, 0, 0, .1); --line-soft: rgba(0, 0, 0, .04);
+  --accent: rgb(65, 118, 230); --accent-soft: rgb(237, 243, 254);
+  --ok: rgb(34, 197, 94); --warn: rgb(245, 158, 11);
+  --shadow: 0 1px 2px rgba(15, 17, 21, .04);
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB",
+          "Microsoft YaHei", "Noto Sans SC", Roboto, Helvetica, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: rgb(21, 21, 23); --bg-soft: rgb(35, 35, 36); --bg-code: rgb(27, 27, 28);
+    --fg: rgb(249, 250, 251); --fg-muted: rgb(207, 211, 214); --fg-faint: rgb(173, 178, 184);
+    --line: rgba(255, 255, 255, .12); --line-soft: rgba(255, 255, 255, .06);
+    --accent: rgb(103, 158, 254); --accent-soft: rgb(52, 65, 91);
+    --ok: rgb(78, 209, 126); --warn: rgb(247, 173, 49);
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: rgb(21, 21, 23); --bg-soft: rgb(35, 35, 36); --bg-code: rgb(27, 27, 28);
+  --fg: rgb(249, 250, 251); --fg-muted: rgb(207, 211, 214); --fg-faint: rgb(173, 178, 184);
+  --line: rgba(255, 255, 255, .12); --line-soft: rgba(255, 255, 255, .06);
+  --accent: rgb(103, 158, 254); --accent-soft: rgb(52, 65, 91);
+  --ok: rgb(78, 209, 126); --warn: rgb(247, 173, 49);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--sans);
+  font-size: 15px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+a { color: var(--accent); }
+code { font-family: var(--mono); font-size: .87em; background: var(--bg-code);
+  border: 1px solid var(--line-soft); padding: .1em .38em; border-radius: 6px; }
+pre { background: var(--bg-code); border: 1px solid var(--line); border-radius: 14px;
+  padding: 14px 16px; overflow-x: auto; margin: 0 0 14px; font-size: 13px; line-height: 1.6; }
+pre code { background: none; border: 0; padding: 0; }
+
+header.top { border-bottom: 1px solid var(--line); background: var(--bg-soft); padding: 40px 0 30px; }
+.back { font-size: 13.5px; color: var(--fg-muted); text-decoration: none; }
+.back:hover { color: var(--accent); }
+h1 { font-size: clamp(24px, 4vw, 34px); margin: 12px 0 12px; letter-spacing: -.02em; }
+.lede { color: var(--fg-muted); max-width: 70ch; margin: 0 0 20px; }
+.stats { display: flex; gap: 10px; flex-wrap: wrap; }
+.stat { background: var(--bg); border: 1px solid var(--line-soft); border-radius: 14px; padding: 10px 16px; }
+.stat b { display: block; font-size: 19px; line-height: 1.3; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 12px; color: var(--fg-faint); }
+
+h2 { font-size: 21px; margin: 40px 0 10px; letter-spacing: -.01em; }
+h3 { font-size: 16px; margin: 24px 0 8px; }
+p { margin: 0 0 14px; }
+.note { color: var(--fg-muted); font-size: 14px; }
+
+/* install guide */
+.guide { border: 1px solid var(--line); border-radius: 20px; padding: 22px 26px; margin: 28px 0 0; background: var(--bg-soft); }
+.guide h2 { margin-top: 0; }
+.guide ol { margin: 0 0 14px; padding-left: 22px; }
+.guide li { margin: 6px 0; }
+
+/* controls */
+.controls { position: sticky; top: 0; z-index: 5; background: var(--bg);
+  border-bottom: 1px solid var(--line); padding: 14px 0; margin: 32px 0 24px; }
+.ctl-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+input[type="search"] {
+  font: inherit; font-size: 14px; flex: 1; min-width: 200px; color: var(--fg);
+  background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 9px 18px;
+}
+input[type="search"]:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: transparent; }
+select { font: inherit; font-size: 13.5px; color: var(--fg); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 999px; padding: 9px 14px; cursor: pointer; }
+.chips { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 12px; }
+.chip {
+  font: inherit; font-size: 13px; cursor: pointer; color: var(--fg-muted);
+  background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 5px 14px;
+}
+.chip:hover { border-color: var(--accent); color: var(--accent); }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+.chip small { opacity: .75; margin-left: 5px; font-variant-numeric: tabular-nums; }
+.result-count { font-size: 13px; color: var(--fg-faint); margin: 0 0 16px; font-variant-numeric: tabular-nums; }
+
+/* cards */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 14px; }
+.card { border: 1px solid var(--line); border-radius: 18px; padding: 18px 20px; background: var(--bg);
+  box-shadow: var(--shadow); display: flex; flex-direction: column; }
+.card-top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; margin-bottom: 4px; }
+.card-name { font-weight: 650; font-size: 15px; text-decoration: none; word-break: break-word; }
+.card-name:hover { text-decoration: underline; }
+.card-stars { font-size: 12.5px; color: var(--fg-faint); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.card-desc { font-size: 13.5px; color: var(--fg-muted); margin: 0 0 12px; flex: 1; }
+.card-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.tag { font-size: 11.5px; color: var(--fg-faint); background: var(--bg-code);
+  border: 1px solid var(--line-soft); border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+.tag.cat { color: var(--accent); background: var(--accent-soft); border-color: transparent; }
+.install { margin-top: auto; }
+.install-cmd { display: flex; gap: 8px; align-items: stretch; }
+.install-cmd code {
+  flex: 1; font-size: 11.5px; padding: 8px 11px; border-radius: 10px; overflow-x: auto;
+  white-space: nowrap; background: var(--bg-code); border: 1px solid var(--line-soft);
+}
+.copy { font: inherit; font-size: 12px; cursor: pointer; background: var(--bg); color: var(--fg-muted);
+  border: 1px solid var(--line); border-radius: 10px; padding: 0 12px; white-space: nowrap; }
+.copy:hover { border-color: var(--accent); color: var(--accent); }
+.install-none { font-size: 12.5px; color: var(--fg-faint); }
+.install-none a { text-decoration: none; }
+
+.more { display: block; margin: 26px auto 0; font: inherit; font-size: 14px; cursor: pointer;
+  background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 999px; padding: 11px 28px; }
+.more:hover { border-color: var(--accent); color: var(--accent); }
+
+footer { border-top: 1px solid var(--line); margin-top: 60px; padding: 28px 0 60px;
+  color: var(--fg-faint); font-size: 13.5px; }
+footer p { max-width: 82ch; }
+footer strong { color: var(--fg-muted); }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="back" href="./">← 回到源码分析</a>
+    <h1>插件目录</h1>
+    <p class="lede">
+      GitHub 上带 <code>dsh-plugin</code> 话题的全部公开仓库。数据每日自动抓取，
+      <strong>安装命令只在该仓库自己的 <code>package.json</code> 能证明时才显示</strong>——猜一条跑不通的命令比不给更糟。
+    </p>
+    <div class="stats" id="stats"></div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="guide">
+    <h2>怎么装一个插件</h2>
+    <p>dsh 的插件装进<strong>profile</strong>——一个 profile 就是一套插件组合。最常见的是给 <code>web</code> profile 加东西：</p>
+    <pre><code>npx @deepseek-ai/dsh plugin --profile web add &lt;包名或 git 地址&gt;
+npx @deepseek-ai/dsh web            # 重启后生效</code></pre>
+    <p><code>add</code> 后面接什么，取决于作者怎么发布：</p>
+    <ol>
+      <li><strong>npm 包</strong>——直接写包名，例如 <code>add @liustack/modlens</code>。本页在能确认时会直接给出完整命令。</li>
+      <li><strong>GitHub 仓库</strong>——写 <code>github:owner/repo</code>。源码形式的包会在安装时执行 <code>prepare</code> 构建，pnpm ≥10 默认拦截，首次会提示你把它加进 profile 的 <code>pnpm-workspace.yaml</code> 再重试。</li>
+      <li><strong>本地目录</strong>——<code>add ./my-plugin</code>，路径相对于你执行命令的目录。</li>
+    </ol>
+    <h3>技能不是插件</h3>
+    <p style="margin-bottom:0">
+      带「技能」标签的多数不用 <code>plugin add</code>，而是把 <code>SKILL.md</code> 放进技能目录即可，例如
+      <code>~/.dsh/skills/&lt;名字&gt;/SKILL.md</code> 或项目里的 <code>.agents/skills/</code>。
+      技能是跨宿主的，同一份内容 Claude Code、Codex 也能用。
+    </p>
+  </div>
+
+  <div class="controls">
+    <div class="wrap ctl-row" style="padding:0">
+      <input type="search" id="q" placeholder="搜索名称、作者、描述、话题…" autocomplete="off">
+      <select id="sort">
+        <option value="stars">按 star 排序</option>
+        <option value="pushed">按最近更新</option>
+        <option value="created">按最新收录</option>
+        <option value="name">按名称</option>
+      </select>
+      <select id="installable">
+        <option value="all">全部</option>
+        <option value="yes">仅可一键安装</option>
+      </select>
+    </div>
+    <div class="wrap chips" id="cats" style="padding:0"></div>
+  </div>
+
+  <p class="result-count" id="count"></p>
+  <div class="grid" id="grid"></div>
+  <button class="more" id="more" hidden>加载更多</button>
+
+  <footer>
+    <p>
+      <strong>数据来源</strong>：GitHub 搜索接口的 <code>topic:dsh-plugin</code>，加上逐仓库读取的 <code>package.json</code>。
+      由 <code>.github/workflows/refresh-ecosystem.yml</code> 每日抓取并提交，Cloudflare Pages 随提交重新发布。
+    </p>
+    <p>
+      <strong>安装命令怎么来的</strong>：只有当仓库的 <code>package.json</code> 里同时具备可安装的 npm 名称与
+      <code>dsh.bundle</code> 声明时，本页才给出完整命令。其余一律标为「安装方式见 README」，不做推测。
+      GitHub 搜索接口最多返回 1000 条结果，超出部分无法列出，页面会在发生时注明。
+    </p>
+    <p>
+      <strong>分类是启发式的</strong>：按仓库话题与描述中的关键词归类，不是官方分类，边界情况会归错。
+      分类只用于筛选，不代表对项目质量或用途的判断。
+    </p>
+    <p style="margin-bottom:0">
+      收录基于作者自行添加的 <code>dsh-plugin</code> 话题，本页<strong>未对任何项目做安全审查</strong>。
+      插件是在你机器上运行的代码，安装前请自行查看其源码。
+    </p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var grid = document.getElementById('grid')
+  var statsEl = document.getElementById('stats')
+  var catsEl = document.getElementById('cats')
+  var countEl = document.getElementById('count')
+  var moreBtn = document.getElementById('more')
+  var qEl = document.getElementById('q')
+  var sortEl = document.getElementById('sort')
+  var instEl = document.getElementById('installable')
+
+  var PAGE = 60
+  var data = null
+  var active = new Set()
+  var shown = PAGE
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]
+    })
+  }
+  function num(n) { return typeof n === 'number' ? n.toLocaleString('en-US') : '—' }
+  function day(s) { return s ? String(s).slice(0, 10) : '—' }
+
+  function installCmd(p) {
+    return p.isBundle && p.npmName
+      ? 'npx @deepseek-ai/dsh plugin --profile web add ' + p.npmName
+      : null
+  }
+
+  function match(p, q) {
+    if (!q) return true
+    var hay = (p.name + ' ' + (p.description || '') + ' ' + (p.topics || []).join(' ') + ' ' + (p.npmName || '')).toLowerCase()
+    return q.split(/\s+/).filter(Boolean).every(function (t) { return hay.indexOf(t) >= 0 })
+  }
+
+  function filtered() {
+    var q = qEl.value.trim().toLowerCase()
+    var onlyInstallable = instEl.value === 'yes'
+    var list = data.plugins.filter(function (p) {
+      if (active.size && !active.has(p.category)) return false
+      if (onlyInstallable && !installCmd(p)) return false
+      return match(p, q)
+    })
+    var s = sortEl.value
+    list.sort(function (a, b) {
+      if (s === 'stars') return b.stars - a.stars
+      if (s === 'pushed') return String(b.pushedAt).localeCompare(String(a.pushedAt))
+      if (s === 'created') return String(b.createdAt).localeCompare(String(a.createdAt))
+      return a.name.localeCompare(b.name)
+    })
+    return list
+  }
+
+  function card(p) {
+    var cmd = installCmd(p)
+    var labels = data.categoryLabels || {}
+    var meta = ['<span class="tag cat">' + esc(labels[p.category] || p.category) + '</span>']
+    if (p.language) meta.push('<span class="tag">' + esc(p.language) + '</span>')
+    if (p.license) meta.push('<span class="tag">' + esc(p.license) + '</span>')
+    meta.push('<span class="tag">更新 ' + esc(day(p.pushedAt)) + '</span>')
+
+    var install = cmd
+      ? '<div class="install-cmd"><code>' + esc(cmd) + '</code>' +
+        '<button class="copy" data-cmd="' + esc(cmd) + '">复制</button></div>'
+      : '<p class="install-none">安装方式见 <a href="' + esc(p.url) + '#readme">README</a>' +
+        (p.npmName ? '（npm 包 <code>' + esc(p.npmName) + '</code>，但未声明 dsh bundle）' : '') + '</p>'
+
+    return '<div class="card">' +
+      '<div class="card-top"><a class="card-name" href="' + esc(p.url) + '">' + esc(p.name) + '</a>' +
+      '<span class="card-stars">★ ' + num(p.stars) + '</span></div>' +
+      '<p class="card-desc">' + (p.description ? esc(p.description) : '<em>无描述</em>') + '</p>' +
+      '<div class="card-meta">' + meta.join('') + '</div>' +
+      '<div class="install">' + install + '</div>' +
+      '</div>'
+  }
+
+  function paint() {
+    var list = filtered()
+    var slice = list.slice(0, shown)
+    grid.innerHTML = slice.map(card).join('')
+    countEl.textContent = '显示 ' + slice.length + ' / ' + list.length + ' 个' +
+      (data.truncated ? '（GitHub 搜索上限 1000 条，共 ' + num(data.total) + ' 个，未能全部列出）' : '')
+    moreBtn.hidden = slice.length >= list.length
+  }
+
+  grid.addEventListener('click', function (e) {
+    var btn = e.target.closest('.copy')
+    if (!btn) return
+    navigator.clipboard.writeText(btn.dataset.cmd).then(function () {
+      var old = btn.textContent
+      btn.textContent = '已复制'
+      setTimeout(function () { btn.textContent = old }, 1400)
+    }).catch(function () { btn.textContent = '复制失败' })
+  })
+
+  ;[qEl, sortEl, instEl].forEach(function (el) {
+    el.addEventListener('input', function () { shown = PAGE; paint() })
+  })
+  moreBtn.addEventListener('click', function () { shown += PAGE; paint() })
+
+  function boot(d) {
+    data = d
+    var labels = d.categoryLabels || {}
+    statsEl.innerHTML =
+      '<div class="stat"><b>' + num(d.total) + '</b><span>dsh-plugin 仓库</span></div>' +
+      '<div class="stat"><b>' + num(d.listed) + '</b><span>已收录</span></div>' +
+      '<div class="stat"><b>' + num(d.installable) + '</b><span>可一键安装</span></div>' +
+      '<div class="stat"><b>' + esc(day(d.generatedAt)) + '</b><span>数据日期</span></div>'
+
+    catsEl.innerHTML = Object.keys(d.counts).sort(function (a, b) { return d.counts[b] - d.counts[a] })
+      .map(function (k) {
+        return '<button class="chip" data-cat="' + esc(k) + '" aria-pressed="false">' +
+          esc(labels[k] || k) + '<small>' + d.counts[k] + '</small></button>'
+      }).join('')
+    catsEl.addEventListener('click', function (e) {
+      var b = e.target.closest('.chip')
+      if (!b) return
+      var c = b.dataset.cat
+      if (active.has(c)) { active.delete(c); b.setAttribute('aria-pressed', 'false') }
+      else { active.add(c); b.setAttribute('aria-pressed', 'true') }
+      shown = PAGE
+      paint()
+    })
+    paint()
+  }
+
+  fetch('./data/plugins.json', { cache: 'no-cache' })
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json() })
+    .then(boot)
+    .catch(function () {
+      countEl.textContent = ''
+      grid.innerHTML = '<div class="card"><p class="card-desc">插件数据尚未生成。' +
+        '它由仓库中的每日任务写入 <code>analysis-site/data/plugins.json</code>；' +
+        '在该任务首次运行前本页没有内容可显示。</p></div>'
+    })
+})()
+</script>
+
+</body>
+</html>
