@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-13T23:46:24.840Z",
+  "generatedAt": "2026-08-13T23:49:44.266Z",
   "upstream": {
     "name": "deepseek-ai/deepseek-harness",
     "url": "https://github.com/deepseek-ai/deepseek-harness",
     "description": "DeepSeek Harness: Everything is a Plugin.",
-    "stars": 40158,
-    "forks": 3137,
+    "stars": 40234,
+    "forks": 3155,
     "openIssues": 0,
     "pushedAt": "2026-08-13T13:00:21Z",
     "license": "MIT",
@@ -70,7 +70,7 @@
       {
         "name": "titanwings/colleague-skill",
         "url": "https://github.com/titanwings/colleague-skill",
-        "stars": 21080,
+        "stars": 21081,
         "language": "Python",
         "description": "将冰冷的离别化为温暖的 Skill，欢迎加入数字生命1.0！Transforming cold farewells into warm skills? It's giving rebirth era. Welcome to Digital Life 1.0. 🫶",
         "pushedAt": "2026-08-13T15:00:28Z",
@@ -88,7 +88,7 @@
       {
         "name": "whiteguo233/OpenBiliClaw",
         "url": "https://github.com/whiteguo233/OpenBiliClaw",
-        "stars": 1937,
+        "stars": 1938,
         "language": "Python",
         "description": "本地私有、开源的跨平台 AI 内容发现 Agent：先理解你，再主动从 B站、小红书、抖音、YouTube、X、知乎、Reddit、微博等平台与开放 Web 寻找内容。 | Local-first open-source cross-platform AI content discovery agent: understands you, then proactively finds content across Bilibili, X",
         "pushedAt": "2026-08-13T19:06:47Z",
@@ -124,7 +124,7 @@
       {
         "name": "zhu1090093659/dsh-web-ui",
         "url": "https://github.com/zhu1090093659/dsh-web-ui",
-        "stars": 533,
+        "stars": 535,
         "language": "TypeScript",
         "description": "Plugin and skin collection for DeepSeek Harness (DSH) Web UI - task board, git graph, right-side panel, remote mobile UI, pet, live token stats, and skin center.",
         "pushedAt": "2026-08-13T23:36:02Z",
@@ -177,6 +177,33 @@
       }
     ],
     "recentlyActive": [
+      {
+        "name": "liuup/dsh-latex-tools",
+        "url": "https://github.com/liuup/dsh-latex-tools",
+        "stars": 0,
+        "language": "TypeScript",
+        "description": "♾️ Copy and export the LaTeX in DeepSeek Harness 悬停任意 LaTeX 公式，即可复制 TeX 源码或导出为独立的 SVG 文件",
+        "pushedAt": "2026-08-13T23:48:22Z",
+        "createdAt": "2026-08-13T21:48:37Z"
+      },
+      {
+        "name": "Scorp1o117/dsh-tool-vision",
+        "url": "https://github.com/Scorp1o117/dsh-tool-vision",
+        "stars": 1,
+        "language": "JavaScript",
+        "description": "External vision model tool for DeepSeek Harness — inspect_image sends images to any OpenAI-compatible endpoint (GPT-4o, Qwen-VL, GLM-4V, Ollama...).",
+        "pushedAt": "2026-08-13T23:47:07Z",
+        "createdAt": "2026-08-13T15:08:44Z"
+      },
+      {
+        "name": "Isekai-Mfu/dsh-mimo-vision-hint",
+        "url": "https://github.com/Isekai-Mfu/dsh-mimo-vision-hint",
+        "stars": 1,
+        "language": "JavaScript",
+        "description": "DSH plugin: dispatch image-recognition tasks to an opencode-go mimo-v2.5 subagent via system-prompt injection",
+        "pushedAt": "2026-08-13T23:46:44Z",
+        "createdAt": "2026-08-13T22:11:51Z"
+      },
       {
         "name": "ccch1mneyyy/dsh-cc-tui",
         "url": "https://github.com/ccch1mneyyy/dsh-cc-tui",
@@ -232,15 +259,6 @@
         "createdAt": "2026-08-13T21:56:48Z"
       },
       {
-        "name": "liuup/dsh-latex-tools",
-        "url": "https://github.com/liuup/dsh-latex-tools",
-        "stars": 0,
-        "language": "TypeScript",
-        "description": "♾️ Copy and export the LaTeX in DeepSeek Harness",
-        "pushedAt": "2026-08-13T23:42:40Z",
-        "createdAt": "2026-08-13T21:48:37Z"
-      },
-      {
         "name": "ChisaAlter/Deepseek-Harness-Desktop",
         "url": "https://github.com/ChisaAlter/Deepseek-Harness-Desktop",
         "stars": 1,
@@ -248,24 +266,6 @@
         "description": "Electron desktop shell for DeepSeek Harness web UI",
         "pushedAt": "2026-08-13T23:42:02Z",
         "createdAt": "2026-08-13T13:21:50Z"
-      },
-      {
-        "name": "rxa3c/chat2skill",
-        "url": "https://github.com/rxa3c/chat2skill",
-        "stars": 1,
-        "language": "Python",
-        "description": "Extracting and iterating skills from daily conversations with AI",
-        "pushedAt": "2026-08-13T23:41:46Z",
-        "createdAt": "2026-06-10T14:18:09Z"
-      },
-      {
-        "name": "Isekai-Mfu/dsh-mimo-vision-hint",
-        "url": "https://github.com/Isekai-Mfu/dsh-mimo-vision-hint",
-        "stars": 1,
-        "language": "JavaScript",
-        "description": "DSH plugin: dispatch image-recognition tasks to an opencode-go mimo-v2.5 subagent via system-prompt injection",
-        "pushedAt": "2026-08-13T23:40:35Z",
-        "createdAt": "2026-08-13T22:11:51Z"
       }
     ]
   }
