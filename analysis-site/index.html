@@ -220,6 +220,29 @@ figcaption { font-size: 13.5px; color: var(--fg-faint); margin-top: 10px; }
 .bar-fill { display: block; height: 100%; background: var(--series-1); border-radius: 0 4px 4px 0; }
 .bar-val { font-size: 12.5px; color: var(--fg); text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
 
+/* live panel — refreshed by a scheduled job, not by hand */
+.live-panel {
+  border: 1px solid var(--line); border-radius: 20px; background: var(--viz-surface);
+  padding: 22px 24px; margin: 0 0 24px;
+}
+.live-msg { margin: 0; color: var(--fg-faint); font-size: 14px; }
+.live-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.live-head b { font-size: 15px; }
+.live-stamp { font-size: 12.5px; color: var(--fg-faint); font-variant-numeric: tabular-nums; }
+.live-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--series-3); margin-right: 7px; vertical-align: middle; }
+.live-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(112px, 1fr)); gap: 10px; margin-bottom: 18px; }
+.live-tile { background: var(--bg); border: 1px solid var(--line-soft); border-radius: 14px; padding: 12px 14px; }
+.live-tile b { display: block; font-size: 20px; line-height: 1.25; font-variant-numeric: tabular-nums; }
+.live-tile span { font-size: 12px; color: var(--fg-faint); }
+.live-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 22px; }
+.live-cols h4 { margin: 0 0 8px; font-size: 13px; color: var(--fg-faint); text-transform: uppercase; letter-spacing: .08em; font-weight: 600; }
+.live-list { list-style: none; margin: 0; padding: 0; font-size: 13.5px; }
+.live-list li { margin: 0 0 8px; display: flex; gap: 9px; align-items: baseline; }
+.live-list .k { font-family: var(--mono); font-size: 11.5px; color: var(--fg-faint); white-space: nowrap; flex-shrink: 0; }
+.live-list .t { color: var(--fg-muted); overflow: hidden; text-overflow: ellipsis; }
+.live-list a { text-decoration: none; }
+.live-list a:hover { text-decoration: underline; }
+
 /* hero stat — one number that outranks a chart */
 .hero-stat {
   display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap;
@@ -372,6 +395,7 @@ footer p { margin: 0 0 8px; }
       <li><a href="#integrate">和你的项目结合</a></li>
       <li><a href="#value">拿它能做什么</a></li>
       <li><a href="#ecosystem">生态地图</a></li>
+      <li class="sub"><a href="#live">实时数据</a></li>
       <li><a href="#verdict">取舍与现状</a></li>
       <li><a href="#method">分析方法</a></li>
     </ol>
@@ -1509,7 +1533,16 @@ dsh --profile myprofile</code></pre>
         </p>
       </blockquote>
 
-      <h3>规模与语言分布</h3>
+      <h3 id="live">实时数据</h3>
+      <p>
+        本章其余部分是我在公测首日做的人工调查，是一份<strong>快照加判断</strong>。下面这块不一样——
+        它由一个每日运行的任务从 GitHub 公开接口重新抓取，所以你看到的是<strong>当前</strong>的数字，而不是我写稿那天的。
+      </p>
+      <div id="live-panel" class="live-panel" data-state="loading">
+        <p class="live-msg">正在读取最新数据…</p>
+      </div>
+
+      <h3>规模与语言分布（首日快照）</h3>
       <div class="hero-stat">
         <b>425</b>
         <span>
@@ -1713,6 +1746,76 @@ dsh --profile myprofile</code></pre>
 </div>
 
 <script>
+/* Live ecosystem panel. The JSON is refreshed by .github/workflows/refresh-ecosystem.yml;
+   the page degrades to a plain note when it is absent or unreachable. */
+(function () {
+  var panel = document.getElementById('live-panel')
+  if (!panel) return
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]
+    })
+  }
+  function num(n) { return typeof n === 'number' ? n.toLocaleString('en-US') : '—' }
+  function day(iso) { return iso ? String(iso).slice(0, 10) : '—' }
+  function ago(iso) {
+    if (!iso) return ''
+    var d = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000)
+    if (!isFinite(d) || d < 0) return ''
+    return d === 0 ? '今天' : d === 1 ? '昨天' : d + ' 天前'
+  }
+  function row(k, text, url) {
+    var body = url ? '<a href="' + esc(url) + '">' + esc(text) + '</a>' : esc(text)
+    return '<li><span class="k">' + esc(k) + '</span><span class="t">' + body + '</span></li>'
+  }
+
+  function render(d) {
+    var rel = (d.releases && d.releases[0]) || (d.tags && d.tags[0]) || null
+    var html =
+      '<div class="live-head"><b><span class="live-dot"></span>自动抓取的当前状态</b>' +
+      '<span class="live-stamp">数据更新于 ' + esc(day(d.generatedAt)) + '（' + esc(ago(d.generatedAt) || '刚刚') + '）</span></div>' +
+      '<div class="live-tiles">' +
+      '<div class="live-tile"><b>' + num(d.upstream.stars) + '</b><span>star</span></div>' +
+      '<div class="live-tile"><b>' + num(d.upstream.forks) + '</b><span>fork</span></div>' +
+      '<div class="live-tile"><b>' + num(d.plugins.total) + '</b><span>dsh-plugin 仓库</span></div>' +
+      '<div class="live-tile"><b>' + esc(rel ? (rel.tag || rel.name) : '—') + '</b><span>最新发布</span></div>' +
+      '<div class="live-tile"><b>' + esc(ago(d.upstream.pushedAt) || day(d.upstream.pushedAt)) + '</b><span>上游最后提交</span></div>' +
+      '</div><div class="live-cols">'
+
+    if (d.commits && d.commits.length) {
+      html += '<div><h4>上游最近提交</h4><ul class="live-list">' +
+        d.commits.slice(0, 6).map(function (c) { return row(day(c.date), c.message, c.url) }).join('') +
+        '</ul></div>'
+    }
+    if (d.plugins.recentlyActive && d.plugins.recentlyActive.length) {
+      html += '<div><h4>最近有更新的插件</h4><ul class="live-list">' +
+        d.plugins.recentlyActive.slice(0, 6).map(function (r) {
+          return row('★' + num(r.stars), r.name, r.url)
+        }).join('') + '</ul></div>'
+    }
+    if (d.plugins.top && d.plugins.top.length) {
+      html += '<div><h4>star 最高的插件</h4><ul class="live-list">' +
+        d.plugins.top.slice(0, 6).map(function (r) {
+          return row('★' + num(r.stars), r.name, r.url)
+        }).join('') + '</ul></div>'
+    }
+    html += '</div>'
+    panel.innerHTML = html
+    panel.dataset.state = 'ok'
+  }
+
+  fetch('./data/ecosystem.json', { cache: 'no-cache' })
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json() })
+    .then(render)
+    .catch(function () {
+      panel.dataset.state = 'absent'
+      panel.innerHTML = '<p class="live-msg">实时数据尚未生成。' +
+        '它由仓库中的每日任务 <code>.github/workflows/refresh-ecosystem.yml</code> 写入 ' +
+        '<code>analysis-site/data/ecosystem.json</code>；在该任务首次运行前，本章下面的首日快照就是全部内容。</p>'
+    })
+})();
+
 (function () {
   var links = Array.prototype.slice.call(document.querySelectorAll('nav.toc a'));
   var map = {};

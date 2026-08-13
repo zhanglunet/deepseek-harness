@@ -1,0 +1,49 @@
+name: Refresh ecosystem data
+
+# Keeps analysis-site/data/ecosystem.json current: upstream release/commit
+# activity plus the dsh-plugin topic. Cloudflare Pages redeploys the site from
+# the pushed commit, so the published page follows without another step.
+#
+# Forks have Actions disabled until the owner enables them once in
+# Settings -> Actions -> General.
+
+on:
+  schedule:
+    # 21:00 UTC daily — early morning in UTC+8, away from the busiest API hours.
+    - cron: '0 21 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-ecosystem
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Fetch public GitHub data
+        env:
+          # The job token raises the rate limit; the script also runs without it.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node analysis-site/scripts/fetch-ecosystem.mjs
+
+      - name: Commit when the data moved
+        run: |
+          if git diff --quiet -- analysis-site/data/ecosystem.json; then
+            echo "No change — nothing to commit."
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add analysis-site/data/ecosystem.json
+          git commit -m 'chore(analysis-site): refresh ecosystem data'
+          git push
