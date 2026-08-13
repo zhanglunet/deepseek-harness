@@ -319,6 +319,7 @@ footer p { margin: 0 0 8px; }
       <div class="stat"><b>Cordis</b><span>底层 DI 框架</span></div>
     </div>
     <div class="hero-links">
+      <a href="./demo.html" style="border-color:var(--accent);color:var(--accent)">会话回放 Demo</a>
       <a href="https://github.com/zhanglunet/deepseek-harness">本站源码与分析仓库</a>
       <a href="https://zhanglu.net/">制作人 zhanglu.net</a>
       <a href="https://github.com/deepseek-ai/deepseek-harness">上游项目 deepseek-ai/deepseek-harness</a>
@@ -919,6 +920,13 @@ footer p { margin: 0 0 8px; }
         dsh 把这件事反过来：<strong>日志是唯一真相，模型历史是从日志推导出来的，从不单独存储。</strong>
         这条规约在仓库里叫 <em>model-visible ⟺ logged</em>，而且——这是关键——<strong>它不是文档里的承诺，是每次请求都实际执行的断言。</strong>
       </p>
+      <div class="callout">
+        <span class="tag">可以直接看</span>
+        <p style="margin-bottom:0">
+          本章说的事情有一个<a href="./demo.html"><strong>可交互的实证</strong></a>：用仓库里真实录制并提交的会话日志逐事件回放五个场景，
+          左边是渲染出来的对话，右边是它对应的日志原文。无需 API key，不执行任何代码——因为<em>日志本身就够了</em>。
+        </p>
+      </div>
 
       <h3>日志里存了什么</h3>
       <p>
