@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DeepSeek Harness 插件目录</title>
+<meta name="description" content="dsh-plugin topic 下的全部公开仓库：按用途分类，介绍与用法摘自各项目 README。每日自动更新。">
+<style>
+:root {
+  --bg: rgb(255, 255, 255); --bg-soft: rgb(249, 250, 251); --bg-code: rgb(241, 243, 245);
+  --fg: rgb(15, 17, 21); --fg-muted: rgb(97, 102, 107); --fg-faint: rgb(129, 133, 140);
+  --line: rgba(0, 0, 0, .1); --line-soft: rgba(0, 0, 0, .04);
+  --accent: rgb(65, 118, 230); --accent-soft: rgb(237, 243, 254);
+  --ok: rgb(34, 197, 94); --warn: rgb(245, 158, 11);
+  --shadow: 0 1px 2px rgba(15, 17, 21, .04);
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB",
+          "Microsoft YaHei", "Noto Sans SC", Roboto, Helvetica, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: rgb(21, 21, 23); --bg-soft: rgb(35, 35, 36); --bg-code: rgb(27, 27, 28);
+    --fg: rgb(249, 250, 251); --fg-muted: rgb(207, 211, 214); --fg-faint: rgb(173, 178, 184);
+    --line: rgba(255, 255, 255, .12); --line-soft: rgba(255, 255, 255, .06);
+    --accent: rgb(103, 158, 254); --accent-soft: rgb(52, 65, 91);
+    --ok: rgb(78, 209, 126); --warn: rgb(247, 173, 49);
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: rgb(21, 21, 23); --bg-soft: rgb(35, 35, 36); --bg-code: rgb(27, 27, 28);
+  --fg: rgb(249, 250, 251); --fg-muted: rgb(207, 211, 214); --fg-faint: rgb(173, 178, 184);
+  --line: rgba(255, 255, 255, .12); --line-soft: rgba(255, 255, 255, .06);
+  --accent: rgb(103, 158, 254); --accent-soft: rgb(52, 65, 91);
+  --ok: rgb(78, 209, 126); --warn: rgb(247, 173, 49);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--sans);
+  font-size: 15px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+a { color: var(--accent); }
+code { font-family: var(--mono); font-size: .87em; background: var(--bg-code);
+  border: 1px solid var(--line-soft); padding: .1em .38em; border-radius: 6px; }
+pre { background: var(--bg-code); border: 1px solid var(--line); border-radius: 14px;
+  padding: 14px 16px; overflow-x: auto; margin: 0 0 14px; font-size: 13px; line-height: 1.6; }
+pre code { background: none; border: 0; padding: 0; }
+
+header.top { border-bottom: 1px solid var(--line); background: var(--bg-soft); padding: 40px 0 30px; }
+.back { font-size: 13.5px; color: var(--fg-muted); text-decoration: none; }
+.back:hover { color: var(--accent); }
+h1 { font-size: clamp(24px, 4vw, 34px); margin: 12px 0 12px; letter-spacing: -.02em; }
+.lede { color: var(--fg-muted); max-width: 70ch; margin: 0 0 20px; }
+.stats { display: flex; gap: 10px; flex-wrap: wrap; }
+.stat { background: var(--bg); border: 1px solid var(--line-soft); border-radius: 14px; padding: 10px 16px; }
+.stat b { display: block; font-size: 19px; line-height: 1.3; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 12px; color: var(--fg-faint); }
+
+h2 { font-size: 21px; margin: 40px 0 10px; letter-spacing: -.01em; }
+h3 { font-size: 16px; margin: 24px 0 8px; }
+p { margin: 0 0 14px; }
+.note { color: var(--fg-muted); font-size: 14px; }
+
+/* intro panel */
+.guide { border: 1px solid var(--line); border-radius: 20px; padding: 22px 26px; margin: 28px 0 0; background: var(--bg-soft); }
+.guide h2 { margin-top: 0; }
+.guide ol { margin: 0 0 14px; padding-left: 22px; }
+.guide li { margin: 6px 0; }
+
+/* controls */
+.controls { position: sticky; top: 0; z-index: 5; background: var(--bg);
+  border-bottom: 1px solid var(--line); padding: 14px 0; margin: 32px 0 24px; }
+.ctl-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+input[type="search"] {
+  font: inherit; font-size: 14px; flex: 1; min-width: 200px; color: var(--fg);
+  background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 9px 18px;
+}
+input[type="search"]:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: transparent; }
+select { font: inherit; font-size: 13.5px; color: var(--fg); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 999px; padding: 9px 14px; cursor: pointer; }
+.chips { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 12px; }
+.chip {
+  font: inherit; font-size: 13px; cursor: pointer; color: var(--fg-muted);
+  background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 5px 14px;
+}
+.chip:hover { border-color: var(--accent); color: var(--accent); }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+.chip small { opacity: .75; margin-left: 5px; font-variant-numeric: tabular-nums; }
+.result-count { font-size: 13px; color: var(--fg-faint); margin: 0 0 16px; font-variant-numeric: tabular-nums; }
+
+/* cards */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 14px; }
+.card { border: 1px solid var(--line); border-radius: 18px; padding: 18px 20px; background: var(--bg);
+  box-shadow: var(--shadow); display: flex; flex-direction: column; }
+.card-top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; margin-bottom: 4px; }
+.card-name { font-weight: 650; font-size: 15px; text-decoration: none; word-break: break-word; }
+.card-name:hover { text-decoration: underline; }
+.card-stars { font-size: 12.5px; color: var(--fg-faint); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.card-desc { font-size: 13.5px; color: var(--fg-muted); margin: 0 0 12px; flex: 1; }
+.card-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.tag { font-size: 11.5px; color: var(--fg-faint); background: var(--bg-code);
+  border: 1px solid var(--line-soft); border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+.tag.cat { color: var(--accent); background: var(--accent-soft); border-color: transparent; }
+.card-doc { font-size: 13px; margin: 0 0 12px; }
+.card-doc h4 { font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--fg-faint); margin: 0 0 5px; font-weight: 650; }
+.card-doc ul { margin: 0 0 10px; padding-left: 18px; color: var(--fg-muted); }
+.card-doc li { margin: 2px 0; }
+.card-doc .usage { color: var(--fg-muted); background: var(--bg-soft);
+  border-left: 2px solid var(--accent); border-radius: 0 10px 10px 0; padding: 8px 12px; margin: 0; }
+.card-foot { margin-top: auto; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.expand { font: inherit; font-size: 12.5px; cursor: pointer; background: none; color: var(--accent);
+  border: 0; padding: 0; }
+.expand:hover { text-decoration: underline; }
+.src { font-size: 12px; color: var(--fg-faint); text-decoration: none; }
+.src:hover { color: var(--accent); }
+.no-doc { color: var(--fg-faint); font-style: normal; }
+
+/* category overview + grouped sections */
+.cat-overview { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 8px; }
+.cat-card { display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
+  background: var(--bg); border: 1px solid var(--line-soft); border-radius: 12px;
+  padding: 9px 14px; font-size: 13.5px; cursor: pointer; color: var(--fg); text-align: left; font-family: inherit; }
+.cat-card:hover { border-color: var(--accent); color: var(--accent); }
+.cat-card b { font-weight: 600; }
+.cat-card span { color: var(--fg-faint); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.group { margin: 0 0 34px; }
+.group-head { display: flex; align-items: baseline; gap: 10px; margin: 0 0 12px; }
+.group-head h3 { margin: 0; font-size: 17px; }
+.group-head span { color: var(--fg-faint); font-size: 13px; font-variant-numeric: tabular-nums; }
+.group-more { margin: 12px 0 0; font: inherit; font-size: 13px; cursor: pointer; background: none;
+  color: var(--accent); border: 0; padding: 0; }
+.group-more:hover { text-decoration: underline; }
+
+.more { display: block; margin: 26px auto 0; font: inherit; font-size: 14px; cursor: pointer;
+  background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 999px; padding: 11px 28px; }
+.more:hover { border-color: var(--accent); color: var(--accent); }
+
+footer { border-top: 1px solid var(--line); margin-top: 60px; padding: 28px 0 60px;
+  color: var(--fg-faint); font-size: 13.5px; }
+footer p { max-width: 82ch; }
+footer strong { color: var(--fg-muted); }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="back" href="./">← 回到源码分析</a>
+    <h1>插件目录</h1>
+    <p class="lede">
+      GitHub 上带 <code>dsh-plugin</code> 话题的全部公开仓库，按用途分类。
+      每个条目的介绍、功能与用法<strong>都摘自该项目自己的 README</strong>，不是我代写的概括。
+    </p>
+    <div class="stats" id="stats"></div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="guide">
+    <h2>这些插件都在做什么</h2>
+    <p class="note" style="margin-bottom:16px">
+      按用途分成下面几类，点一类可以只看它。分类由仓库话题、简介与 README 开头的关键词判定，
+      是启发式的辅助浏览手段，不是官方分类。
+    </p>
+    <div class="cat-overview" id="overview"></div>
+  </div>
+
+  <div class="controls">
+    <div class="wrap ctl-row" style="padding:0">
+      <input type="search" id="q" placeholder="搜索名称、作者、描述、话题…" autocomplete="off">
+      <select id="sort">
+        <option value="stars">按 star 排序</option>
+        <option value="pushed">按最近更新</option>
+        <option value="created">按最新收录</option>
+        <option value="name">按名称</option>
+      </select>
+      <select id="withdoc">
+        <option value="all">全部</option>
+        <option value="yes">仅有 README 介绍的</option>
+      </select>
+    </div>
+    <div class="wrap chips" id="cats" style="padding:0"></div>
+  </div>
+
+  <p class="result-count" id="count"></p>
+  <div class="grid" id="grid"></div>
+  <button class="more" id="more" hidden>加载更多</button>
+
+  <footer>
+    <p>
+      <strong>数据来源</strong>：GitHub 搜索接口的 <code>topic:dsh-plugin</code>，加上逐仓库读取的 <code>package.json</code>。
+      由 <code>.github/workflows/refresh-ecosystem.yml</code> 每日抓取并提交，Cloudflare Pages 随提交重新发布。
+    </p>
+    <p>
+      <strong>介绍从哪来</strong>：逐仓库读取 README，取第一段正文作简介、「功能 / Features」小节的条目作功能要点、
+      「使用 / Usage / 快速开始」小节作用法摘录，全部为原文摘录并截断，不做改写或概括。
+      没有 README 或其中没有对应小节的条目，就只显示它的 GitHub 简介。
+      GitHub 搜索接口最多返回 1000 条结果，超出部分无法列出，页面会在发生时注明。
+    </p>
+    <p>
+      <strong>分类是启发式的</strong>：按仓库话题、简介与 README 开头的关键词归类，首条命中的规则胜出。
+      不是官方分类，边界情况会归错；分类只用于浏览，不代表对项目质量的判断。
+    </p>
+    <p style="margin-bottom:0">
+      收录基于作者自行添加的 <code>dsh-plugin</code> 话题，本页<strong>未对任何项目做安全审查</strong>。
+      插件是在你机器上运行的代码，安装前请自行查看其源码。
+    </p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var grid = document.getElementById('grid')
+  var statsEl = document.getElementById('stats')
+  var overviewEl = document.getElementById('overview')
+  var catsEl = document.getElementById('cats')
+  var countEl = document.getElementById('count')
+  var moreBtn = document.getElementById('more')
+  var qEl = document.getElementById('q')
+  var sortEl = document.getElementById('sort')
+  var docEl = document.getElementById('withdoc')
+
+  var FLAT_PAGE = 60      // page size when a search or filter flattens the list
+  var GROUP_PAGE = 9      // cards shown per category before "展开全部"
+  var data = null
+  var active = new Set()
+  var shown = FLAT_PAGE
+  var openGroups = new Set()
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]
+    })
+  }
+  function num(n) { return typeof n === 'number' ? n.toLocaleString('en-US') : '—' }
+  function day(s) { return s ? String(s).slice(0, 10) : '—' }
+  function label(k) { return (data.categoryLabels || {})[k] || k }
+
+  function match(p, q) {
+    if (!q) return true
+    var d = p.doc || {}
+    var hay = (p.name + ' ' + (p.blurb || '') + ' ' + (d.intro || '') + ' ' +
+      (d.bullets || []).join(' ') + ' ' + (p.topics || []).join(' ')).toLowerCase()
+    return q.split(/\s+/).filter(Boolean).every(function (t) { return hay.indexOf(t) >= 0 })
+  }
+
+  function sorted(list) {
+    var s = sortEl.value
+    return list.slice().sort(function (a, b) {
+      if (s === 'stars') return b.stars - a.stars
+      if (s === 'pushed') return String(b.pushedAt).localeCompare(String(a.pushedAt))
+      if (s === 'created') return String(b.createdAt).localeCompare(String(a.createdAt))
+      return a.name.localeCompare(b.name)
+    })
+  }
+
+  function filtered() {
+    var q = qEl.value.trim().toLowerCase()
+    var onlyDoc = docEl.value === 'yes'
+    return sorted(data.plugins.filter(function (p) {
+      if (active.size && !active.has(p.category)) return false
+      if (onlyDoc && !(p.doc && p.doc.intro)) return false
+      return match(p, q)
+    }))
+  }
+
+  function card(p) {
+    var d = p.doc || {}
+    var meta = ['<span class="tag cat">' + esc(label(p.category)) + '</span>']
+    if (p.language) meta.push('<span class="tag">' + esc(p.language) + '</span>')
+    if (p.license) meta.push('<span class="tag">' + esc(p.license) + '</span>')
+    meta.push('<span class="tag">更新 ' + esc(day(p.pushedAt)) + '</span>')
+
+    var intro = d.intro || p.blurb
+    var body = '<p class="card-desc">' +
+      (intro ? esc(intro) : '<span class="no-doc">该仓库没有可提取的介绍</span>') + '</p>'
+
+    var extra = ''
+    if (d.bullets && d.bullets.length) {
+      extra += '<h4>功能要点</h4><ul>' +
+        d.bullets.map(function (b) { return '<li>' + esc(b) + '</li>' }).join('') + '</ul>'
+    }
+    if (d.usage) extra += '<h4>如何使用</h4><p class="usage">' + esc(d.usage) + '</p>'
+
+    return '<div class="card">' +
+      '<div class="card-top"><a class="card-name" href="' + esc(p.url) + '">' + esc(p.name) + '</a>' +
+      '<span class="card-stars">★ ' + num(p.stars) + '</span></div>' +
+      body +
+      (extra ? '<div class="card-doc" hidden>' + extra + '</div>' : '') +
+      '<div class="card-meta">' + meta.join('') + '</div>' +
+      '<div class="card-foot">' +
+      (extra ? '<button class="expand" type="button">展开详情</button>' : '<span></span>') +
+      '<a class="src" href="' + esc(p.url) + '">GitHub ↗</a>' +
+      '</div></div>'
+  }
+
+  function paint() {
+    var q = qEl.value.trim()
+    var list = filtered()
+    var flat = Boolean(q) || active.size === 1 || docEl.value === 'yes'
+
+    if (flat) {
+      var slice = list.slice(0, shown)
+      grid.className = 'grid'
+      grid.innerHTML = slice.map(card).join('')
+      moreBtn.hidden = slice.length >= list.length
+      countEl.textContent = '显示 ' + slice.length + ' / ' + list.length + ' 个'
+    } else {
+      var groups = {}
+      list.forEach(function (p) { (groups[p.category] = groups[p.category] || []).push(p) })
+      var keys = Object.keys(groups).sort(function (a, b) { return groups[b].length - groups[a].length })
+      grid.className = ''
+      grid.innerHTML = keys.map(function (k) {
+        var items = groups[k]
+        var open = openGroups.has(k)
+        var vis = open ? items : items.slice(0, GROUP_PAGE)
+        return '<section class="group" id="cat-' + esc(k) + '">' +
+          '<div class="group-head"><h3>' + esc(label(k)) + '</h3><span>' + items.length + ' 个</span></div>' +
+          '<div class="grid">' + vis.map(card).join('') + '</div>' +
+          (items.length > GROUP_PAGE
+            ? '<button class="group-more" type="button" data-cat="' + esc(k) + '">' +
+              (open ? '收起' : '展开全部 ' + items.length + ' 个') + '</button>'
+            : '') +
+          '</section>'
+      }).join('')
+      moreBtn.hidden = true
+      countEl.textContent = '共 ' + list.length + ' 个，分为 ' + keys.length + ' 类' +
+        (data.truncated ? '（GitHub 搜索上限 1000 条，共 ' + num(data.total) + ' 个，未能全部列出）' : '')
+    }
+  }
+
+  grid.addEventListener('click', function (e) {
+    var exp = e.target.closest('.expand')
+    if (exp) {
+      var box = exp.closest('.card').querySelector('.card-doc')
+      if (box) { box.hidden = !box.hidden; exp.textContent = box.hidden ? '展开详情' : '收起' }
+      return
+    }
+    var gm = e.target.closest('.group-more')
+    if (gm) {
+      var c = gm.dataset.cat
+      if (openGroups.has(c)) openGroups.delete(c); else openGroups.add(c)
+      paint()
+    }
+  })
+
+  function setCat(c, on) {
+    var btn = catsEl.querySelector('.chip[data-cat="' + c + '"]')
+    if (on) active.add(c); else active.delete(c)
+    if (btn) btn.setAttribute('aria-pressed', String(on))
+  }
+
+  ;[qEl, sortEl, docEl].forEach(function (el) {
+    el.addEventListener('input', function () { shown = FLAT_PAGE; paint() })
+  })
+  moreBtn.addEventListener('click', function () { shown += FLAT_PAGE; paint() })
+
+  function boot(d) {
+    data = d
+    statsEl.innerHTML =
+      '<div class="stat"><b>' + num(d.total) + '</b><span>dsh-plugin 仓库</span></div>' +
+      '<div class="stat"><b>' + num(d.listed) + '</b><span>已收录</span></div>' +
+      '<div class="stat"><b>' + num(d.described) + '</b><span>有 README 介绍</span></div>' +
+      '<div class="stat"><b>' + num(d.withUsage) + '</b><span>含用法说明</span></div>' +
+      '<div class="stat"><b>' + esc(day(d.generatedAt)) + '</b><span>数据日期</span></div>'
+
+    var keys = Object.keys(d.counts).sort(function (a, b) { return d.counts[b] - d.counts[a] })
+
+    overviewEl.innerHTML = keys.map(function (k) {
+      return '<button class="cat-card" type="button" data-cat="' + esc(k) + '">' +
+        '<b>' + esc(label(k)) + '</b><span>' + d.counts[k] + '</span></button>'
+    }).join('')
+    overviewEl.addEventListener('click', function (e) {
+      var b = e.target.closest('.cat-card')
+      if (!b) return
+      var c = b.dataset.cat
+      active.forEach(function (x) { if (x !== c) setCat(x, false) })
+      setCat(c, !active.has(c))
+      shown = FLAT_PAGE
+      paint()
+      document.querySelector('.controls').scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+
+    catsEl.innerHTML = keys.map(function (k) {
+      return '<button class="chip" data-cat="' + esc(k) + '" aria-pressed="false">' +
+        esc(label(k)) + '<small>' + d.counts[k] + '</small></button>'
+    }).join('')
+    catsEl.addEventListener('click', function (e) {
+      var b = e.target.closest('.chip')
+      if (!b) return
+      var c = b.dataset.cat
+      setCat(c, !active.has(c))
+      shown = FLAT_PAGE
+      paint()
+    })
+    paint()
+  }
+
+  fetch('./data/plugins.json', { cache: 'no-cache' })
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json() })
+    .then(boot)
+    .catch(function () {
+      countEl.textContent = ''
+      grid.innerHTML = '<div class="card"><p class="card-desc">插件数据尚未生成。' +
+        '它由仓库中的每日任务写入 <code>analysis-site/data/plugins.json</code>；' +
+        '在该任务首次运行前本页没有内容可显示。</p></div>'
+    })
+})()
+</script>
+
+</body>
+</html>

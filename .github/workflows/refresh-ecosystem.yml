@@ -32,9 +32,14 @@ jobs:
 
       - name: Fetch public GitHub data
         env:
-          # The job token raises the rate limit; the script also runs without it.
+          # The job token raises the rate limit; the scripts also run without it.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node analysis-site/scripts/fetch-ecosystem.mjs
+
+      - name: Build the plugin directory
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node analysis-site/scripts/fetch-plugins.mjs
 
       - name: Commit when the data moved
         run: |
