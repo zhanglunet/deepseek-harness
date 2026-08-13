@@ -346,6 +346,7 @@ footer p { margin: 0 0 8px; }
       <li><a href="#usage">能够怎么用</a></li>
       <li><a href="#integrate">和你的项目结合</a></li>
       <li><a href="#value">拿它能做什么</a></li>
+      <li><a href="#ecosystem">生态地图</a></li>
       <li><a href="#verdict">取舍与现状</a></li>
       <li><a href="#method">分析方法</a></li>
     </ol>
@@ -1388,37 +1389,10 @@ dsh --profile myprofile</code></pre>
       </table>
       </div>
 
-      <h3>生态现状：别人已经拿它做了什么</h3>
-      <p>
-        因为官方不接受外部 PR，社区的全部能量都流向了插件与技能。截至本文，<code>dsh-plugin</code> topic 下有
-        <strong>419 个公开仓库</strong>。挑几个有代表性的，能看出这个生态目前的重心：
-      </p>
-      <div class="table-wrap">
-      <table>
-        <thead><tr><th>项目</th><th>形态</th><th>做什么</th></tr></thead>
-        <tbody>
-          <tr>
-            <td><a href="https://github.com/titanwings/colleague-skill"><code>dot-skill</code></a><br><span style="color:var(--fg-faint);font-size:12.5px">≈21k star</span></td>
-            <td>技能（跨宿主）</td>
-            <td>把一个人的思维方式蒸馏成可复用的 AI 人格。<strong>同时兼容 Claude Code、Codex、OpenClaw 与 dsh</strong>——装进 <code>~/.dsh/skills/</code> 即可。技能这层是跨产品可移植的，这是它能一份代码通吃多个宿主的原因</td>
-          </tr>
-          <tr>
-            <td><a href="https://github.com/liustack/modlens"><code>modlens</code></a><br><span style="color:var(--fg-faint);font-size:12.5px">≈662 star</span></td>
-            <td>dsh 插件</td>
-            <td><strong>给纯文本模型加眼睛。</strong>DeepSeek 与 GLM 没有原生视觉，它把粘贴的图片转成带 OCR、版面与语义的结构化 JSON 证据喂给模型，并注册出"DeepSeek-V4-Flash (modlens vision)"这样的新模型变体。<code>dsh plugin add @liustack/modlens</code> 一行装上</td>
-          </tr>
-          <tr>
-            <td><code>OpenBiliClaw</code> / <code>MuseAI</code> / <code>mobius</code></td>
-            <td>上层产品</td>
-            <td>内容发现 agent、角色创作平台、自演化 Agent OS——都是把 dsh 当底座造自己的产品，而不是改它</td>
-          </tr>
-        </tbody>
-      </table>
-      </div>
+      <h3>生态现状</h3>
       <p style="margin-bottom:0">
-        <code>modlens</code> 值得单独看一眼：它是<strong>第三方用 LLM 适配器接缝补官方能力缺口</strong>的实例。
-        模型不支持视觉是模型的事，但因为适配器是可注册的插件，社区可以在不碰任何官方代码的前提下把这个洞补上，
-        还能让补丁以"一个新模型选项"的形式出现在 UI 里。这比任何架构文档都更能说明"一切皆插件"落地之后是什么样。
+        因为官方不接受外部 PR，社区能量全部涌向了插件与技能，生态起步就不冷清。
+        完整的归类、数据与代表项目见下一章<a href="#ecosystem">「生态地图」</a>。
       </p>
 
       <h3>下一步：一条具体路径</h3>
@@ -1471,8 +1445,166 @@ dsh --profile myprofile</code></pre>
     </section>
 
     <!-- ============ 9 ============ -->
+    <section id="ecosystem">
+      <h2><span class="num">09</span>生态地图</h2>
+      <p>
+        官方在 <code>CONTRIBUTING.md</code> 里把话说死了：<strong>"我们目前无法接受外部 PR"</strong>。
+        公开仓库 <code>deepseek-ai/deepseek-harness</code> 的 PR 数确实是 <strong>0</strong>，而它有 <strong>12,293 个提交</strong>——
+        开发在私有组织的仓库里进行，公开仓库是发布镜像。
+      </p>
+      <p>
+        于是社区的全部能量只有一个出口：<strong>做插件</strong>。这让 dsh 的生态呈现出一种少见的形状——
+        它不是围绕"给上游修 bug"长出来的，而是围绕"在旁边造自己的东西"长出来的。官方对此的表述也很明确：
+      </p>
+      <blockquote>
+        <p>
+          我们并不认为官方仓库中的包天然就比社区开发的包更重要……可以将本仓库看作一种理念、一份官方示例以及一处灵感来源，
+          而不是我们要求社区遵循的方向。
+        </p>
+      </blockquote>
+
+      <h3>规模与语言分布</h3>
+      <div class="hero-stat">
+        <b>425</b>
+        <span>
+          <code>dsh-plugin</code> topic 下的公开仓库数。这个数字在我做这次调查的<strong>几十分钟内从 419 涨到了 425</strong>——
+          正好是公测发布当天，可以把它理解为一张快照而不是稳定值。
+        </span>
+      </div>
+
+      <div class="chart">
+        <p class="chart-title">主语言分布</p>
+        <p class="chart-sub">419 个仓库的快照。TypeScript 的绝对优势来自 Web UI 与 host 插件都是 TS</p>
+        <div class="bar-row"><span class="bar-name">TypeScript</span><span class="bar-track"><span class="bar-fill" style="width:100.0%"></span></span><span class="bar-val">238</span></div>
+        <div class="bar-row"><span class="bar-name">JavaScript</span><span class="bar-track"><span class="bar-fill" style="width:47.1%"></span></span><span class="bar-val">112</span></div>
+        <div class="bar-row"><span class="bar-name">其他合计</span><span class="bar-track"><span class="bar-fill" style="width:18.5%"></span></span><span class="bar-val">44</span></div>
+        <div class="bar-row"><span class="bar-name">Python</span><span class="bar-track"><span class="bar-fill" style="width:10.5%"></span></span><span class="bar-val">25</span></div>
+      </div>
+
+      <h3>按方向归类</h3>
+      <p>
+        下面这张分布图取的是<strong>按 star 降序的前 40 个仓库</strong>（去掉官方仓库本身后 39 个），
+        约占总量的 9%。长尾未抽样，所以它反映的是"生态的头部长什么样"，不是全量普查。
+      </p>
+
+      <div class="chart">
+        <p class="chart-title">头部 39 个项目的方向分布</p>
+        <p class="chart-sub">分类为本文所做，依据各仓库的描述文本</p>
+        <div class="bar-row"><span class="bar-name">UI / 工作台 / 皮肤</span><span class="bar-track"><span class="bar-fill" style="width:100.0%"></span></span><span class="bar-val">12</span></div>
+        <div class="bar-row"><span class="bar-name">补能力缺口</span><span class="bar-track"><span class="bar-fill" style="width:50.0%"></span></span><span class="bar-val">6</span></div>
+        <div class="bar-row"><span class="bar-name">独立产品</span><span class="bar-track"><span class="bar-fill" style="width:50.0%"></span></span><span class="bar-val">6</span></div>
+        <div class="bar-row"><span class="bar-name">目录 / 索引</span><span class="bar-track"><span class="bar-fill" style="width:41.7%"></span></span><span class="bar-val">5</span></div>
+        <div class="bar-row"><span class="bar-name">编排增强</span><span class="bar-track"><span class="bar-fill" style="width:25.0%"></span></span><span class="bar-val">3</span></div>
+        <div class="bar-row"><span class="bar-name">技能 / 人格</span><span class="bar-track"><span class="bar-fill" style="width:25.0%"></span></span><span class="bar-val">3</span></div>
+        <div class="bar-row"><span class="bar-name">基础设施 / 安全</span><span class="bar-track"><span class="bar-fill" style="width:25.0%"></span></span><span class="bar-val">3</span></div>
+        <div class="bar-row"><span class="bar-name">疑似蹭标签</span><span class="bar-track"><span class="bar-fill" style="width:8.3%"></span></span><span class="bar-val">1</span></div>
+      </div>
+
+      <h3>七个方向，各自在做什么</h3>
+
+      <div class="tier">
+        <h3 style="margin-top:0"><span class="tier-badge">12 个</span>UI / 工作台 / 皮肤 — 最卷的方向</h3>
+        <p>
+          <a href="https://github.com/zhu1090093659/dsh-web-ui"><code>dsh-web-ui</code></a>（398★，任务板、git graph、右侧面板、移动端远程 UI、宠物、实时 token 计量）、
+          <code>DSH-better-sidebar</code>（92★，带文件编辑与终端的侧栏工作台）、
+          <code>dsh-cc-tui</code>（148★，Claude Code 风格全屏终端）、
+          <code>oh-dsh-desktop</code>（55★，macOS 工作台）、
+          还有 <code>@file</code> 提及、桌面通知、VS Code 跳转、生成式 UI 卡片、鲸鱼皮肤，
+          甚至有人做了 <code>dsh-ads</code>（86★）——2005 年中文站风格的假广告，连"关闭叉热区比视觉小得多"都还原了。
+        </p>
+        <p style="margin-bottom:0">
+          <strong>这说明 Web UI 的插槽机制确实好用。</strong>三十多个 <code>ui-*</code> 插件构成的前端，
+          让第三方改外观和加面板的门槛低到可以拿来开玩笑。
+        </p>
+      </div>
+
+      <div class="tier">
+        <h3 style="margin-top:0"><span class="tier-badge">6 个</span>补能力缺口 — 生态最有价值的部分</h3>
+        <p>
+          <strong>视觉是最大的洞</strong>，至少四个项目在补：
+          <a href="https://github.com/liustack/modlens"><code>modlens</code></a>（667★）、
+          <code>agent-vision-toolkit</code>（487★）、<code>dsh-vision-toolkit</code>（129★），
+          以及绕开视觉的另一条路——<code>dsh-browser</code>（23★，Chrome 侧栏让 DSH 直接操作浏览器，<em>不需要视觉能力</em>）、
+          <code>browser-bridge</code>（21★，Rust）。此外 <code>argo</code>（55★）专门做面向 agent 的多语言搜索。
+        </p>
+        <p style="margin-bottom:0">
+          <code>modlens</code> 是全生态最能说明架构价值的一个例子：模型不支持视觉是<em>模型</em>的问题，
+          但因为 LLM 适配器是可注册的插件，第三方在<strong>不碰一行官方代码</strong>的前提下把洞补上了，
+          还让补丁以「DeepSeek-V4-Flash (modlens vision)」这样一个<strong>新模型选项</strong>的形式出现在 UI 里。
+          这比任何架构文档都更能说明"一切皆插件"落地之后是什么样。
+        </p>
+      </div>
+
+      <div class="tier">
+        <h3 style="margin-top:0"><span class="tier-badge">6 个</span>独立产品 — 把它当底座，而不是当工具</h3>
+        <p style="margin-bottom:0">
+          <code>OpenBiliClaw</code>（1.9k★，跨平台内容发现 agent）、
+          <code>deeptide</code>（1k★，Swift-native macOS 编码 agent）、
+          <code>mobius</code>（908★，自演化 Agent OS）、
+          <code>Abu-Cowork</code>（279★，Claude Cowork 的开源替代）、
+          <code>phi</code>（70★，Go，带权限门的编码 agent）。
+          这一类印证了前一章档位 ④ 的判断：自建 agent 后端真正耗时的不是主循环，所以有人直接拿现成的往上造。
+        </p>
+      </div>
+
+      <div class="tier">
+        <h3 style="margin-top:0"><span class="tier-badge">5 个</span>目录 / 索引 — 元生态已经过剩</h3>
+        <p style="margin-bottom:0">
+          <code>awesome-dsh-plugins</code>（241★，<strong>带每日兼容性追踪</strong>）、
+          <code>awesome-deepseek-harness</code>（108★）、<code>awesome-dsh-plugin</code>（54★）、
+          <code>awesome-DSH-plugin</code>（30★）、<code>dsh-find-plugins</code>（20★）。
+          <strong>五个 awesome 列表，比不少被它们收录的插件还多。</strong>
+          真要做索引的话，"每日兼容性追踪"那个思路是唯一有增量价值的——因为 pre-release 阶段插件失效很快。
+        </p>
+      </div>
+
+      <div class="tier">
+        <h3 style="margin-top:0"><span class="tier-badge">3 + 3 + 3</span>编排增强 / 技能人格 / 基础设施</h3>
+        <ul style="margin-bottom:0">
+          <li><strong>编排增强</strong>：<code>dsh-agent-teams</code>（51★）、<code>dsh_workflow</code>（33★，把一次性多 agent 调度升级成带持久化、治理、可观测与恢复的 workflow 层）、<code>mstar-harness</code>（39★）</li>
+          <li><strong>技能 / 人格</strong>：<a href="https://github.com/titanwings/colleague-skill"><code>dot-skill</code></a>（21k★，把人的思维蒸馏成 AI 人格，<strong>同时兼容 Claude Code / Codex / OpenClaw / dsh</strong>，装进 <code>~/.dsh/skills/</code> 即可）、<code>ex-skill</code>（1k★）、<code>MuseAI</code>（507★）</li>
+          <li><strong>基础设施 / 安全</strong>：<code>axern</code>（245★，Go，agent 沙箱与不可信代码执行）、<code>open-managed-agents</code>（228★）、<code>openguardrails</code>（24★，agent 安全协议与中立基准）</li>
+        </ul>
+      </div>
+
+      <h3>从这张地图能读出什么</h3>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>观察</th><th>含义</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>技能层是跨产品可移植的</strong></td>
+            <td>生态里最大的项目 <code>dot-skill</code> 一份代码同时服务 Claude Code、Codex、OpenClaw 和 dsh。技能只是带约定的 Markdown，不绑定宿主——所以<strong>写技能的投入不会被单一产品套牢</strong>，这也是前面把"写技能"排在低档位的原因</td>
+          </tr>
+          <tr>
+            <td><strong>UI 卷，工程向空</strong></td>
+            <td>皮肤、侧栏、TUI、通知有十几个，但做 CI 集成、代码质量、领域专用工具集的几乎没有。<strong>缺口在工程向，不在"没人做"</strong></td>
+          </tr>
+          <tr>
+            <td><strong>补能力缺口 &gt; 换皮</strong></td>
+            <td>星数最高的插件类项目（modlens 667、vision-toolkit 487）都在补模型或框架的<em>真实短板</em>，而不是改外观。这是判断一个插件值不值得做的现成标尺</td>
+          </tr>
+          <tr>
+            <td><strong>不收 PR 反而催生了生态</strong></td>
+            <td>如果上游收 PR，这 425 个仓库里相当一部分会变成官方仓库里的 PR。<strong>把贡献者挡在门外，等于强制他们成为独立作者</strong>——这是个值得琢磨的开源治理选择，代价是官方仓库的演进完全不透明</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div class="callout">
+        <span class="tag">数据口径</span>
+        <p>
+          全部数据取自公开网页（GitHub 仓库页、<code>dsh-plugin</code> topic 检索结果按 star 降序前 4 页）而非 API——
+          上游仓库不在本次分析环境的 API 授权范围内。总数 425、语言分布取自 419 时的快照，
+          归类为本文依据仓库描述所做，非官方分类。<strong>公测首日的数据变化很快，请把它当快照看。</strong>
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ 10 ============ -->
     <section id="verdict">
-      <h2><span class="num">09</span>取舍与现状</h2>
+      <h2><span class="num">10</span>取舍与现状</h2>
       <p>
         和 Claude Code 最大的差异是：Claude Code 是封闭产品加扩展点，而 dsh 连主循环都是可替换的插件行。
         代价是概念负担明显更重——profile / bundle / patch / capability seam 这四层概念要先理解，才能有效改它。
@@ -1493,9 +1625,9 @@ dsh --profile myprofile</code></pre>
       </ul>
     </section>
 
-    <!-- ============ 10 ============ -->
+    <!-- ============ 11 ============ -->
     <section id="method">
-      <h2><span class="num">10</span>分析方法</h2>
+      <h2><span class="num">11</span>分析方法</h2>
       <p>
         本页结论来自对仓库源码与文档的静态阅读：<code>docs/architecture.md</code>、各 package 组的 README、
         生成的 <code>docs/tool-catalog.md</code>、<code>apps/cli/reference/README.md</code>、
