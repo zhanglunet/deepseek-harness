@@ -272,6 +272,23 @@ footer {
   color: var(--fg-faint); font-size: 14px;
 }
 footer p { margin: 0 0 8px; }
+.foot-title { font-weight: 650; color: var(--fg); font-size: 15px; }
+.foot-links { list-style: none; margin: 20px 0 0; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+.foot-links li { margin: 0; display: flex; flex-direction: column; gap: 2px; }
+.foot-links a { font-weight: 600; text-decoration: none; }
+.foot-links a:hover { text-decoration: underline; }
+.foot-links span { font-family: var(--mono); font-size: 12px; color: var(--fg-faint); overflow-wrap: anywhere; }
+
+/* hero link row */
+.hero-links { display: flex; flex-wrap: wrap; gap: 10px; margin: 28px 0 0; }
+.hero-links a {
+  display: inline-flex; align-items: center; gap: 7px; text-decoration: none;
+  font-size: 13.5px; font-weight: 550; color: var(--fg-muted);
+  border: 1px solid var(--line); border-radius: 999px; padding: 6px 15px; background: var(--bg);
+}
+.hero-links a:hover { color: var(--accent); border-color: var(--accent); }
+.hero-links a::before { content: "↗"; color: var(--fg-faint); font-size: 12px; }
+.hero-links a:hover::before { color: var(--accent); }
 
 @media (max-width: 900px) {
   .layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
@@ -301,6 +318,11 @@ footer p { margin: 0 0 8px; }
       <div class="stat"><b>MIT</b><span>许可证</span></div>
       <div class="stat"><b>Cordis</b><span>底层 DI 框架</span></div>
     </div>
+    <div class="hero-links">
+      <a href="https://github.com/zhanglunet/deepseek-harness">本站源码与分析仓库</a>
+      <a href="https://zhanglu.net/">制作人 zhanglu.net</a>
+      <a href="https://github.com/deepseek-ai/deepseek-harness">上游项目 deepseek-ai/deepseek-harness</a>
+    </div>
   </div>
 </header>
 
@@ -322,7 +344,8 @@ footer p { margin: 0 0 8px; }
       <li class="sub"><a href="#tools">模型可见工具集</a></li>
       <li><a href="#usage">能够怎么用</a></li>
       <li><a href="#integrate">和你的项目结合</a></li>
-      <li><a href="#verdict">总结与取舍</a></li>
+      <li><a href="#value">拿它能做什么</a></li>
+      <li><a href="#verdict">取舍与现状</a></li>
       <li><a href="#method">分析方法</a></li>
     </ol>
   </nav>
@@ -1040,14 +1063,193 @@ dsh --profile myprofile</code></pre>
     </section>
 
     <!-- ============ 7 ============ -->
-    <section id="verdict">
-      <h2><span class="num">07</span>总结与取舍</h2>
-      <blockquote>
+    <section id="value">
+      <h2><span class="num">07</span>拿它能做什么</h2>
+      <p>
+        前面几章讲的是"它是什么、怎么接"。这一章讲接完之后<strong>能换来什么</strong>，以及按什么顺序去换。
+        排序的依据是<em>单位投入产出</em>：越靠前的档位见效越快、退出成本越低。
+      </p>
+
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>档位</th><th>换来什么</th><th>投入</th><th>什么信号说明该进下一档</th></tr></thead>
+        <tbody>
+          <tr><td><strong>① 当编码 agent 用</strong></td><td>一个能读能改能跑命令的助手</td><td>10 分钟</td><td>它开始在你的项目上重复犯同一类错</td></tr>
+          <tr><td><strong>② 让它读懂项目</strong></td><td>错误率下降，不用每次重复交代</td><td>半天，持续演进</td><td>有流程你已经手工重复了三遍以上</td></tr>
+          <tr><td><strong>③ headless 进 CI</strong></td><td>无人值守的重复劳动</td><td>1–2 天</td><td>自动化跑出的 PR 有一半以上能直接用</td></tr>
+          <tr><td><strong>④ SDK 嵌入产品</strong></td><td>agent 成为你产品的一个能力</td><td>1–2 周</td><td>你需要的能力现有工具集里没有</td></tr>
+          <tr><td><strong>⑤ 写插件深度定制</strong></td><td>自己的垂直 agent / 执行世界</td><td>数周起</td><td>—（终点，别急着到这里）</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div class="tier">
+        <h3><span class="tier-badge">档位 ①</span>当编码 agent 直接用</h3>
+        <p><strong>做什么</strong>：日常编码、快速读懂陌生代码库、批量改、补测试、查线上问题。</p>
+        <p><strong>怎么做</strong>：<code>npx @deepseek-ai/dsh web</code>，配模型，选工作区，开干。</p>
         <p>
-          它对你最直接的价值排序：<strong>① 直接当 DeepSeek 版 Claude Code 用（Web / CLI）→ ② 用 AGENTS.md + skills 让它读懂你的项目
-          → ③ headless 进 CI 做自动化 → ④ SDK 嵌入你的产品 → ⑤ 写插件深度定制。</strong>
+          <strong>第一天最该做的一件事</strong>：拿你最熟的那个项目，问它三个你已经知道答案的真问题。
+          你要观察的不是它答得对不对，而是<em>它在哪里绕路、查了哪些不该查的文件、误解了什么约定</em>——
+          这些卡点就是档位 ② 的输入清单。
         </p>
-      </blockquote>
+        <p style="margin-bottom:0">
+          <strong>相对闭源产品最实在的一条差异</strong>：模型可以指向任意 OpenAI 兼容端点，包括你自己内网的推理服务。
+          <code>llm-pi-ai</code> 支持自定义 provider（base URL + 协议 + 凭据 + 模型列表），
+          意味着代码与上下文可以完全不出内网。对不能把代码交给外部 API 的团队，这一条本身就足以决定选型。
+        </p>
+      </div>
+
+      <div class="tier">
+        <h3><span class="tier-badge">档位 ②</span>让它读懂你的项目</h3>
+        <p><strong>做什么</strong>：把"你们团队的常识"变成 agent 的常识。</p>
+        <p><strong>怎么做</strong>：从它犯的错倒推，而不是一开始就写一份大而全的规范。</p>
+        <ul>
+          <li>它跑错构建命令 → <code>AGENTS.md</code> 写死构建与测试命令</li>
+          <li>它改了不该碰的目录 → 写明禁区与所有权</li>
+          <li>它重复问同一个上下文 → 写进项目约定</li>
+          <li>某个流程你已手工重复三遍 → 固化成 <code>.agents/skills/&lt;name&gt;/SKILL.md</code></li>
+        </ul>
+        <p style="margin-bottom:0">
+          嵌套的 <code>AGENTS.md</code> 值得专门用起来：agent 读写到某个子目录时才加载该目录的指令，
+          所以大仓库可以做到"进哪个模块看哪份规矩"，而不是把所有规则堆在根文件里烧 token。
+        </p>
+      </div>
+
+      <div class="tier">
+        <h3><span class="tier-badge">档位 ③</span>headless 进 CI，把重复劳动交出去</h3>
+        <p><strong>做什么</strong>（按落地难度排序）：</p>
+        <ul>
+          <li>依赖升级后的编译/测试修复</li>
+          <li>按 issue 描述生成初版补丁，交人 review</li>
+          <li>大批量机械改造：API 迁移、日志规范化、类型补全</li>
+          <li>文档与代码的同步检查</li>
+          <li>flaky 测试的定位与修复</li>
+        </ul>
+        <p><strong>怎么做</strong>——三条能少踩坑的经验：</p>
+        <ul>
+          <li>先用 <code>workflow_dispatch</code> 手动触发跑一两周，攒成功率数据，再谈自动触发</li>
+          <li><strong>只让它出 PR，不给直接推分支的权限</strong>。人 review 是这个阶段的安全网，不是负担</li>
+          <li>权限模式与沙箱显式声明。容器化 runner 里 bwrap/Landlock 可能受限，宁可换一次性 runner 也别默默放开策略</li>
+        </ul>
+        <p style="margin-bottom:0">
+          长任务可以用 <code>ralph</code>：每轮开一个全新子 agent 继续同一个目标，避免单个上下文越跑越脏。
+        </p>
+      </div>
+
+      <div class="tier">
+        <h3><span class="tier-badge">档位 ④</span>把 agent 嵌进你的产品</h3>
+        <p><strong>做什么</strong>：agent 不再是你用的工具，而是你产品里的一个能力——自动化运维、数据分析、工单处理、报告生成。</p>
+        <p><strong>怎么做</strong>：Python SDK 起步最快（自带运行时，宿主不用装 Node）。三个要点：</p>
+        <ul>
+          <li><code>session_id</code> 就是会话身份。复用同一个 id 会保留持久 bash 进程（cwd、环境变量、shell 函数），适合多轮长任务；独立任务务必换新 id</li>
+          <li>JSONL 会话日志直接就是审计记录——每次模型请求与工具调用都能重建</li>
+          <li><code>cordis</code> 参数指定组合文件，可以只给这个场景需要的工具，而不是把全套塞给模型</li>
+        </ul>
+        <p style="margin-bottom:0">
+          <strong>这一档的隐藏收益</strong>：自己从零造 agent 后端时，真正耗时的从来不是主循环，
+          而是沙箱、权限、会话持久化、上下文压缩、流式协议、审计日志、中断恢复——这些它都已经有了。
+        </p>
+      </div>
+
+      <div class="tier">
+        <h3><span class="tier-badge">档位 ⑤</span>写插件，做自己的垂直 agent</h3>
+        <p><strong>做什么</strong>：接自己的内部系统、造领域专用 agent、把执行世界换到远程沙箱或容器。</p>
+        <p><strong>怎么做</strong>——按这个顺序，能省掉大量返工：</p>
+        <ol>
+          <li><strong>先用 patch 覆盖</strong>：能靠 <code>--patch</code> 改配置解决的，不要写代码</li>
+          <li><strong>再用 preset 组合</strong>：一个 agent preset 就能定义"这个场景用哪些工具 + 什么 prompt"，这是垂直化最便宜的一步</li>
+          <li><strong>能力接进来优先走 MCP</strong>：已有 MCP server 的话是一段配置的事</li>
+          <li><strong>最后才写原生插件</strong>：只有需要 session 日志、agent 生命周期、权限决策这类深度能力时才值得</li>
+        </ol>
+        <p style="margin-bottom:0">
+          <strong>唯一的红线</strong>：不要改 <code>packages/</code>。新建自己的 bundle 包叠一层 patch，
+          上游同步几乎零冲突；改了核心，每次 <code>git pull upstream</code> 都是一场手术。
+        </p>
+      </div>
+
+      <h3>再往外想一层</h3>
+      <p>上面五档是"用它"。下面几条是"用它做别人还没做的事"——都建立在这次分析里确认过的能力上。</p>
+
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>方向</th><th>为什么它适合做这个</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>跨厂商 agent 调度中枢</strong></td>
+            <td>子 agent 后端可以是 Claude Code（官方 SDK）、Codex、ACP 客户端或另一个 dsh。也就是说可以让不同厂商的 agent 各干擅长的事，而<strong>调度、权限、会话日志统一在你这一层</strong>。这个位置目前几乎没人占。</td>
+          </tr>
+          <tr>
+            <td><strong>垂直 agent 产品的底座</strong></td>
+            <td>换 system prompt + 换工具集 + 一个 preset ≈ 一个新产品。工具注册表与 prompt 组装都是插件，垂直化的边际成本很低，而底下的沙箱、持久化、压缩、审计是现成的。</td>
+          </tr>
+          <tr>
+            <td><strong>可审计 / 合规场景</strong></td>
+            <td>"model-visible ⟺ logged"这条不变量的商业价值被低估了：<strong>凡是进过模型的东西都能从日志重建</strong>，还有运行时断言兜底。金融、医疗、政企这类要求"说得清 agent 当时看到了什么"的场景，这是硬通货。</td>
+          </tr>
+          <tr>
+            <td><strong>agent 行为研究 / 评测平台</strong></td>
+            <td>append-only 日志 + fork/resume + 无密钥 snapshot 回放，本身就是一套评测底座。想研究"Code Mode 相对逐次 tool call 省多少 token"这类问题，它是少见的能直接开跑的开源生产级 harness。</td>
+          </tr>
+          <tr>
+            <td><strong>抢生态位</strong></td>
+            <td>官方建议插件仓库打 <code>dsh-plugin</code> topic，而这个 topic 现在近乎空白。做一个高质量插件（某云厂商工具集、某垂直领域 skill 包、某个 IDE 的 ACP 集成）成本不高，卡位很早。</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>下一步：一条具体路径</h3>
+      <p>如果这个项目让你有点心动但不知道从哪下手，按这个节奏走，每一步都有可验证的产出：</p>
+
+      <div class="tier-band t-core">
+        <div class="tier-head"><b>今天 · 1 小时</b><em>验证它值不值得投入</em></div>
+        <p style="margin:0">
+          <code>npx @deepseek-ai/dsh web</code> 跑起来，拿最熟的项目问三个你已知答案的真问题。
+          记录它绕路的地方。<strong>产出：一份卡点清单。</strong>
+        </p>
+      </div>
+      <div class="tier-flow">↓</div>
+
+      <div class="tier-band t-cap">
+        <div class="tier-head"><b>本周 · 半天</b><em>把卡点变成规则</em></div>
+        <p style="margin:0">
+          按卡点清单写 <code>AGENTS.md</code>，挑一个你手工重复过三遍的流程写成 skill。
+          顺手跑一次 <code>dsh --profile web --dump-config</code>，看清自己这台机器实际装了什么。
+          <strong>产出：同一批问题重问一遍，绕路明显减少。</strong>
+        </p>
+      </div>
+      <div class="tier-flow">↓</div>
+
+      <div class="tier-band t-cap">
+        <div class="tier-head"><b>本月 · 1–2 天</b><em>换成无人值守</em></div>
+        <p style="margin:0">
+          选<strong>一个</strong>真实痛点做 headless，手动触发，只出 PR。跑两周，记录"能直接用的 PR 占比"。
+          <strong>产出：一个数字，用来决定要不要继续投。</strong>
+        </p>
+      </div>
+      <div class="tier-flow">↓</div>
+
+      <div class="tier-band t-shell">
+        <div class="tier-head"><b>之后</b><em>由数据决定，而不是由兴趣决定</em></div>
+        <p style="margin:0">
+          占比够高 → 扩自动化范围，或往档位 ④ 走，把它变成产品能力。
+          占比不高 → 回到档位 ②，补规则和技能，而不是急着写插件。
+        </p>
+      </div>
+
+      <div class="callout" style="margin-top:22px">
+        <span class="tag">一条判断标准</span>
+        <p>
+          什么时候该进下一档？<strong>当上一档已经稳定产出价值，而且你能具体说出"它现在卡在哪"的时候。</strong>
+          反过来，如果档位 ① 都还没跑顺就去写插件，你只是在给自己造第二个需要调试的系统——
+          而这个系统的问题会和第一个的问题纠缠在一起。
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ 8 ============ -->
+    <section id="verdict">
+      <h2><span class="num">08</span>取舍与现状</h2>
       <p>
         和 Claude Code 最大的差异是：Claude Code 是封闭产品加扩展点，而 dsh 连主循环都是可替换的插件行。
         代价是概念负担明显更重——profile / bundle / patch / capability seam 这四层概念要先理解，才能有效改它。
@@ -1060,11 +1262,17 @@ dsh --profile myprofile</code></pre>
           后端直接拒绝旧的磁盘格式。做集成时按"接口会变"来规划，别把 on-disk 格式当契约。
         </p>
       </div>
+      <h3>什么时候不该选它</h3>
+      <ul>
+        <li><strong>只想要一个开箱即用的编码助手</strong>：成熟商业产品更省心，插件化带来的自由度你用不上，概念负担却要照付</li>
+        <li><strong>需要长期稳定的 API 或磁盘格式</strong>：等第一个正式 tag 再说，现在的 pre-release 阶段明确允许破坏性变更</li>
+        <li><strong>团队里没人愿意读 Cordis</strong>：不理解插件模型就只能把它当黑盒用，那等于付了定制化的成本却拿不到定制化的收益</li>
+      </ul>
     </section>
 
-    <!-- ============ 8 ============ -->
+    <!-- ============ 9 ============ -->
     <section id="method">
-      <h2><span class="num">08</span>分析方法</h2>
+      <h2><span class="num">09</span>分析方法</h2>
       <p>
         本页结论来自对仓库源码与文档的静态阅读：<code>docs/architecture.md</code>、各 package 组的 README、
         生成的 <code>docs/tool-catalog.md</code>、<code>apps/cli/reference/README.md</code>、
@@ -1091,8 +1299,13 @@ dsh --profile myprofile</code></pre>
     </section>
 
     <footer>
-      <p>DeepSeek Harness 源码分析 · 基于 <code>@deepseek-ai/dsh</code> 0.1.0-rc.5（MIT）</p>
-      <p>上游仓库：<a href="https://github.com/deepseek-ai/deepseek-harness">deepseek-ai/deepseek-harness</a></p>
+      <p class="foot-title">DeepSeek Harness 源码分析</p>
+      <p>基于 <code>@deepseek-ai/dsh</code> 0.1.0-rc.5（MIT）</p>
+      <ul class="foot-links">
+        <li><a href="https://github.com/zhanglunet/deepseek-harness">本站源码与分析仓库</a><span>zhanglunet/deepseek-harness</span></li>
+        <li><a href="https://zhanglu.net/">制作人</a><span>zhanglu.net</span></li>
+        <li><a href="https://github.com/deepseek-ai/deepseek-harness">上游项目</a><span>deepseek-ai/deepseek-harness</span></li>
+      </ul>
     </footer>
 
   </main>
