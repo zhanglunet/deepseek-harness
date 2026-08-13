@@ -1771,7 +1771,10 @@ dsh --profile myprofile</code></pre>
   }
 
   function render(d) {
+    // The public repository is a publish mirror with no releases or tags, so the
+    // shipped CLI version is what "current" means here; a release wins if one appears.
     var rel = (d.releases && d.releases[0]) || (d.tags && d.tags[0]) || null
+    var ver = (rel && (rel.tag || rel.name)) || d.upstream.version || null
     var html =
       '<div class="live-head"><b><span class="live-dot"></span>自动抓取的当前状态</b>' +
       '<span class="live-stamp">数据更新于 ' + esc(day(d.generatedAt)) + '（' + esc(ago(d.generatedAt) || '刚刚') + '）</span></div>' +
@@ -1779,7 +1782,7 @@ dsh --profile myprofile</code></pre>
       '<div class="live-tile"><b>' + num(d.upstream.stars) + '</b><span>star</span></div>' +
       '<div class="live-tile"><b>' + num(d.upstream.forks) + '</b><span>fork</span></div>' +
       '<div class="live-tile"><b>' + num(d.plugins.total) + '</b><span>dsh-plugin 仓库</span></div>' +
-      '<div class="live-tile"><b>' + esc(rel ? (rel.tag || rel.name) : '—') + '</b><span>最新发布</span></div>' +
+      '<div class="live-tile"><b>' + esc(ver || '—') + '</b><span>' + (rel ? '最新发布' : '当前版本') + '</span></div>' +
       '<div class="live-tile"><b>' + esc(ago(d.upstream.pushedAt) || day(d.upstream.pushedAt)) + '</b><span>上游最后提交</span></div>' +
       '</div><div class="live-cols">'
 

@@ -11,7 +11,8 @@
 import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'node:fs'
 
 const OUT = 'analysis-site/data/ecosystem.json'
-const UPSTREAM = 'deepseek-ai/deepseek-harness'
+/** Overridable so the collection path can be exercised against a fork. */
+const UPSTREAM = process.env.DSH_UPSTREAM || 'deepseek-ai/deepseek-harness'
 const TOPIC = 'dsh-plugin'
 const API = 'https://api.github.com'
 
@@ -53,6 +54,12 @@ async function main() {
 
   const commits = await api(`/repos/${UPSTREAM}/commits?per_page=8`).catch(() => [])
 
+  // The public repository is a publish mirror and carries no releases or tags,
+  // so the shipped CLI version is the only reliable "what is current" signal.
+  const version = await api(`/repos/${UPSTREAM}/contents/apps/cli/package.json`)
+    .then((f) => JSON.parse(Buffer.from(f.content, f.encoding).toString('utf8')).version ?? null)
+    .catch(() => null)
+
   const byStars = await api(
     `/search/repositories?q=${encodeURIComponent(`topic:${TOPIC}`)}&sort=stars&order=desc&per_page=20`,
   )
@@ -74,6 +81,7 @@ async function main() {
       openIssues: repo.open_issues_count,
       pushedAt: repo.pushed_at,
       license: repo.license?.spdx_id ?? null,
+      version,
     },
     releases: releases.slice(0, 5).map((r) => ({
       tag: r.tag_name,
@@ -114,7 +122,7 @@ async function main() {
   console.log(
     `wrote ${OUT}\n` +
       `  upstream  ${data.upstream.stars} stars / ${data.upstream.forks} forks, pushed ${data.upstream.pushedAt}\n` +
-      `  releases  ${data.releases.length} (tags fallback: ${data.tags.length})\n` +
+      `  version   ${data.upstream.version ?? '(none)'}; releases ${data.releases.length}, tags ${data.tags.length}\n` +
       `  commits   ${data.commits.length}\n` +
       `  plugins   ${data.plugins.total} tagged; ${data.plugins.top.length} top, ${data.plugins.recentlyActive.length} recent`,
   )
