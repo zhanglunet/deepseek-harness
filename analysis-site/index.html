@@ -7,48 +7,48 @@
 <meta name="description" content="DeepSeek Harness (dsh) 源码分析：插件化 agent harness 的架构、功能盘点、使用方式，以及与自有 GitHub 项目的五层集成路径。">
 <style>
 :root {
-  --bg: #ffffff;
-  --bg-soft: #f6f7f9;
-  --bg-code: #f4f5f7;
-  --fg: #1c1f26;
-  --fg-muted: #5b6472;
-  --fg-faint: #8a929e;
-  --line: #e3e6ea;
-  --line-soft: #eef0f3;
-  --accent: #3b5bfd;
-  --accent-soft: #eaeeff;
-  --shadow: 0 1px 2px rgba(16, 20, 30, .05), 0 8px 24px rgba(16, 20, 30, .04);
+  --bg: rgb(255, 255, 255);
+  --bg-soft: rgb(249, 250, 251);
+  --bg-code: rgb(241, 243, 245);
+  --fg: rgb(15, 17, 21);
+  --fg-muted: rgb(97, 102, 107);
+  --fg-faint: rgb(129, 133, 140);
+  --line: rgba(0, 0, 0, .1);
+  --line-soft: rgba(0, 0, 0, .04);
+  --accent: rgb(65, 118, 230);
+  --accent-soft: rgb(237, 243, 254);
+  --shadow: 0 1px 2px rgba(15, 17, 21, .04);
   --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB",
           "Microsoft YaHei", "Noto Sans SC", Roboto, Helvetica, Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0e1116;
-    --bg-soft: #151922;
-    --bg-code: #161b23;
-    --fg: #e4e7ec;
-    --fg-muted: #a2abb8;
-    --fg-faint: #6f7986;
-    --line: #232a35;
-    --line-soft: #1c222c;
-    --accent: #7d93ff;
-    --accent-soft: #1a2140;
-    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .28);
+    --bg: rgb(21, 21, 23);
+    --bg-soft: rgb(35, 35, 36);
+    --bg-code: rgb(27, 27, 28);
+    --fg: rgb(249, 250, 251);
+    --fg-muted: rgb(207, 211, 214);
+    --fg-faint: rgb(173, 178, 184);
+    --line: rgba(255, 255, 255, .12);
+    --line-soft: rgba(255, 255, 255, .06);
+    --accent: rgb(103, 158, 254);
+    --accent-soft: rgb(52, 65, 91);
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3);
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0e1116;
-  --bg-soft: #151922;
-  --bg-code: #161b23;
-  --fg: #e4e7ec;
-  --fg-muted: #a2abb8;
-  --fg-faint: #6f7986;
-  --line: #232a35;
-  --line-soft: #1c222c;
-  --accent: #7d93ff;
-  --accent-soft: #1a2140;
-  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .28);
+  --bg: rgb(21, 21, 23);
+  --bg-soft: rgb(35, 35, 36);
+  --bg-code: rgb(27, 27, 28);
+  --fg: rgb(249, 250, 251);
+  --fg-muted: rgb(207, 211, 214);
+  --fg-faint: rgb(173, 178, 184);
+  --line: rgba(255, 255, 255, .12);
+  --line-soft: rgba(255, 255, 255, .06);
+  --accent: rgb(103, 158, 254);
+  --accent-soft: rgb(52, 65, 91);
+  --shadow: 0 1px 2px rgba(0, 0, 0, .3);
 }
 
 * { box-sizing: border-box; }
@@ -86,7 +86,7 @@ h1 { font-size: clamp(30px, 5vw, 46px); line-height: 1.2; margin: 0 0 18px; lett
 
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; max-width: 860px; }
 .stat {
-  background: var(--bg); border: 1px solid var(--line); border-radius: 12px;
+  background: var(--bg); border: 1px solid var(--line); border-radius: 16px;
   padding: 16px 18px; box-shadow: var(--shadow);
 }
 .stat b { display: block; font-size: 22px; line-height: 1.3; letter-spacing: -.01em; }
@@ -128,10 +128,10 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 40px 0; }
 code {
   font-family: var(--mono); font-size: .875em;
   background: var(--bg-code); border: 1px solid var(--line-soft);
-  padding: .12em .38em; border-radius: 5px; word-break: break-word;
+  padding: .12em .38em; border-radius: 6px; word-break: break-word;
 }
 pre {
-  background: var(--bg-code); border: 1px solid var(--line); border-radius: 12px;
+  background: var(--bg-code); border: 1px solid var(--line); border-radius: 16px;
   padding: 16px 18px; overflow-x: auto; margin: 0 0 18px; line-height: 1.65;
 }
 pre code { background: none; border: 0; padding: 0; font-size: 13.5px; }
@@ -140,7 +140,7 @@ pre code { background: none; border: 0; padding: 0; font-size: 13.5px; }
   margin-bottom: 6px;
 }
 
-.table-wrap { overflow-x: auto; margin: 0 0 20px; border: 1px solid var(--line); border-radius: 12px; }
+.table-wrap { overflow-x: auto; margin: 0 0 20px; border: 1px solid var(--line); border-radius: 16px; }
 table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
 th, td { text-align: left; padding: 11px 16px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
 th { background: var(--bg-soft); font-weight: 650; white-space: nowrap; color: var(--fg); }
@@ -154,7 +154,7 @@ blockquote {
 blockquote p:last-child { margin-bottom: 0; }
 
 .callout {
-  border: 1px solid var(--line); background: var(--bg-soft); border-radius: 12px;
+  border: 1px solid var(--line); background: var(--bg-soft); border-radius: 16px;
   padding: 16px 18px; margin: 0 0 20px;
 }
 .callout p:last-child { margin-bottom: 0; }
@@ -165,7 +165,7 @@ blockquote p:last-child { margin-bottom: 0; }
 
 /* ---------- tier cards ---------- */
 .tier {
-  border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px;
+  border: 1px solid var(--line); border-radius: 18px; padding: 22px 24px;
   margin: 0 0 16px; background: var(--bg); box-shadow: var(--shadow);
 }
 .tier > h3 { margin-top: 0; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
@@ -179,39 +179,39 @@ blockquote p:last-child { margin-bottom: 0; }
 figure { margin: 24px 0 28px; }
 figure svg { display: block; width: 100%; height: auto; }
 figcaption { font-size: 13.5px; color: var(--fg-faint); margin-top: 10px; }
-.diagram-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; padding: 20px; background: var(--bg-soft); }
+.diagram-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 16px; padding: 20px; background: var(--bg-soft); }
 .diagram-scroll svg { min-width: 620px; font-family: var(--sans); }
 
 /* ---------- data-viz tokens (validated palette; see footer note) ---------- */
 :root {
-  --viz-surface: #f6f7f9;
-  --series-1: #2a78d6;   /* blue   — 核心骨架 */
+  --viz-surface: rgb(249, 250, 251);
+  --series-1: #4176E6;   /* blue   — 核心骨架 */
   --series-2: #eb6834;   /* orange — 组装外壳 */
   --series-3: #1baf7a;   /* aqua   — 能力族 */
-  --viz-neutral: #8a929e;
-  --viz-track: #e6e9ee;
+  --viz-neutral: rgb(173, 178, 184);
+  --viz-track: rgb(235, 238, 242);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --viz-surface: #151922;
-    --series-1: #3987e5;
+    --viz-surface: rgb(35, 35, 36);
+    --series-1: #5686FE;
     --series-2: #d95926;
     --series-3: #199e70;
-    --viz-neutral: #6f7986;
-    --viz-track: #232a35;
+    --viz-neutral: rgb(129, 133, 140);
+    --viz-track: rgba(255, 255, 255, .1);
   }
 }
 :root[data-theme="dark"] {
-  --viz-surface: #151922;
-  --series-1: #3987e5;
+  --viz-surface: rgb(35, 35, 36);
+  --series-1: #5686FE;
   --series-2: #d95926;
   --series-3: #199e70;
-  --viz-neutral: #6f7986;
-  --viz-track: #232a35;
+  --viz-neutral: rgb(129, 133, 140);
+  --viz-track: rgba(255, 255, 255, .1);
 }
 
 /* horizontal bar chart, built in plain HTML */
-.chart { border: 1px solid var(--line); border-radius: 12px; padding: 20px 22px; background: var(--viz-surface); margin: 0 0 12px; }
+.chart { border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; background: var(--viz-surface); margin: 0 0 12px; }
 .chart-title { font-size: 15px; font-weight: 650; margin: 0 0 2px; }
 .chart-sub { font-size: 13px; color: var(--fg-faint); margin: 0 0 16px; }
 .bar-row { display: grid; grid-template-columns: minmax(96px, 200px) 1fr 38px; align-items: center; gap: 12px; margin: 0 0 7px; }
@@ -224,7 +224,7 @@ figcaption { font-size: 13.5px; color: var(--fg-faint); margin-top: 10px; }
 .hero-stat {
   display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap;
   border: 1px solid var(--line); border-left: 3px solid var(--series-1);
-  border-radius: 12px; padding: 18px 22px; margin: 0 0 20px; background: var(--viz-surface);
+  border-radius: 16px; padding: 18px 22px; margin: 0 0 20px; background: var(--viz-surface);
 }
 .hero-stat b { font-size: 38px; line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
 .hero-stat span { color: var(--fg-muted); font-size: 14.5px; max-width: 56ch; }
@@ -236,7 +236,7 @@ figcaption { font-size: 13.5px; color: var(--fg-faint); margin-top: 10px; }
   border: 1px solid var(--line); background: var(--bg); color: var(--fg-muted); white-space: nowrap;
 }
 .tier-band {
-  border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; margin: 0 0 8px;
+  border: 1px solid var(--line); border-radius: 16px; padding: 14px 18px; margin: 0 0 8px;
   background: var(--bg); border-left-width: 4px; border-left-style: solid;
 }
 .tier-band.t-base { border-left-color: var(--viz-neutral); }
@@ -278,6 +278,30 @@ footer p { margin: 0 0 8px; }
 .foot-links a { font-weight: 600; text-decoration: none; }
 .foot-links a:hover { text-decoration: underline; }
 .foot-links span { font-family: var(--mono); font-size: 12px; color: var(--fg-faint); overflow-wrap: anywhere; }
+
+/* demo call-to-action */
+.cta {
+  display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center;
+  background: var(--accent-soft); border: 1px solid var(--line-soft);
+  border-radius: 20px; padding: 24px 28px; margin: 0 0 48px;
+}
+.cta h2 { border: 0; padding: 0; margin: 0 0 6px; font-size: 20px; }
+.cta p { margin: 0; color: var(--fg-muted); font-size: 14.5px; max-width: 62ch; }
+.cta-go {
+  display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+  background: var(--accent); color: #fff; text-decoration: none; font-weight: 600;
+  font-size: 14.5px; border-radius: 999px; padding: 11px 24px;
+}
+.cta-go:hover { opacity: .88; }
+.cta-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+.cta-tags span {
+  font-size: 12px; color: var(--fg-muted); background: var(--bg);
+  border: 1px solid var(--line-soft); border-radius: 999px; padding: 3px 11px;
+}
+@media (max-width: 720px) {
+  .cta { grid-template-columns: 1fr; gap: 16px; }
+  .cta-go { justify-content: center; }
+}
 
 /* hero link row */
 .hero-links { display: flex; flex-wrap: wrap; gap: 10px; margin: 28px 0 0; }
@@ -354,6 +378,20 @@ footer p { margin: 0 0 8px; }
   </nav>
 
   <main>
+
+    <div class="cta">
+      <div>
+        <h2>先看它实际怎么跑</h2>
+        <p>
+          用仓库里<strong>真实录制并提交</strong>的会话日志，逐个事件回放五个场景：持久终端、自我修改与委派、上下文压缩、子 agent 结算、Ralph 循环。
+          左边是渲染出来的对话，右边同步显示它对应的日志原文。
+        </p>
+        <div class="cta-tags">
+          <span>不需要 API key</span><span>不执行任何代码</span><span>5 个真实场景</span><span>153 步</span>
+        </div>
+      </div>
+      <a class="cta-go" href="./demo.html">打开回放 Demo →</a>
+    </div>
 
     <!-- ============ 1 ============ -->
     <section id="what">

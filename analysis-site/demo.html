@@ -7,32 +7,32 @@
 <meta name="description" content="用仓库里真实录制的会话日志，逐事件回放 DeepSeek Harness agent 的完整行为。无需 API key，不执行任何代码。">
 <style>
 :root {
-  --bg: #ffffff; --bg-soft: #f6f7f9; --bg-code: #f4f5f7;
-  --fg: #1c1f26; --fg-muted: #5b6472; --fg-faint: #8a929e;
-  --line: #e3e6ea; --line-soft: #eef0f3;
-  --accent: #3b5bfd; --accent-soft: #eaeeff;
-  --user: #2a78d6; --tool: #1baf7a; --err: #e34948; --warn: #eb6834;
-  --shadow: 0 1px 2px rgba(16,20,30,.05), 0 8px 24px rgba(16,20,30,.04);
+  --bg: rgb(255, 255, 255); --bg-soft: rgb(249, 250, 251); --bg-code: rgb(241, 243, 245);
+  --fg: rgb(15, 17, 21); --fg-muted: rgb(97, 102, 107); --fg-faint: rgb(129, 133, 140);
+  --line: rgba(0, 0, 0, .1); --line-soft: rgba(0, 0, 0, .04);
+  --accent: rgb(65, 118, 230); --accent-soft: rgb(237, 243, 254);
+  --user: rgb(65, 118, 230); --tool: rgb(34, 197, 94); --err: rgb(236, 19, 19); --warn: rgb(245, 158, 11);
+  --shadow: 0 1px 2px rgba(15, 17, 21, .04);
   --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB",
           "Microsoft YaHei", "Noto Sans SC", Roboto, Helvetica, Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0e1116; --bg-soft: #151922; --bg-code: #161b23;
-    --fg: #e4e7ec; --fg-muted: #a2abb8; --fg-faint: #6f7986;
-    --line: #232a35; --line-soft: #1c222c;
-    --accent: #7d93ff; --accent-soft: #1a2140;
-    --user: #3987e5; --tool: #199e70; --err: #e66767; --warn: #d95926;
-    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.28);
+    --bg: rgb(21, 21, 23); --bg-soft: rgb(35, 35, 36); --bg-code: rgb(27, 27, 28);
+    --fg: rgb(249, 250, 251); --fg-muted: rgb(207, 211, 214); --fg-faint: rgb(173, 178, 184);
+    --line: rgba(255, 255, 255, .12); --line-soft: rgba(255, 255, 255, .06);
+    --accent: rgb(103, 158, 254); --accent-soft: rgb(52, 65, 91);
+    --user: rgb(103, 158, 254); --tool: rgb(78, 209, 126); --err: rgb(242, 90, 90); --warn: rgb(247, 173, 49);
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3);
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0e1116; --bg-soft: #151922; --bg-code: #161b23;
-  --fg: #e4e7ec; --fg-muted: #a2abb8; --fg-faint: #6f7986;
-  --line: #232a35; --line-soft: #1c222c;
-  --accent: #7d93ff; --accent-soft: #1a2140;
-  --user: #3987e5; --tool: #199e70; --err: #e66767; --warn: #d95926;
+  --bg: rgb(21, 21, 23); --bg-soft: rgb(35, 35, 36); --bg-code: rgb(27, 27, 28);
+  --fg: rgb(249, 250, 251); --fg-muted: rgb(207, 211, 214); --fg-faint: rgb(173, 178, 184);
+  --line: rgba(255, 255, 255, .12); --line-soft: rgba(255, 255, 255, .06);
+  --accent: rgb(103, 158, 254); --accent-soft: rgb(52, 65, 91);
+  --user: rgb(103, 158, 254); --tool: rgb(78, 209, 126); --err: rgb(242, 90, 90); --warn: rgb(247, 173, 49);
 }
 
 * { box-sizing: border-box; }
@@ -43,7 +43,7 @@ body {
 .wrap { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
 a { color: var(--accent); }
 code { font-family: var(--mono); font-size: .87em; background: var(--bg-code);
-  border: 1px solid var(--line-soft); padding: .1em .36em; border-radius: 5px; }
+  border: 1px solid var(--line-soft); padding: .1em .36em; border-radius: 6px; }
 
 header.top { border-bottom: 1px solid var(--line); background: var(--bg-soft); padding: 40px 0 32px; }
 .back { font-size: 13.5px; color: var(--fg-muted); text-decoration: none; }
@@ -61,7 +61,7 @@ h1 { font-size: clamp(24px, 4vw, 34px); margin: 12px 0 12px; letter-spacing: -.0
 .picker { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; margin: 28px 0 0; }
 .scn {
   text-align: left; cursor: pointer; font: inherit; font-size: 13.5px;
-  background: var(--bg); border: 1px solid var(--line); border-radius: 11px;
+  background: var(--bg); border: 1px solid var(--line); border-radius: 14px;
   padding: 12px 14px; color: var(--fg-muted); transition: border-color .12s, color .12s;
 }
 .scn:hover { border-color: var(--accent); }
@@ -77,7 +77,7 @@ h1 { font-size: clamp(24px, 4vw, 34px); margin: 12px 0 12px; letter-spacing: -.0
 .controls-inner { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 button.ctl {
   font: inherit; font-size: 13.5px; cursor: pointer; background: var(--bg); color: var(--fg);
-  border: 1px solid var(--line); border-radius: 9px; padding: 7px 14px;
+  border: 1px solid var(--line); border-radius: 12px; padding: 7px 14px;
 }
 button.ctl:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
 button.ctl:disabled { opacity: .4; cursor: default; }
@@ -87,7 +87,7 @@ button.ctl.primary:hover { opacity: .9; color: #fff; }
 .progress > i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .15s; }
 .counter { font-family: var(--mono); font-size: 12.5px; color: var(--fg-faint); font-variant-numeric: tabular-nums; }
 select.ctl { font: inherit; font-size: 13px; background: var(--bg); color: var(--fg);
-  border: 1px solid var(--line); border-radius: 9px; padding: 7px 10px; cursor: pointer; }
+  border: 1px solid var(--line); border-radius: 12px; padding: 7px 10px; cursor: pointer; }
 
 /* layout */
 .stage { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 26px; align-items: start; padding-bottom: 80px; }
@@ -95,7 +95,7 @@ select.ctl { font: inherit; font-size: 13px; background: var(--bg); color: var(-
 .rawpane { position: sticky; top: 78px; }
 .rawpane h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .1em; color: var(--fg-faint); margin: 0 0 10px; }
 .rawbox {
-  background: var(--bg-code); border: 1px solid var(--line); border-radius: 12px;
+  background: var(--bg-code); border: 1px solid var(--line); border-radius: 16px;
   padding: 14px; max-height: 62vh; overflow: auto;
 }
 .rawbox pre { margin: 0; font-family: var(--mono); font-size: 11.5px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
@@ -105,12 +105,13 @@ select.ctl { font: inherit; font-size: 13px; background: var(--bg); color: var(-
 .ev { margin: 0 0 12px; opacity: .32; transition: opacity .2s; }
 .ev.on { opacity: 1; }
 .ev.cur .card, .ev.cur .divider span { outline: 2px solid var(--accent); outline-offset: 2px; }
-.card { border: 1px solid var(--line); border-radius: 12px; padding: 13px 16px; background: var(--bg); box-shadow: var(--shadow); }
+.card { border: 1px solid var(--line); border-radius: 16px; padding: 13px 16px; background: var(--bg); box-shadow: var(--shadow); }
 .card .who { font-size: 12px; font-weight: 650; letter-spacing: .03em; margin-bottom: 5px; display: flex; gap: 8px; align-items: center; }
 .card .who .seq { font-family: var(--mono); font-weight: 400; color: var(--fg-faint); font-size: 11px; }
 .card .body { white-space: pre-wrap; word-break: break-word; }
-.card.user { border-left: 3px solid var(--user); }
-.card.user .who { color: var(--user); }
+/* User turns get the product's chat-bubble treatment rather than a rule. */
+.card.user { background: var(--accent-soft); border-color: transparent; box-shadow: none; }
+.card.user .who { color: var(--accent); }
 .card.assistant { border-left: 3px solid var(--accent); }
 .card.assistant .who { color: var(--accent); }
 .card.tool { border-left: 3px solid var(--tool); }
@@ -120,7 +121,7 @@ select.ctl { font: inherit; font-size: 13px; background: var(--bg); color: var(-
 .card.comp { border-left: 3px solid var(--warn); }
 .card.comp .who { color: var(--warn); }
 .card pre { margin: 6px 0 0; background: var(--bg-code); border: 1px solid var(--line-soft);
-  border-radius: 8px; padding: 10px 12px; overflow-x: auto; font-family: var(--mono); font-size: 12px; line-height: 1.55;
+  border-radius: 10px; padding: 10px 12px; overflow-x: auto; font-family: var(--mono); font-size: 12px; line-height: 1.55;
   white-space: pre-wrap; word-break: break-word; }
 .divider { text-align: center; margin: 16px 0; position: relative; }
 .divider::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 1px solid var(--line); }

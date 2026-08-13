@@ -8,6 +8,10 @@ DeepSeek Harness 源码分析的静态站点，无构建步骤、无外部资源
 | `demo.html` | 会话回放播放器，按需 `fetch` 同源 JSON |
 | `demo-data/` | 回放数据，由 `scripts/build-demo-data.mjs` 从仓库快照生成 |
 
+两页共用同一套配色，值镜像自产品自身的主题 `packages/client/ui-theme/src/styles/design-platform.css`
+（`--dsw-alias-*` 语义别名与 `deepseek-*` / `neutral-bluish-*` 色阶），因此与 DeepSeek Web UI 同源。
+图表用色另经色觉安全校验：深色档取 `deepseek-450`，因为它是同时通过亮度带与对比度两项检查的官方色阶。
+
 回放数据取自 `examples/headless-agent/tests/snapshots/<场景>/stream-json.expected.jsonl`——
 仓库中提交的快照期望输出，由 `DSH_SNAPSHOT=record` 对真实 API 录制后作为 golden 供无密钥回放。
 其中会话 id、工作目录、时间戳、系统提示词、工具 schema 与 token 计数已被规范化，故播放器不展示 token 数字。
