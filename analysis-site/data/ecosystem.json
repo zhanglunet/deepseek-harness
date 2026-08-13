@@ -1,14 +1,15 @@
 {
-  "generatedAt": "2026-08-13T23:23:03.753Z",
+  "generatedAt": "2026-08-13T23:26:33.056Z",
   "upstream": {
     "name": "deepseek-ai/deepseek-harness",
     "url": "https://github.com/deepseek-ai/deepseek-harness",
     "description": "DeepSeek Harness: Everything is a Plugin.",
-    "stars": 39642,
-    "forks": 3103,
+    "stars": 39721,
+    "forks": 3107,
     "openIssues": 0,
     "pushedAt": "2026-08-13T13:00:21Z",
-    "license": "MIT"
+    "license": "MIT",
+    "version": "0.1.0-rc.5"
   },
   "releases": [],
   "tags": [],
@@ -64,12 +65,12 @@
   ],
   "plugins": {
     "topic": "dsh-plugin",
-    "total": 704,
+    "total": 706,
     "top": [
       {
         "name": "titanwings/colleague-skill",
         "url": "https://github.com/titanwings/colleague-skill",
-        "stars": 21071,
+        "stars": 21072,
         "language": "Python",
         "description": "将冰冷的离别化为温暖的 Skill，欢迎加入数字生命1.0！Transforming cold farewells into warm skills? It's giving rebirth era. Welcome to Digital Life 1.0. 🫶",
         "pushedAt": "2026-08-13T15:00:28Z",
@@ -78,7 +79,7 @@
       {
         "name": "Devin-AXIS/iPolloWork",
         "url": "https://github.com/Devin-AXIS/iPolloWork",
-        "stars": 3579,
+        "stars": 3581,
         "language": "HTML",
         "description": "A next-generation, source-available AI workspace with a self-evolving agent runtime for editable code, design, presentations, websites, and video—a Codex alternative that integrates DeepSeek Harness for subagent delegati",
         "pushedAt": "2026-08-13T20:15:08Z",
@@ -87,7 +88,7 @@
       {
         "name": "whiteguo233/OpenBiliClaw",
         "url": "https://github.com/whiteguo233/OpenBiliClaw",
-        "stars": 1933,
+        "stars": 1934,
         "language": "Python",
         "description": "本地私有、开源的跨平台 AI 内容发现 Agent：先理解你，再主动从 B站、小红书、抖音、YouTube、X、知乎、Reddit、微博等平台与开放 Web 寻找内容。 | Local-first open-source cross-platform AI content discovery agent: understands you, then proactively finds content across Bilibili, X",
         "pushedAt": "2026-08-13T19:06:47Z",
@@ -141,7 +142,7 @@
       {
         "name": "AdamPlatin123/awesome-dsh-plugins",
         "url": "https://github.com/AdamPlatin123/awesome-dsh-plugins",
-        "stars": 305,
+        "stars": 306,
         "language": "Shell",
         "description": "前部索引仓库（Radar）：自动扫描发现的所有 dsh 插件候选；经测试合格的将移入后序精选目录仓库",
         "pushedAt": "2026-08-13T20:46:33Z",
@@ -177,6 +178,33 @@
     ],
     "recentlyActive": [
       {
+        "name": "zp-home/dsh-recommend",
+        "url": "https://github.com/zp-home/dsh-recommend",
+        "stars": 1,
+        "language": "JavaScript",
+        "description": "DSH 插件生态透明排行与推荐：每日自动抓取 dsh-plugin 话题 + 公开评分模型 + 排行/推荐插件与静态站",
+        "pushedAt": "2026-08-13T23:26:08Z",
+        "createdAt": "2026-08-13T21:56:48Z"
+      },
+      {
+        "name": "csiroqa/dsh-archive-viewer",
+        "url": "https://github.com/csiroqa/dsh-archive-viewer",
+        "stars": 0,
+        "language": "TypeScript",
+        "description": "DeepSeek Harness（DSH）归档增强插件：自动定期归档、文件夹归档整理、LLM 摘要沉淀经验库、会话收藏与便签、会话删除与优雅关机。Archive enhancement plugin for DeepSeek Harness: auto-archive, folder organization, LLM knowledge library, bookmarks & notes, session delete.",
+        "pushedAt": "2026-08-13T23:26:14Z",
+        "createdAt": "2026-08-13T18:36:38Z"
+      },
+      {
+        "name": "PivotStackIntelligence/dsh-github",
+        "url": "https://github.com/PivotStackIntelligence/dsh-github",
+        "stars": 2,
+        "language": "TypeScript",
+        "description": "",
+        "pushedAt": "2026-08-13T23:23:45Z",
+        "createdAt": "2026-08-13T17:31:00Z"
+      },
+      {
         "name": "cking000bigdemon/dsh-toolbelt",
         "url": "https://github.com/cking000bigdemon/dsh-toolbelt",
         "stars": 1,
@@ -193,6 +221,15 @@
         "description": "DeepSeek Harness (DSH) 插件精选目录 — 14 类 280+ 个社区插件，覆盖 MCP / Skill / TUI / 多 Agent / 上下文记忆 / UI 皮肤，点链接直达仓库。Curated directory of dsh plugins for DeepSeek Harness.",
         "pushedAt": "2026-08-13T23:22:09Z",
         "createdAt": "2026-08-13T19:54:28Z"
+      },
+      {
+        "name": "dsh-plugin/dsh-plugin.github.io",
+        "url": "https://github.com/dsh-plugin/dsh-plugin.github.io",
+        "stars": 1,
+        "language": "HTML",
+        "description": "DeepSeek Harness community plugin workshop and directory",
+        "pushedAt": "2026-08-13T23:21:11Z",
+        "createdAt": "2026-08-13T21:00:28Z"
       },
       {
         "name": "qing3a/dsh-plugin-verify",
@@ -229,42 +266,6 @@
         "description": "自动收录和分类 GitHub dsh-plugin Topic 项目的静态目录网站",
         "pushedAt": "2026-08-13T23:17:10Z",
         "createdAt": "2026-08-13T22:16:37Z"
-      },
-      {
-        "name": "csiroqa/dsh-archive-viewer",
-        "url": "https://github.com/csiroqa/dsh-archive-viewer",
-        "stars": 0,
-        "language": "TypeScript",
-        "description": "DeepSeek Harness（DSH）归档增强插件：自动定期归档、文件夹归档整理、LLM 摘要沉淀经验库、会话收藏与便签、会话删除与优雅关机。Archive enhancement plugin for DeepSeek Harness: auto-archive, folder organization, LLM knowledge library, bookmarks & notes, session delete.",
-        "pushedAt": "2026-08-13T23:22:40Z",
-        "createdAt": "2026-08-13T18:36:38Z"
-      },
-      {
-        "name": "ccch1mneyyy/dsh-cc-tui",
-        "url": "https://github.com/ccch1mneyyy/dsh-cc-tui",
-        "stars": 208,
-        "language": "TypeScript",
-        "description": "DSH 官方尚无终端 TUI 的补位之作：Claude Code 风格全屏交互终端插件——像素鲸鱼顶栏、实时工作状态行、思考流式展开、双击 Esc 回滚、上下文进度条 + TPS 仪表。npm 一键安装。",
-        "pushedAt": "2026-08-13T23:16:37Z",
-        "createdAt": "2026-08-13T12:49:31Z"
-      },
-      {
-        "name": "zp-home/dsh-recommend",
-        "url": "https://github.com/zp-home/dsh-recommend",
-        "stars": 1,
-        "language": "JavaScript",
-        "description": "DSH 插件生态透明排行与推荐：每日自动抓取 dsh-plugin 话题 + 公开评分模型 + 排行/推荐插件与静态站",
-        "pushedAt": "2026-08-13T23:16:19Z",
-        "createdAt": "2026-08-13T21:56:48Z"
-      },
-      {
-        "name": "liuup/dsh-latex",
-        "url": "https://github.com/liuup/dsh-latex",
-        "stars": 0,
-        "language": "TypeScript",
-        "description": "♾️ Copy and export the LaTeX in DeepSeek Harness",
-        "pushedAt": "2026-08-13T23:16:00Z",
-        "createdAt": "2026-08-13T21:48:37Z"
       }
     ]
   }
