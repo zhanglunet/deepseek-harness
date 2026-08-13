@@ -27,6 +27,8 @@ const INTRO_MAX = 300
 const USAGE_MAX = 400
 const BULLET_MAX = 100
 const BULLET_COUNT = 5
+/** Bump when the extraction rules change, so cached descriptions are re-read. */
+const DOC_VERSION = 2
 
 const token = process.env.GITHUB_TOKEN ?? ''
 const headers = {
@@ -90,6 +92,28 @@ const matches = (heading, words) => {
   return words.some((w) => h.includes(w))
 }
 
+/** Language names that appear in the translation switcher many READMEs open with. */
+const LANG_NAMES = ['english', '简体中文', '繁體中文', '繁体中文', '中文', '日本語', '한국어',
+  'español', 'français', 'deutsch', 'português', 'русский', 'italiano', 'tiếng việt', 'العربية']
+
+/**
+ * A translation switcher ("English · 简体中文 · 日本語") is navigation, not prose.
+ * The signature is that removing the language names and their separators leaves
+ * almost nothing — a sentence that merely mentions two languages keeps its body.
+ */
+function isLanguageBar(text) {
+  if (text.length > 120) return false
+  let rest = text.toLowerCase()
+  let found = 0
+  for (const n of LANG_NAMES) {
+    if (!rest.includes(n)) continue
+    found++
+    rest = rest.split(n).join(' ')
+  }
+  if (found < 2) return false
+  return rest.replace(/[\s·|/•,\-–—()[\]{}:：、。.]+/g, '').length <= 8
+}
+
 /**
  * Split a README into sections keyed by heading, dropping fenced code so a
  * shell snippet cannot be mistaken for prose.
@@ -125,7 +149,7 @@ function describe(markdown) {
       const t = plain(line)
       // Skip badge rows, table rows, quotes, and stray bullets before the prose.
       if (!t || t.length < 24 || t.startsWith('|') || t.startsWith('>')) continue
-      if (BULLET.test(line)) continue
+      if (BULLET.test(line) || isLanguageBar(t)) continue
       intro = clip(t, INTRO_MAX)
       break
     }
@@ -277,7 +301,7 @@ async function main() {
   if (existsSync(OUT)) {
     try {
       for (const p of JSON.parse(readFileSync(OUT, 'utf8')).plugins ?? []) {
-        if (p.readFor) cache.set(p.name, { readFor: p.readFor, doc: p.doc })
+        if (p.readFor) cache.set(p.name, { readFor: p.readFor, docVersion: p.docVersion, doc: p.doc })
       }
     } catch {
       // A corrupt cache only costs re-reading; the fresh data still wins.
@@ -289,7 +313,7 @@ async function main() {
     repos,
     async (r) => {
       const hit = cache.get(r.full_name)
-      if (hit && hit.readFor === r.pushed_at && hit.doc) return hit.doc
+      if (hit && hit.readFor === r.pushed_at && hit.docVersion === DOC_VERSION && hit.doc) return hit.doc
       probed++
       return probeReadme(r.full_name).catch(() => ({ intro: '', bullets: [], usage: '', hasReadme: false }))
     },
@@ -312,6 +336,7 @@ async function main() {
       createdAt: r.created_at,
       category: classify(r, doc.intro),
       readFor: r.pushed_at,
+      docVersion: DOC_VERSION,
       doc,
     }
   })
@@ -343,6 +368,6 @@ async function main() {
 }
 
 /** Exported for tests; the module still runs its collection on import. */
-export { describe, classify, plain, sections }
+export { describe, classify, plain, sections, isLanguageBar }
 
 await main()
