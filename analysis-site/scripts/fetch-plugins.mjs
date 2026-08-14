@@ -28,7 +28,7 @@ const USAGE_MAX = 400
 const BULLET_MAX = 100
 const BULLET_COUNT = 5
 /** Bump when the extraction rules change, so cached descriptions are re-read. */
-const DOC_VERSION = 2
+const DOC_VERSION = 4
 
 const token = process.env.GITHUB_TOKEN ?? ''
 const headers = {
@@ -86,6 +86,21 @@ const FEATURE_WORDS = ['feature', 'capabilit', 'what it does', 'highlights',
   '功能', '特性', '能力', '亮点']
 const SKIP_WORDS = ['license', 'contributing', 'acknowledg', 'star history', 'sponsor',
   '许可', '协议', '贡献', '致谢', '赞助']
+
+/** Share of CJK characters, used to tell an already-Chinese README from an English one. */
+function cjkRatio(text) {
+  if (!text) return 0
+  const cjk = (text.match(/[\u4e00-\u9fff\u3400-\u4dbf]/g) || []).length
+  const letters = (text.match(/[A-Za-z]/g) || []).length
+  return cjk + letters === 0 ? 0 : cjk / (cjk + letters)
+}
+
+/**
+ * Length thresholds have to be language-aware: 24 English characters is half a
+ * clause, while 24 Chinese characters is a whole paragraph. CJK-heavy text
+ * therefore clears the same bar at half the character count.
+ */
+const minLen = (text, asciiMin) => (cjkRatio(text) > 0.3 ? Math.ceil(asciiMin / 2) : asciiMin)
 
 const matches = (heading, words) => {
   const h = heading.toLowerCase()
@@ -148,7 +163,7 @@ function describe(markdown) {
     for (const line of s.lines) {
       const t = plain(line)
       // Skip badge rows, table rows, quotes, and stray bullets before the prose.
-      if (!t || t.length < 24 || t.startsWith('|') || t.startsWith('>')) continue
+      if (!t || t.length < minLen(t, 24) || t.startsWith('|') || t.startsWith('>')) continue
       if (BULLET.test(line) || isLanguageBar(t)) continue
       intro = clip(t, INTRO_MAX)
       break
@@ -162,7 +177,7 @@ function describe(markdown) {
       const m = line.match(BULLET)
       if (!m) continue
       const t = plain(m[1])
-      if (t.length < 6) continue
+      if (t.length < minLen(t, 6)) continue
       bullets.push(clip(t, BULLET_MAX))
       if (bullets.length >= BULLET_COUNT) break
     }
@@ -172,7 +187,7 @@ function describe(markdown) {
   let usage = ''
   for (const s of secs) {
     if (!s.heading || !matches(s.heading, USAGE_WORDS)) continue
-    const text = s.lines.map(plain).filter((t) => t && t.length > 12 && !t.startsWith('|')).join(' ')
+    const text = s.lines.map(plain).filter((t) => t && t.length >= minLen(t, 12) && !t.startsWith('|')).join(' ')
     if (text) { usage = clip(text, USAGE_MAX); break }
   }
 
@@ -184,18 +199,96 @@ function describe(markdown) {
   return { intro, bullets, usage }
 }
 
-/** Read a repository's README and describe it; a missing README yields empty fields. */
-async function probeReadme(fullName) {
-  const file = await api(`/repos/${fullName}/readme`, { allow404: true }).catch(() => null)
-  if (!file || !file.content) return { intro: '', bullets: [], usage: '', hasReadme: false }
-  let text
+const ZH_README_PATHS = [
+  'README.zh.md', 'README.zh-CN.md', 'README_zh.md', 'README_CN.md', 'README-zh.md',
+  'README.zh_CN.md', 'README_zh-CN.md', 'README_zh_CN.md', 'README.cn.md', 'docs/README.zh.md',
+]
+
+const EMPTY_DOC = { intro: '', bullets: [], usage: '' }
+
+/** Decode a contents-API file payload into text, or null when it cannot be read. */
+function decode(file) {
+  if (!file || !file.content) return null
   try {
-    text = Buffer.from(file.content, file.encoding).toString('utf8')
+    return Buffer.from(file.content, file.encoding).toString('utf8')
   } catch {
     // An undecodable README leaves the repository described by its blurb alone.
-    return { intro: '', bullets: [], usage: '', hasReadme: false }
+    return null
   }
-  return { ...describe(text), hasReadme: true }
+}
+
+/**
+ * Describe a repository in both languages where possible.
+ *
+ * The default README is the primary source. When it is already Chinese, that
+ * doubles as the Chinese description. Otherwise a translated README committed
+ * by the author (README.zh.md and its common spellings) supplies Chinese in the
+ * author's own words, which is always preferred over any machine rendering.
+ */
+async function probeReadme(fullName) {
+  const main = decode(await api(`/repos/${fullName}/readme`, { allow404: true }).catch(() => null))
+  if (!main) return { doc: EMPTY_DOC, zh: null, en: null, lang: 'none', zhSource: 'none' }
+
+  const mainDoc = describe(main)
+  const mainIsZh = cjkRatio(mainDoc.intro || main.slice(0, 2000)) > 0.2
+
+  if (mainIsZh) return { doc: mainDoc, zh: mainDoc, en: null, lang: 'zh', zhSource: 'readme' }
+
+  for (const path of ZH_README_PATHS) {
+    const alt = decode(await api(`/repos/${fullName}/contents/${path}`, { allow404: true }).catch(() => null))
+    if (!alt) continue
+    const altDoc = describe(alt)
+    if (!altDoc.intro || cjkRatio(altDoc.intro) < 0.2) continue
+    return { doc: mainDoc, zh: altDoc, en: mainDoc, lang: 'en', zhSource: 'readme-zh' }
+  }
+
+  return { doc: mainDoc, zh: null, en: mainDoc, lang: 'en', zhSource: 'none' }
+}
+
+const DEEPSEEK_KEY = process.env.DEEPSEEK_API_KEY || ''
+const DEEPSEEK_URL = (process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com') + '/chat/completions'
+const TRANSLATE_MAX = Number(process.env.DSH_TRANSLATE_MAX || 400)
+const TRANSLATE_CONCURRENCY = 4
+
+/**
+ * Translate an English description into Chinese, used only when the author
+ * published no Chinese README. Returns null when no key is configured, so the
+ * directory still builds — those entries stay English-only and say so.
+ */
+async function translate(doc) {
+  if (!DEEPSEEK_KEY) return null
+  const payload = JSON.stringify({
+    intro: doc.intro || '',
+    bullets: doc.bullets || [],
+    usage: doc.usage || '',
+  })
+  const res = await fetch(DEEPSEEK_URL, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', authorization: `Bearer ${DEEPSEEK_KEY}` },
+    body: JSON.stringify({
+      model: process.env.DSH_TRANSLATE_MODEL || 'deepseek-chat',
+      temperature: 0,
+      response_format: { type: 'json_object' },
+      messages: [
+        {
+          role: 'system',
+          content: '把 JSON 中的英文软件说明翻译成简体中文。保持 JSON 结构与键名不变，' +
+            '数组长度不变。保留产品名、命令、代码标识符与专有名词的原文。只输出 JSON。',
+        },
+        { role: 'user', content: payload },
+      ],
+    }),
+  })
+  if (!res.ok) throw new Error(`translate -> ${res.status} ${res.statusText}`)
+  const body = await res.json()
+  const raw = body?.choices?.[0]?.message?.content
+  if (!raw) return null
+  const out = JSON.parse(raw)
+  return {
+    intro: typeof out.intro === 'string' ? out.intro : '',
+    bullets: Array.isArray(out.bullets) ? out.bullets.filter((b) => typeof b === 'string') : [],
+    usage: typeof out.usage === 'string' ? out.usage : '',
+  }
 }
 
 /**
@@ -301,7 +394,8 @@ async function main() {
   if (existsSync(OUT)) {
     try {
       for (const p of JSON.parse(readFileSync(OUT, 'utf8')).plugins ?? []) {
-        if (p.readFor) cache.set(p.name, { readFor: p.readFor, docVersion: p.docVersion, doc: p.doc })
+        if (p.readFor) cache.set(p.name, { readFor: p.readFor, docVersion: p.docVersion,
+          probe: { doc: p.doc, zh: p.zh, en: p.en, lang: p.lang, zhSource: p.zhSource } })
       }
     } catch {
       // A corrupt cache only costs re-reading; the fresh data still wins.
@@ -313,16 +407,44 @@ async function main() {
     repos,
     async (r) => {
       const hit = cache.get(r.full_name)
-      if (hit && hit.readFor === r.pushed_at && hit.docVersion === DOC_VERSION && hit.doc) return hit.doc
+      if (hit && hit.readFor === r.pushed_at && hit.docVersion === DOC_VERSION && hit.probe) return hit.probe
       probed++
-      return probeReadme(r.full_name).catch(() => ({ intro: '', bullets: [], usage: '', hasReadme: false }))
+      return probeReadme(r.full_name).catch(() => ({ doc: EMPTY_DOC, zh: null, en: null, lang: 'none', zhSource: 'none' }))
     },
     PROBE_CONCURRENCY,
   )
   console.log(`read ${probed} READMEs (${repos.length - probed} reused from cache)`)
 
+  // Fill the Chinese gap for English-only repositories, newest-and-most-starred
+  // first, capped so a large ecosystem cannot run away with the token budget.
+  const needTranslation = repos
+    .map((r, i) => ({ r, i }))
+    .filter(({ i }) => docs[i] && docs[i].lang === 'en' && !docs[i].zh && docs[i].doc.intro)
+    .slice(0, TRANSLATE_MAX)
+
+  let translated = 0
+  if (DEEPSEEK_KEY && needTranslation.length) {
+    await pool(
+      needTranslation,
+      async ({ i }) => {
+        const zh = await translate(docs[i].doc).catch(() => null)
+        if (zh && zh.intro) {
+          docs[i] = { ...docs[i], zh, zhSource: 'machine' }
+          translated++
+        }
+      },
+      TRANSLATE_CONCURRENCY,
+    )
+  }
+  console.log(
+    DEEPSEEK_KEY
+      ? `translated ${translated} of ${needTranslation.length} English-only entries`
+      : `no DEEPSEEK_API_KEY: ${needTranslation.length} English-only entries stay untranslated`,
+  )
+
   const plugins = repos.map((r, i) => {
-    const doc = docs[i] ?? { intro: '', bullets: [], usage: '', hasReadme: false }
+    const probe = docs[i] ?? { doc: EMPTY_DOC, zh: null, en: null, lang: 'none', zhSource: 'none' }
+    const doc = probe.doc
     return {
       name: r.full_name,
       owner: r.owner?.login ?? r.full_name.split('/')[0],
@@ -338,6 +460,10 @@ async function main() {
       readFor: r.pushed_at,
       docVersion: DOC_VERSION,
       doc,
+      zh: probe.zh,
+      en: probe.en,
+      lang: probe.lang,
+      zhSource: probe.zhSource,
     }
   })
 
@@ -354,6 +480,9 @@ async function main() {
     counts,
     described: plugins.filter((p) => p.doc.intro).length,
     withUsage: plugins.filter((p) => p.doc.usage).length,
+    chinese: plugins.filter((p) => p.zh && p.zh.intro).length,
+    chineseByAuthor: plugins.filter((p) => p.zhSource === 'readme' || p.zhSource === 'readme-zh').length,
+    chineseMachine: plugins.filter((p) => p.zhSource === 'machine').length,
     plugins,
   }
 
@@ -363,6 +492,7 @@ async function main() {
     `wrote ${OUT}\n` +
       `  listed     ${data.listed} of ${data.total}\n` +
       `  described  ${data.described} have a README intro; ${data.withUsage} have a usage section\n` +
+      `  chinese    ${data.chinese} (${data.chineseByAuthor} author-written, ${data.chineseMachine} machine)\n` +
       `  categories ${Object.entries(counts).map(([k, v]) => `${k}:${v}`).join(' ')}`,
   )
 }
