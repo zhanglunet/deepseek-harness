@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DeepSeek Harness 插件开发指南</title>
+<meta name="description" content="从最小插件到发布上架：dsh 插件怎么写、怎么加工具、怎么打包安装、怎么分发，以及那些会让人卡住的坑。">
+<style>
+:root {
+  --bg: rgb(255, 255, 255); --bg-soft: rgb(249, 250, 251); --bg-code: rgb(241, 243, 245);
+  --fg: rgb(15, 17, 21); --fg-muted: rgb(97, 102, 107); --fg-faint: rgb(129, 133, 140);
+  --line: rgba(0, 0, 0, .1); --line-soft: rgba(0, 0, 0, .04);
+  --accent: rgb(65, 118, 230); --accent-soft: rgb(237, 243, 254);
+  --warn: rgb(245, 158, 11); --warn-soft: rgb(254, 245, 231);
+  --ok: rgb(34, 197, 94);
+  --shadow: 0 1px 2px rgba(15, 17, 21, .04);
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB",
+          "Microsoft YaHei", "Noto Sans SC", Roboto, Helvetica, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: rgb(21, 21, 23); --bg-soft: rgb(35, 35, 36); --bg-code: rgb(27, 27, 28);
+    --fg: rgb(249, 250, 251); --fg-muted: rgb(207, 211, 214); --fg-faint: rgb(173, 178, 184);
+    --line: rgba(255, 255, 255, .12); --line-soft: rgba(255, 255, 255, .06);
+    --accent: rgb(103, 158, 254); --accent-soft: rgb(52, 65, 91);
+    --warn: rgb(247, 173, 49); --warn-soft: rgb(39, 36, 31);
+    --ok: rgb(78, 209, 126);
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: rgb(21, 21, 23); --bg-soft: rgb(35, 35, 36); --bg-code: rgb(27, 27, 28);
+  --fg: rgb(249, 250, 251); --fg-muted: rgb(207, 211, 214); --fg-faint: rgb(173, 178, 184);
+  --line: rgba(255, 255, 255, .12); --line-soft: rgba(255, 255, 255, .06);
+  --accent: rgb(103, 158, 254); --accent-soft: rgb(52, 65, 91);
+  --warn: rgb(247, 173, 49); --warn-soft: rgb(39, 36, 31);
+  --ok: rgb(78, 209, 126);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 20px; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--sans);
+  font-size: 16px; line-height: 1.78; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+a { color: var(--accent); text-underline-offset: 2px; }
+p { margin: 0 0 16px; }
+ul, ol { margin: 0 0 16px; padding-left: 22px; }
+li { margin: 5px 0; }
+strong { font-weight: 650; }
+code { font-family: var(--mono); font-size: .875em; background: var(--bg-code);
+  border: 1px solid var(--line-soft); padding: .12em .4em; border-radius: 6px; word-break: break-word; }
+pre { background: var(--bg-code); border: 1px solid var(--line); border-radius: 16px;
+  padding: 16px 18px; overflow-x: auto; margin: 0 0 8px; line-height: 1.65; }
+pre code { background: none; border: 0; padding: 0; font-size: 13.5px; }
+.snip { position: relative; margin: 0 0 20px; }
+.snip-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 6px; }
+.snip-file { font-family: var(--mono); font-size: 12px; color: var(--fg-faint); }
+.copy { font: inherit; font-size: 12px; cursor: pointer; background: var(--bg); color: var(--fg-muted);
+  border: 1px solid var(--line); border-radius: 999px; padding: 3px 12px; }
+.copy:hover { border-color: var(--accent); color: var(--accent); }
+
+header.top { border-bottom: 1px solid var(--line); background: var(--bg-soft); padding: 46px 0 34px; }
+.back { font-size: 13.5px; color: var(--fg-muted); text-decoration: none; }
+.back:hover { color: var(--accent); }
+h1 { font-size: clamp(26px, 4.5vw, 38px); margin: 12px 0 14px; letter-spacing: -.02em; }
+.lede { color: var(--fg-muted); max-width: 68ch; margin: 0; font-size: 17px; }
+
+.layout { display: grid; grid-template-columns: 226px minmax(0, 1fr); gap: 52px; align-items: start; padding-top: 44px; }
+nav.toc { position: sticky; top: 20px; font-size: 14px; }
+nav.toc h2 { font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--fg-faint); margin: 0 0 12px; font-weight: 600; }
+nav.toc ol { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--line); }
+nav.toc a { display: block; padding: 6px 0 6px 16px; margin-left: -1px;
+  border-left: 2px solid transparent; color: var(--fg-muted); text-decoration: none; }
+nav.toc a:hover { color: var(--fg); }
+nav.toc a.active { color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
+
+main { min-width: 0; padding-bottom: 90px; }
+section { scroll-margin-top: 20px; }
+section + section { margin-top: 56px; }
+h2 { font-size: 26px; margin: 0 0 10px; padding-bottom: 12px; border-bottom: 1px solid var(--line);
+  letter-spacing: -.01em; }
+h2 .num { color: var(--fg-faint); font-weight: 500; margin-right: 10px; font-variant-numeric: tabular-nums; }
+h3 { font-size: 18px; margin: 32px 0 10px; }
+h4 { font-size: 15.5px; margin: 22px 0 8px; }
+
+.callout { border: 1px solid var(--line); background: var(--bg-soft); border-radius: 16px;
+  padding: 16px 20px; margin: 0 0 20px; }
+.callout p:last-child, .callout ul:last-child { margin-bottom: 0; }
+.callout .tag { display: inline-block; font-size: 12px; font-weight: 650; letter-spacing: .04em;
+  color: var(--accent); margin-bottom: 6px; }
+.callout.warn { background: var(--warn-soft); border-color: transparent; }
+.callout.warn .tag { color: var(--warn); }
+
+.table-wrap { overflow-x: auto; margin: 0 0 20px; border: 1px solid var(--line); border-radius: 16px; }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+th, td { text-align: left; padding: 11px 16px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+th { background: var(--bg-soft); font-weight: 650; white-space: nowrap; }
+tbody tr:last-child td { border-bottom: 0; }
+td code { white-space: nowrap; }
+
+.steps { counter-reset: s; list-style: none; padding: 0; }
+.steps > li { counter-increment: s; position: relative; padding-left: 40px; margin: 0 0 24px; }
+.steps > li::before { content: counter(s); position: absolute; left: 0; top: 1px;
+  width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #fff;
+  font-size: 13px; font-weight: 650; display: grid; place-items: center; }
+.steps h4 { margin: 0 0 8px; }
+
+footer { border-top: 1px solid var(--line); margin-top: 70px; padding: 30px 0 64px;
+  color: var(--fg-faint); font-size: 14px; }
+footer p { max-width: 84ch; }
+footer strong { color: var(--fg-muted); }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 0; padding-top: 32px; }
+  nav.toc { position: static; margin-bottom: 36px; padding-bottom: 22px; border-bottom: 1px solid var(--line); }
+  nav.toc ol { columns: 2; column-gap: 22px; border-left: 0; }
+  nav.toc a { border-left: 0; padding-left: 0; }
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="back" href="./">← 回到源码分析</a>
+    <h1>插件开发指南</h1>
+    <p class="lede">
+      从一个五分钟就能跑起来的最小插件，到打包、安装、分发上架。
+      本页所有代码都来自仓库 <code>docs/user/develop/</code> 的官方教程与参考，不是示意伪代码。
+    </p>
+  </div>
+</header>
+
+<div class="wrap layout">
+
+  <nav class="toc">
+    <h2>目录</h2>
+    <ol>
+      <li><a href="#what">插件是什么</a></li>
+      <li><a href="#hello">五分钟跑通第一个</a></li>
+      <li><a href="#tool">加一个模型能用的工具</a></li>
+      <li><a href="#config">接受配置</a></li>
+      <li><a href="#lifecycle">清理与生命周期</a></li>
+      <li><a href="#forms">三种插件形态</a></li>
+      <li><a href="#bundle">打包成 bundle</a></li>
+      <li><a href="#layers">配置层叠顺序</a></li>
+      <li><a href="#publish">分发上架</a></li>
+      <li><a href="#points">扩展点速查</a></li>
+      <li><a href="#pitfalls">六个坑</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <section id="what">
+      <h2><span class="num">01</span>插件是什么</h2>
+      <p>
+        在 dsh 里，插件就是<strong>一个导出 <code>apply</code> 函数的模块</strong>。框架加载它时调用 <code>apply</code>，
+        传进来一个 <code>ctx</code> 上下文，你通过它注册能力。就这些——没有基类要继承，没有注解要写。
+      </p>
+      <div class="snip">
+        <div class="snip-head"><span class="snip-file">最小骨架</span><button class="copy" type="button">复制</button></div>
+        <pre><code>import type { Context } from '@deepseek-ai/cordis'
+
+export const name = 'my-plugin'
+
+export function apply(ctx: Context) {
+  // 在这里注册能力
+}</code></pre>
+      </div>
+      <p>
+        这个模型的力量在于<strong>整个产品都是这样拼出来的</strong>：模型适配器、工具注册表、会话日志、
+        甚至 agent 主循环本身，都是和你写的这个东西同等地位的插件行。所以你能挂上去的位置，和官方能挂的位置是同一批。
+      </p>
+    </section>
+
+    <section id="hello">
+      <h2><span class="num">02</span>五分钟跑通第一个</h2>
+      <ol class="steps">
+        <li>
+          <h4>建一个临时项目</h4>
+          <div class="snip">
+            <div class="snip-head"><span class="snip-file">仓库根目录</span><button class="copy" type="button">复制</button></div>
+            <pre><code>mkdir -p scratch-plugin/src</code></pre>
+          </div>
+        </li>
+        <li>
+          <h4>写插件</h4>
+          <div class="snip">
+            <div class="snip-head"><span class="snip-file">scratch-plugin/src/my-plugin.ts</span><button class="copy" type="button">复制</button></div>
+            <pre><code>import type { Context } from '@deepseek-ai/cordis'
+
+export const name = 'hello-plugin'
+
+export function apply(ctx: Context) {
+  console.log('[hello-plugin] plugin loaded!')
+}</code></pre>
+          </div>
+        </li>
+        <li>
+          <h4>用一个 overlay 把它插进插件树</h4>
+          <div class="snip">
+            <div class="snip-head"><span class="snip-file">scratch-plugin/cordis.yml</span><button class="copy" type="button">复制</button></div>
+            <pre><code>- insert:
+    - id: hello
+      name: '/absolute/path/to/deepseek-harness/scratch-plugin/src/my-plugin.ts'</code></pre>
+          </div>
+          <div class="callout warn">
+            <span class="tag">这里最容易卡住</span>
+            <p style="margin:0">
+              <strong>路径必须是绝对路径。</strong>patch 文件只贡献配置，<em>不会</em>改变 loader 解析模块路径时所用的目录，
+              所以相对路径会解析到 profile 目录而不是你的项目。先 <code>pwd</code> 拿到真实路径填进去。
+            </p>
+          </div>
+        </li>
+        <li>
+          <h4>带着 overlay 启动</h4>
+          <div class="snip">
+            <div class="snip-head"><span class="snip-file">终端</span><button class="copy" type="button">复制</button></div>
+            <pre><code>pnpm dsh web --patch ./scratch-plugin/cordis.yml</code></pre>
+          </div>
+          <p style="margin-bottom:0">启动日志里会打印 <code>[hello-plugin] plugin loaded!</code>。跑通了。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="tool">
+      <h2><span class="num">03</span>加一个模型能用的工具</h2>
+      <p>这是最常见的需求：让模型多一项本事。把上面的文件换成：</p>
+      <div class="snip">
+        <div class="snip-head"><span class="snip-file">scratch-plugin/src/my-plugin.ts</span><button class="copy" type="button">复制</button></div>
+        <pre><code>import type { Context } from '@deepseek-ai/cordis'
+import { defineTool } from '@deepseek-ai/dsh-tools'
+
+export const name = 'greet-tool'
+export const inject = ['tools']
+
+export function apply(ctx: Context) {
+  ctx.tools.register(defineTool({
+    name: 'greet',
+    description: 'Greet someone by name.',
+    parameters: {
+      name: { type: 'string', required: true, description: 'The name to greet' },
+    },
+    output: {
+      schema: { type: 'string' },
+      render: (_args, value) => [{ type: 'text', text: value }],
+    },
+    async execute(args) {
+      return `Hello, ${args.name}!`
+    },
+  }))
+}</code></pre>
+      </div>
+      <p>重启后在 Web UI 里说「用 greet 工具跟 Ada 打个招呼」，模型就会调用它。四个部分各管一件事：</p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>字段</th><th>作用</th></tr></thead>
+        <tbody>
+          <tr><td><code>inject: ['tools']</code></td><td>声明依赖。Cordis 会<strong>等工具注册表就绪后</strong>才加载你的插件，所以 <code>apply</code> 里 <code>ctx.tools</code> 一定可用</td></tr>
+          <tr><td><code>parameters</code></td><td>模型看到的参数表。<code>defineTool</code> 据此推导并校验 <code>args</code> 的类型</td></tr>
+          <tr><td><code>execute</code></td><td>真正干活的地方，返回 <code>output.schema</code> 声明的规范值</td></tr>
+          <tr><td><code>output.render</code></td><td>把那个规范值转成模型看到的内容。<strong>纯函数</strong>，展示与计算分开</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        更复杂的场景——嵌套 schema、后台任务、策略钩子、Code Mode、UI 卡片——在仓库的
+        <code>docs/cookbook/adding-a-tool.md</code> 里有完整参考。
+      </p>
+    </section>
+
+    <section id="config">
+      <h2><span class="num">04</span>接受配置</h2>
+      <p>导出一个 <code>Config</code> 类型和<strong>同名的 Schemastery schema</strong>，默认值直接写在 schema 字段上：</p>
+      <div class="snip">
+        <div class="snip-head"><span class="snip-file">带配置的插件</span><button class="copy" type="button">复制</button></div>
+        <pre><code>import type { Context } from '@deepseek-ai/cordis'
+import Schema from '@deepseek-ai/schemastery'
+
+export const name = 'my-plugin'
+
+export interface Config {
+  greeting: string
+  maxRetries: number
+}
+
+export const Config: Schema&lt;Config&gt; = Schema.object({
+  greeting: Schema.string().default('Hello'),
+  maxRetries: Schema.number().default(3),
+})
+
+export function apply(ctx: Context, config: Config) {
+  console.log(config.greeting)   // 用户配的值，或 schema 默认值
+}</code></pre>
+      </div>
+      <p>然后在 <code>cordis.yml</code> 的插件行里给它配置：</p>
+      <div class="snip">
+        <div class="snip-head"><span class="snip-file">cordis.yml</span><button class="copy" type="button">复制</button></div>
+        <pre><code>- insert:
+    - id: hello
+      name: './src/my-plugin.ts'
+      config:
+        greeting: 'Hi there'
+        maxRetries: 5</code></pre>
+      </div>
+      <div class="callout warn">
+        <span class="tag">不要导出普通对象</span>
+        <p style="margin:0">
+          <code>Config</code> 必须是 Schemastery schema。导出一个普通 JS 对象<strong>不会报错但会失效</strong>——
+          它没有实现 Cordis 要求的 Standard Schema 接口。
+        </p>
+      </div>
+      <h3>仓库自己的一条硬规矩</h3>
+      <p>
+        <strong>任何两个部署可能想设成不同值的东西，都必须是配置字段。</strong>判据很简单：
+        能不能只改 <code>cordis.yml</code> 就换掉这个值，而不用动代码。
+      </p>
+      <div class="snip">
+        <div class="snip-head"><span class="snip-file">反例与正例</span><button class="copy" type="button">复制</button></div>
+        <pre><code>// 错：硬编码的超时
+const TIMEOUT = 30000
+
+// 对：可配置
+export interface Config {
+  timeoutMs: number   // 默认 30000
+}</code></pre>
+      </div>
+      <p style="margin-bottom:0">
+        另一条：<strong>配置错了要在加载时就大声失败</strong>。能自洽表达的约束都写进 schema，
+        这样非法配置在插件加载阶段就带着可操作的错误信息挂掉，而不是等到运行到一半。
+      </p>
+    </section>
+
+    <section id="lifecycle">
+      <h2><span class="num">05</span>清理与生命周期</h2>
+      <p>
+        <strong>通过 <code>ctx</code> 注册的一切都会在插件卸载时自动回收</strong>——事件监听、工具、定时器都不用手动
+        <code>removeListener</code> 或 <code>clearInterval</code>。这是 Cordis 「注册即效果」的直接结果。
+      </p>
+      <p>需要显式清理的资源（比如一个网络连接），用 <code>ctx.effect()</code> 交出它的销毁函数：</p>
+      <div class="snip">
+        <div class="snip-head"><span class="snip-file">显式清理</span><button class="copy" type="button">复制</button></div>
+        <pre><code>export function apply(ctx: Context) {
+  ctx.effect(() => {
+    const timer = setInterval(() => console.log('heartbeat'), 5000)
+
+    // 返回的函数在插件卸载时执行
+    return () => clearInterval(timer)
+  })
+}</code></pre>
+      </div>
+      <p style="margin-bottom:0">
+        这一点在开发时很实用：<strong>改配置会触发热替换</strong>——框架卸载旧实例、加载新实例。
+        因为注册都是可回收的效果，替换不会残留旧实例的注册。改完存盘即可，不用重启。
+      </p>
+    </section>
+
+    <section id="forms">
+      <h2><span class="num">06</span>三种插件形态</h2>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>形态</th><th>写法</th><th>什么时候用</th></tr></thead>
+        <tbody>
+          <tr><td><strong>函数</strong></td><td>具名导出 <code>name</code> / <code>inject</code> / <code>Config</code> / <code>apply</code></td><td><strong>绝大多数情况</strong></td></tr>
+          <tr><td><strong>对象</strong></td><td><code>export default { name, inject, apply }</code></td><td>想把元信息和实现放在一起时</td></tr>
+          <tr><td><strong>类</strong></td><td><code>export default class X extends Service</code></td><td><strong>要给别的插件提供服务</strong>时</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="snip">
+        <div class="snip-head"><span class="snip-file">类形态：提供一个服务</span><button class="copy" type="button">复制</button></div>
+        <pre><code>import { Service, type Context } from '@deepseek-ai/cordis'
+
+export default class MyService extends Service {
+  static inject = ['tools']
+
+  constructor(ctx: Context) {
+    super(ctx, 'myService')   // 之后别人可以 ctx.myService
+    // 同步初始化写在构造函数里
+  }
+}</code></pre>
+      </div>
+      <div class="callout warn">
+        <span class="tag">不要混用</span>
+        <p style="margin:0">
+          服务包用 <strong>default 导出</strong>服务类；函数插件用<strong>具名导出</strong>且<strong>不能有 default 导出</strong>。
+          两种形式混在一个模块里，Loader 会丢弃函数插件的命名空间——而且不会明确报错。
+        </p>
+      </div>
+    </section>
+
+    <section id="bundle">
+      <h2><span class="num">07</span>打包成 bundle</h2>
+      <p>
+        前面用 <code>--patch</code> 加载的是本地文件。要让别人能装，得打包成 <strong>bundle</strong>。
+        先分清两个概念——它们都用 <code>package.json</code> 描述，但 <code>dsh</code> 字段下的清单不同，回答的问题也不同：
+      </p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>概念</th><th>是什么</th><th>回答的问题</th></tr></thead>
+        <tbody>
+          <tr><td><strong>bundle</strong><br><code>dsh.bundle</code></td><td>一个携带配置层的 npm 包</td><td>「这个包贡献了什么？」——一个插入或覆盖插件行的 patch 文件</td></tr>
+          <tr><td><strong>profile</strong><br><code>dsh.profile</code></td><td><code>$DSH_HOME/profiles/&lt;name&gt;</code> 下的一份可运行组合</td><td>「这套配置由哪些 bundle 按什么顺序组成？」</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p><strong>你写的是 bundle，用户启动的是 profile。没有东西同时是两者。</strong>profile 的清单不用手写，<code>dsh plugin</code> 会维护。</p>
+
+      <h3>一个 bundle 的三个文件</h3>
+      <div class="snip">
+        <div class="snip-head"><span class="snip-file">目录结构</span><button class="copy" type="button">复制</button></div>
+        <pre><code>hello-plugin/
+├── package.json       # 声明 dsh.bundle
+├── cordis.patch.yml   # profile 列入本 bundle 时应用的配置层
+└── index.js           # patch 行引用的插件模块</code></pre>
+      </div>
+      <div class="snip">
+        <div class="snip-head"><span class="snip-file">hello-plugin/package.json</span><button class="copy" type="button">复制</button></div>
+        <pre><code>{
+  "name": "dsh-hello-plugin",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "index.js",
+  "files": ["index.js", "cordis.patch.yml"],
+  "dsh": { "bundle": { "patch": "./cordis.patch.yml" } }
+}</code></pre>
+      </div>
+      <div class="snip">
+        <div class="snip-head"><span class="snip-file">hello-plugin/cordis.patch.yml</span><button class="copy" type="button">复制</button></div>
+        <pre><code>- insert:
+    - id: hello
+      name: dsh-hello-plugin</code></pre>
+      </div>
+      <p>
+        注意这里的 <code>name</code> 写的是<strong>包名而不是相对路径</strong>——这样 Node 的模块解析才能找到安装后的代码。
+      </p>
+
+      <h3>装进 profile</h3>
+      <div class="snip">
+        <div class="snip-head"><span class="snip-file">终端</span><button class="copy" type="button">复制</button></div>
+        <pre><code>dsh plugin --profile demo add ./hello-plugin
+
+dsh --profile demo --dump-config   # 应能看到 "# == dsh-hello-plugin" 这一层
+dsh --profile demo</code></pre>
+      </div>
+      <p style="margin-bottom:0">
+        首次使用会初始化 profile（第一个 bundle 是 <code>@deepseek-ai/dsh-base</code>），
+        因为你的包声明了 <code>dsh.bundle</code>，<code>dsh</code> 会把它追加进 <code>dsh.profile.bundles</code>。
+        没有这个声明的包也能装上，但只作为普通依赖——<code>dsh plugin</code> 会警告并且不激活任何层。
+      </p>
+    </section>
+
+    <section id="layers">
+      <h2><span class="num">08</span>配置层叠顺序</h2>
+      <p>最终配置在一棵空树上依次叠加，<strong>后面的层按行 id 覆盖前面的</strong>：</p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>顺序</th><th>层</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><code>dsh.profile.bundles</code> 里的各 bundle patch，按列表顺序（<code>dsh-base</code> 最先）</td></tr>
+          <tr><td>2</td><td>profile 自己的 <code>cordis.patch.yml</code></td></tr>
+          <tr><td>3</td><td>home 级 <code>$DSH_HOME/cordis.patch.yml</code>（机器本地偏好，跨 profile 共享）</td></tr>
+          <tr><td>4</td><td>命令行 <code>--patch</code> 覆盖，按 argv 顺序</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="callout warn">
+        <span class="tag">整块替换，不深合并</span>
+        <p>
+          一个 patch 替换目标行的<strong>整个 <code>config</code> 值</strong>，不会按键深合并。对 bundle 作者有两个后果：
+        </p>
+        <ul style="margin-bottom:0">
+          <li>你可以按 <code>id</code> 覆盖前面层的行，但<strong>必须把该行需要的每个键都重写一遍</strong>，只写改动的那个不行</li>
+          <li>用户也能在自己的 profile patch 里覆盖你的行——所以默认值要选用户大概率愿意保留的，其余交给 schema</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="publish">
+      <h2><span class="num">09</span>分发上架</h2>
+      <p>三条路，安全含义完全不同：</p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>方式</th><th>用户命令</th><th>要不要构建许可</th></tr></thead>
+        <tbody>
+          <tr><td><strong>npm 发布</strong></td><td><code>dsh plugin add your-package</code></td><td>不要（装的是预构建产物）</td></tr>
+          <tr><td><strong>tarball</strong></td><td><code>dsh plugin add ./x-0.1.0.tgz</code></td><td>不要</td></tr>
+          <tr><td><strong>GitHub 直装</strong></td><td><code>dsh plugin add github:you/repo</code></td><td><strong>要</strong>——见下</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>GitHub 直装的坑</h3>
+      <p>
+        git 安装拉的是<strong>源码而不是构建产物</strong>，没有任何东西会跑你的 <code>build</code> 脚本——
+        一个 TypeScript 包会因为缺 <code>lib/</code> 而加载失败。两边各要做一件事：
+      </p>
+      <ul>
+        <li>
+          <strong>作者</strong>：提供一个 <code>prepare</code> 脚本（pnpm 在 git 安装后会执行它），
+          从源码构建出发布入口，且必须自足——不能假设旁边有 monorepo 检出。
+        </li>
+        <li>
+          <strong>用户</strong>：pnpm ≥10 默认拒绝执行 git 依赖的 <code>prepare</code>，首次 <code>add</code> 会失败，
+          需要把 pnpm 打印的包名填进 profile 的 <code>pnpm-workspace.yaml</code> 再重试：
+          <div class="snip" style="margin-top:8px">
+            <div class="snip-head"><span class="snip-file">profile 的 pnpm-workspace.yaml</span><button class="copy" type="button">复制</button></div>
+            <pre><code>allowBuilds:
+  dsh-hello-plugin: true</code></pre>
+          </div>
+        </li>
+      </ul>
+      <div class="callout warn">
+        <span class="tag">这个许可意味着什么</span>
+        <p style="margin:0">
+          <code>allowBuilds</code> 就是<strong>允许该包在安装时于你的机器上执行代码</strong>，
+          而且是在 agent 运行的沙箱之外。只对你信得过源码的包开这个口子，
+          并且用 <code>github:you/repo#&lt;sha&gt;</code> 钉住 commit，防止之后的推送悄悄改掉被执行的内容。
+          作为作者，<strong>发 npm 或 tarball 能让用户完全不必开这个许可</strong>，是更友好的选择。
+        </p>
+      </div>
+
+      <h3>让别人找到你</h3>
+      <p style="margin-bottom:0">
+        给仓库打上 <code>dsh-plugin</code> topic。官方在 <code>CONTRIBUTING.md</code> 里明确不接受外部 PR，
+        <strong>插件生态是唯一的贡献路径</strong>，这个 topic 就是它的入口——
+        目前已有 700 多个仓库，<a href="./plugins.html">插件目录</a>列出了全部。
+      </p>
+    </section>
+
+    <section id="points">
+      <h2><span class="num">10</span>扩展点速查</h2>
+      <p>想做的事和该挂的地方对应关系（完整版见仓库 <code>docs/architecture.md</code>）：</p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>你想…</th><th>挂在哪</th></tr></thead>
+        <tbody>
+          <tr><td>给模型加一项本事</td><td>注册到 <code>ctx.tools</code>，它的 schema 会自动进 prompt 组装</td></tr>
+          <tr><td>接入一个模型厂商</td><td>把适配器注册到 <code>ctx.llm</code></td></tr>
+          <tr><td>换掉文件读写或加策略</td><td>注册 <code>ctx.fs</code> provider，或监听 <code>fs/*</code> 事件</td></tr>
+          <tr><td>加一种 shell 执行</td><td>注册 <code>ctx.shell</code> 后端</td></tr>
+          <tr><td>加人类命令（不走模型轮次）</td><td>注册到 <code>ctx.commands</code></td></tr>
+          <tr><td>加后台任务</td><td>注册到 <code>ctx.jobs</code>，<code>job_*</code> 工具会统一管控</td></tr>
+          <tr><td>拦截请求 / 工具 / 轮次</td><td>用对应的 <code>agent/*</code> 或 <code>tools/*</code> 事件</td></tr>
+          <tr><td>给模型加上下文</td><td><code>agent.inject()</code>，会进入下一次被接纳的请求</td></tr>
+          <tr><td>加持久的会话状态</td><td>扩展 <code>SessionEventMap</code>，从日志渲染与回放</td></tr>
+          <tr><td>加 Web UI 面板</td><td>注册 <code>ConversationNodeDefinition</code> + 具名渲染器</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="callout">
+        <span class="tag">一条设计规约</span>
+        <p style="margin:0">
+          <strong>凡是会进入模型请求的东西，都必须能从会话日志重建。</strong>
+          所以如果你的插件给模型加了一种新的可见输入，就需要同时新增一个 session 事件——
+          这条规约有运行时断言兜底，详见<a href="./#replay">「可重建性」</a>一章。
+        </p>
+      </div>
+    </section>
+
+    <section id="pitfalls">
+      <h2><span class="num">11</span>六个坑</h2>
+      <p>都是文档里明确写出来、但容易在实际动手时踩到的：</p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>坑</th><th>后果</th><th>怎么躲</th></tr></thead>
+        <tbody>
+          <tr><td><code>--patch</code> 里用相对路径</td><td>解析到 profile 目录，找不到模块</td><td>用绝对路径</td></tr>
+          <tr><td><code>Config</code> 导出普通对象</td><td>不实现 Standard Schema，配置失效</td><td>必须用 Schemastery schema</td></tr>
+          <tr><td>函数插件里混了 default 导出</td><td><strong>Loader 丢弃命名空间，且不明确报错</strong></td><td>函数插件只用具名导出</td></tr>
+          <tr><td>patch 只写要改的那个键</td><td>整块替换，其余键全丢</td><td>覆盖行时重写该行所有键</td></tr>
+          <tr><td>TypeScript 包直接挂 GitHub</td><td>用户装完没有 <code>lib/</code>，加载失败</td><td>提供自足的 <code>prepare</code>，或发 npm / tarball</td></tr>
+          <tr><td>硬编码超时、路径、模型名</td><td>违反仓库规约，别的部署改不动</td><td>做成 <code>Config</code> 字段</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <h3>调试手段</h3>
+      <ul style="margin-bottom:0">
+        <li><code>dsh --profile web --dump-config</code> — 打印最终组装出的插件树，<strong>并标注每一行来自哪个文件、被哪些层改过</strong>。组合出问题时第一个该跑的命令</li>
+        <li>改配置存盘即热替换，不用重启</li>
+        <li>想找真实范例，<a href="./plugins.html">插件目录</a>里 700 多个仓库的源码都在，按分类翻</li>
+      </ul>
+    </section>
+
+    <footer>
+      <p>
+        <strong>本页来源</strong>：仓库 <code>docs/user/develop/basic/</code> 下的官方教程（第一个插件、构建工具、插件配置、打包安装）、
+        <code>docs/architecture.md</code> 的扩展点表、<code>packages/AGENTS.md</code> 的包级规约，以及
+        <code>apps/cli/reference/README.md</code> 的层叠与安装行为。代码为原文引用，不是示意伪代码。
+      </p>
+      <p style="margin-bottom:0">
+        <strong>版本提示</strong>：dsh 目前是 developer preview，仓库明确写着会有破坏兼容性的变更。
+        写插件时优先依赖有文档的扩展点，少碰内部实现。
+      </p>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+document.addEventListener('click', function (e) {
+  var btn = e.target.closest('.copy')
+  if (!btn) return
+  var pre = btn.closest('.snip').querySelector('pre')
+  if (!pre) return
+  navigator.clipboard.writeText(pre.innerText).then(function () {
+    btn.textContent = '已复制'
+    setTimeout(function () { btn.textContent = '复制' }, 1400)
+  }).catch(function () { btn.textContent = '复制失败' })
+})
+
+;(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('nav.toc a'))
+  var map = {}
+  links.forEach(function (a) {
+    var el = document.querySelector(a.getAttribute('href'))
+    if (el) map[el.id] = a
+  })
+  var targets = Object.keys(map).map(function (id) { return document.getElementById(id) })
+  if (!('IntersectionObserver' in window) || !targets.length) return
+  var visible = new Set()
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) visible.add(en.target.id); else visible.delete(en.target.id)
+    })
+    var first = targets.filter(function (t) { return visible.has(t.id) })[0]
+    if (!first) return
+    links.forEach(function (a) { a.classList.remove('active') })
+    map[first.id].classList.add('active')
+  }, { rootMargin: '-8% 0px -70% 0px', threshold: 0 })
+  targets.forEach(function (t) { io.observe(t) })
+})()
+</script>
+
+</body>
+</html>
