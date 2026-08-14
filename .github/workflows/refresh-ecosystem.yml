@@ -39,6 +39,9 @@ jobs:
       - name: Build the plugin directory
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Optional. Present: English-only entries get a Chinese rendering,
+          # labelled as machine translation. Absent: they stay English-only.
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
         run: node analysis-site/scripts/fetch-plugins.mjs
 
       - name: Commit when the data moved

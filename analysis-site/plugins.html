@@ -115,6 +115,13 @@ select { font: inherit; font-size: 13.5px; color: var(--fg); background: var(--b
 .src { font-size: 12px; color: var(--fg-faint); text-decoration: none; }
 .src:hover { color: var(--accent); }
 .no-doc { color: var(--fg-faint); font-style: normal; }
+.alt { display: block; margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--line);
+  color: var(--fg-faint); font-size: 12.5px; }
+.alt-label { font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--fg-faint); opacity: .8; margin-right: 6px; }
+.mt { font-size: 10.5px; color: var(--warn); border: 1px solid var(--warn);
+  border-radius: 999px; padding: 1px 7px; margin-left: 6px; white-space: nowrap; }
+.card-doc .alt { margin-top: 4px; }
 
 /* category overview + grouped sections */
 .cat-overview { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 8px; }
@@ -151,6 +158,7 @@ footer strong { color: var(--fg-muted); }
     <p class="lede">
       GitHub 上带 <code>dsh-plugin</code> 话题的全部公开仓库，按用途分类。
       每个条目的介绍、功能与用法<strong>都摘自该项目自己的 README</strong>，不是我代写的概括。
+      中文优先显示；原文是英文且作者写过中文 README 时，两版对照给出。
     </p>
     <div class="stats" id="stats"></div>
   </div>
@@ -176,6 +184,11 @@ footer strong { color: var(--fg-muted); }
         <option value="created">按最新收录</option>
         <option value="name">按名称</option>
       </select>
+      <select id="lang">
+        <option value="both">中英对照</option>
+        <option value="zh">仅中文</option>
+        <option value="en">仅原文</option>
+      </select>
       <select id="withdoc">
         <option value="all">全部</option>
         <option value="yes">仅有 README 介绍的</option>
@@ -197,6 +210,9 @@ footer strong { color: var(--fg-muted); }
       <strong>介绍从哪来</strong>：逐仓库读取 README，取第一段正文作简介、「功能 / Features」小节的条目作功能要点、
       「使用 / Usage / 快速开始」小节作用法摘录，全部为原文摘录并截断，不做改写或概括。
       没有 README 或其中没有对应小节的条目，就只显示它的 GitHub 简介。
+      <strong>中文从哪来</strong>：README 本身是中文的直接用它；作者另外提交了 <code>README.zh.md</code>
+      一类译本的用作者的译本。两者都没有时才调用模型翻译，并在卡片上标「机翻」——
+      作者的原话永远优先于机器翻译。
       GitHub 搜索接口最多返回 1000 条结果，超出部分无法列出，页面会在发生时注明。
     </p>
     <p>
@@ -221,6 +237,7 @@ footer strong { color: var(--fg-muted); }
   var qEl = document.getElementById('q')
   var sortEl = document.getElementById('sort')
   var docEl = document.getElementById('withdoc')
+  var langEl = document.getElementById('lang')
 
   var FLAT_PAGE = 60      // page size when a search or filter flattens the list
   var GROUP_PAGE = 9      // cards shown per category before "展开全部"
@@ -241,9 +258,26 @@ footer strong { color: var(--fg-muted); }
   function match(p, q) {
     if (!q) return true
     var d = p.doc || {}
-    var hay = (p.name + ' ' + (p.blurb || '') + ' ' + (d.intro || '') + ' ' +
-      (d.bullets || []).join(' ') + ' ' + (p.topics || []).join(' ')).toLowerCase()
+    var z = p.zh || {}
+    var hay = (p.name + ' ' + (p.blurb || '') + ' ' + (d.intro || '') + ' ' + (z.intro || '') + ' ' +
+      (d.bullets || []).join(' ') + ' ' + (z.bullets || []).join(' ') + ' ' +
+      (p.topics || []).join(' ')).toLowerCase()
     return q.split(/\s+/).filter(Boolean).every(function (t) { return hay.indexOf(t) >= 0 })
+  }
+
+  /**
+   * Pick which language versions to show for one field. Chinese leads when it
+   * exists; the English original follows only in 对照 mode, and only when it is
+   * actually a different text.
+   */
+  function pair(p, field) {
+    var mode = langEl.value
+    var zh = (p.zh && p.zh[field]) || ''
+    var en = (p.en && p.en[field]) || (p.lang === 'en' ? (p.doc && p.doc[field]) || '' : '')
+    if (mode === 'zh') return { main: zh || en, alt: '', altLang: '' }
+    if (mode === 'en') return { main: en || zh, alt: '', altLang: '' }
+    if (zh && en && zh !== en) return { main: zh, alt: en, altLang: 'EN' }
+    return { main: zh || en, alt: '', altLang: '' }
   }
 
   function sorted(list) {
@@ -273,20 +307,36 @@ footer strong { color: var(--fg-muted); }
     if (p.license) meta.push('<span class="tag">' + esc(p.license) + '</span>')
     meta.push('<span class="tag">更新 ' + esc(day(p.pushedAt)) + '</span>')
 
-    var intro = d.intro || p.blurb
+    var ip = pair(p, 'intro')
+    var intro = ip.main || p.blurb
     var body = '<p class="card-desc">' +
-      (intro ? esc(intro) : '<span class="no-doc">该仓库没有可提取的介绍</span>') + '</p>'
+      (intro ? esc(intro) : '<span class="no-doc">该仓库没有可提取的介绍</span>') +
+      (ip.alt ? '<span class="alt"><span class="alt-label">' + ip.altLang + '</span>' + esc(ip.alt) + '</span>' : '') +
+      '</p>'
+
+    var zb = (p.zh && p.zh.bullets) || []
+    var eb = (p.en && p.en.bullets) || (p.lang === 'en' ? d.bullets || [] : [])
+    var mode = langEl.value
+    var bullets = mode === 'en' ? (eb.length ? eb : zb) : (zb.length ? zb : eb)
+    var up = pair(p, 'usage')
 
     var extra = ''
-    if (d.bullets && d.bullets.length) {
-      extra += '<h4>功能要点</h4><ul>' +
-        d.bullets.map(function (b) { return '<li>' + esc(b) + '</li>' }).join('') + '</ul>'
+    if (bullets.length) {
+      extra += '<h4>功能要点</h4><ul>' + bullets.map(function (b, i) {
+        var other = mode === 'both' && zb.length && eb.length && eb[i] && eb[i] !== b
+        return '<li>' + esc(b) + (other ? '<span class="alt">' + esc(eb[i]) + '</span>' : '') + '</li>'
+      }).join('') + '</ul>'
     }
-    if (d.usage) extra += '<h4>如何使用</h4><p class="usage">' + esc(d.usage) + '</p>'
+    if (up.main) {
+      extra += '<h4>如何使用</h4><p class="usage">' + esc(up.main) +
+        (up.alt ? '<span class="alt"><span class="alt-label">' + up.altLang + '</span>' + esc(up.alt) + '</span>' : '') +
+        '</p>'
+    }
 
     return '<div class="card">' +
       '<div class="card-top"><a class="card-name" href="' + esc(p.url) + '">' + esc(p.name) + '</a>' +
-      '<span class="card-stars">★ ' + num(p.stars) + '</span></div>' +
+      '<span class="card-stars">★ ' + num(p.stars) +
+      (p.zhSource === 'machine' ? '<span class="mt">机翻</span>' : '') + '</span></div>' +
       body +
       (extra ? '<div class="card-doc" hidden>' + extra + '</div>' : '') +
       '<div class="card-meta">' + meta.join('') + '</div>' +
@@ -352,7 +402,7 @@ footer strong { color: var(--fg-muted); }
     if (btn) btn.setAttribute('aria-pressed', String(on))
   }
 
-  ;[qEl, sortEl, docEl].forEach(function (el) {
+  ;[qEl, sortEl, docEl, langEl].forEach(function (el) {
     el.addEventListener('input', function () { shown = FLAT_PAGE; paint() })
   })
   moreBtn.addEventListener('click', function () { shown += FLAT_PAGE; paint() })
@@ -364,6 +414,7 @@ footer strong { color: var(--fg-muted); }
       '<div class="stat"><b>' + num(d.listed) + '</b><span>已收录</span></div>' +
       '<div class="stat"><b>' + num(d.described) + '</b><span>有 README 介绍</span></div>' +
       '<div class="stat"><b>' + num(d.withUsage) + '</b><span>含用法说明</span></div>' +
+      '<div class="stat"><b>' + num(d.chinese || 0) + '</b><span>有中文介绍</span></div>' +
       '<div class="stat"><b>' + esc(day(d.generatedAt)) + '</b><span>数据日期</span></div>'
 
     var keys = Object.keys(d.counts).sort(function (a, b) { return d.counts[b] - d.counts[a] })
