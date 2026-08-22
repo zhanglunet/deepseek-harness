@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-21T21:26:08.884Z",
+  "generatedAt": "2026-08-22T21:23:26.661Z",
   "upstream": {
     "name": "deepseek-ai/deepseek-harness",
     "url": "https://github.com/deepseek-ai/deepseek-harness",
     "description": "DeepSeek Harness: Everything is a Plugin.",
-    "stars": 180963,
-    "forks": 19777,
+    "stars": 184850,
+    "forks": 20420,
     "openIssues": 0,
     "pushedAt": "2026-08-21T12:35:08Z",
     "license": "MIT",
@@ -94,30 +94,30 @@
   ],
   "plugins": {
     "topic": "dsh-plugin",
-    "total": 10358,
+    "total": 10700,
     "top": [
       {
         "name": "nexu-io/open-design",
         "url": "https://github.com/nexu-io/open-design",
-        "stars": 90133,
+        "stars": 90418,
         "language": "TypeScript",
         "description": "🎨 Best DeepSeek Harness Design Plugin. The open-source Claude Design alternative. 🖥️ Local-first desktop app. 🖼️ Your coding agent becomes the design engine: prototypes, landing pages, dashboards, slides, images & vid",
-        "pushedAt": "2026-08-21T21:05:05Z",
+        "pushedAt": "2026-08-22T19:01:07Z",
         "createdAt": "2026-04-28T04:25:20Z"
       },
       {
         "name": "ruvnet/ruflo",
         "url": "https://github.com/ruvnet/ruflo",
-        "stars": 68608,
+        "stars": 68853,
         "language": "TypeScript",
         "description": "🌊 The original agent meta-harness. Deploy intelligent multi-player swarms, coordinate autonomous workflows, and build conversational AI systems. Features adaptive memory, self-learning intelligence, RAG integration, and",
-        "pushedAt": "2026-08-21T15:23:37Z",
+        "pushedAt": "2026-08-22T16:40:30Z",
         "createdAt": "2025-06-02T21:24:20Z"
       },
       {
         "name": "amruthpillai/reactive-resume",
         "url": "https://github.com/amruthpillai/reactive-resume",
-        "stars": 41447,
+        "stars": 41518,
         "language": "TypeScript",
         "description": "A one-of-a-kind resume builder that keeps your privacy in mind. Completely secure, customizable, portable, open-source and free forever. Try it out today!",
         "pushedAt": "2026-08-20T08:56:18Z",
@@ -126,25 +126,34 @@
       {
         "name": "esengine/DeepSeek-Reasonix",
         "url": "https://github.com/esengine/DeepSeek-Reasonix",
-        "stars": 35007,
+        "stars": 35039,
         "language": "Go",
         "description": "DeepSeek-native AI coding agent for your terminal. Engineered around prefix-cache stability — leave it running.",
-        "pushedAt": "2026-08-21T18:37:32Z",
+        "pushedAt": "2026-08-22T19:23:16Z",
         "createdAt": "2026-04-21T08:27:02Z"
       },
       {
         "name": "volcengine/OpenViking",
         "url": "https://github.com/volcengine/OpenViking",
-        "stars": 31620,
+        "stars": 32019,
         "language": "Python",
         "description": "Self-evolving Context Database for AI Agents. Unify Agent Memory, Knowledge RAG and Skills.",
-        "pushedAt": "2026-08-21T13:10:47Z",
+        "pushedAt": "2026-08-22T09:44:23Z",
         "createdAt": "2026-01-05T07:11:17Z"
+      },
+      {
+        "name": "Molunerfinn/PicGo",
+        "url": "https://github.com/Molunerfinn/PicGo",
+        "stars": 27007,
+        "language": "TypeScript",
+        "description": ":rocket: The Ultimate Image Uploader for Efficient Creators. Supports Obsidian, Typora, VS Code etc. and 60+ image hosting services  (S3, GitHub, Cloudflare R2, Imgur, Aliyun OSS...). Paste, upload, done.",
+        "pushedAt": "2026-08-22T05:11:01Z",
+        "createdAt": "2017-12-12T08:39:44Z"
       },
       {
         "name": "titanwings/colleague-skill",
         "url": "https://github.com/titanwings/colleague-skill",
-        "stars": 23742,
+        "stars": 23805,
         "language": "Python",
         "description": "将冰冷的离别化为温暖的 Skill，欢迎加入数字生命1.0！Transforming cold farewells into warm skills? It's giving rebirth era. Welcome to Digital Life 1.0. 🫶",
         "pushedAt": "2026-08-21T03:19:45Z",
@@ -153,16 +162,16 @@
       {
         "name": "nocobase/nocobase",
         "url": "https://github.com/nocobase/nocobase",
-        "stars": 23739,
+        "stars": 23766,
         "language": "TypeScript",
         "description": "NocoBase is an open-source AI + no-code platform for building business systems fast. Instead of generating everything from scratch, AI works on top of production-proven infrastructure and a WYSIWYG no-code interface, so ",
-        "pushedAt": "2026-08-21T08:00:46Z",
+        "pushedAt": "2026-08-22T16:13:26Z",
         "createdAt": "2020-10-24T07:27:48Z"
       },
       {
         "name": "Tencent/WeKnora",
         "url": "https://github.com/Tencent/WeKnora",
-        "stars": 20299,
+        "stars": 20359,
         "language": "Go",
         "description": "Open-source LLM knowledge platform: turn raw documents into a queryable RAG, an autonomous reasoning agent, and a self-maintaining Wiki.",
         "pushedAt": "2026-08-21T08:37:06Z",
@@ -171,49 +180,58 @@
       {
         "name": "Nagi-ovo/voyager",
         "url": "https://github.com/Nagi-ovo/voyager",
-        "stars": 19766,
+        "stars": 19790,
         "language": "TypeScript",
         "description": "Enhancement suite for Gemini, AI Studio, Claude & ChatGPT — plus a prompt manager for any web UI, DeepSeek Harness included. / 面向 Gemini、AI Studio、Claude 与 ChatGPT 的增强套件；提示词管理器可用于任意 Web UI，含 DeepSeek Harness。",
-        "pushedAt": "2026-08-16T00:11:26Z",
+        "pushedAt": "2026-08-22T21:04:00Z",
         "createdAt": "2025-10-04T23:42:35Z"
       },
       {
         "name": "anywhere-labs/deepseek-harness-desktop",
         "url": "https://github.com/anywhere-labs/deepseek-harness-desktop",
-        "stars": 17534,
+        "stars": 18284,
         "language": "TypeScript",
         "description": "为 DeepSeek Harness (DSH) 插件生态打造的现代化桌面端解决方案。万物皆「插件」，桌面本身也是「插件」。",
-        "pushedAt": "2026-08-21T18:01:40Z",
+        "pushedAt": "2026-08-22T17:27:29Z",
         "createdAt": "2026-08-13T16:30:50Z"
       },
       {
         "name": "tt-a1i/archify",
         "url": "https://github.com/tt-a1i/archify",
-        "stars": 14942,
+        "stars": 15050,
         "language": "HTML",
         "description": "Agent skill for beautiful, verifiable architecture, workflow, sequence, data-flow, and lifecycle diagrams—self-contained HTML with motion and crisp export.",
-        "pushedAt": "2026-08-21T18:01:27Z",
+        "pushedAt": "2026-08-22T17:43:10Z",
         "createdAt": "2026-04-15T05:27:37Z"
-      },
-      {
-        "name": "walkinglabs/learn-harness-engineering",
-        "url": "https://github.com/walkinglabs/learn-harness-engineering",
-        "stars": 13566,
-        "language": "TypeScript",
-        "description": "Harness engineering beginner tutorial, from 0 to 1",
-        "pushedAt": "2026-08-21T10:31:08Z",
-        "createdAt": "2026-03-29T12:28:19Z"
       }
     ],
     "recentlyActive": [
       {
-        "name": "FuRongJun-1999/CommonTrustProtocol",
-        "url": "https://github.com/FuRongJun-1999/CommonTrustProtocol",
-        "stars": 3,
-        "language": "Python",
-        "description": "Common Trust Protocol (CTP) 共同信任协议 | Intelligentics 智能论，研究智能系统存续的底层结构条件",
-        "pushedAt": "2026-08-21T21:25:39Z",
-        "createdAt": "2026-07-24T13:18:20Z"
+        "name": "EternalNight996/dsh-memory-eternal",
+        "url": "https://github.com/EternalNight996/dsh-memory-eternal",
+        "stars": 2,
+        "language": "JavaScript",
+        "description": "记忆核心（Memory Eternal）：把 boujoy-harness 记忆模块搬进任意 DeepSeek Harness 的独立插件——对话自动沉淀知识卡到本地 Markdown Vault（去重/检索/知识图谱），零人工干预",
+        "pushedAt": "2026-08-22T21:22:53Z",
+        "createdAt": "2026-08-21T12:36:00Z"
+      },
+      {
+        "name": "usersx/dsh-automation-center",
+        "url": "https://github.com/usersx/dsh-automation-center",
+        "stars": 0,
+        "language": "JavaScript",
+        "description": "Root-level automation center for DeepSeek Harness: scheduled tasks, fresh Result Sessions, and cross-workspace run history.",
+        "pushedAt": "2026-08-22T21:22:12Z",
+        "createdAt": "2026-08-19T15:40:08Z"
+      },
+      {
+        "name": "syncended/deepseek-harness-automations",
+        "url": "https://github.com/syncended/deepseek-harness-automations",
+        "stars": 0,
+        "language": "JavaScript",
+        "description": "",
+        "pushedAt": "2026-08-22T21:21:27Z",
+        "createdAt": "2026-08-21T23:05:28Z"
       },
       {
         "name": "CNSeniorious000/dsh-generative-ui",
@@ -221,35 +239,26 @@
         "stars": 1,
         "language": "TypeScript",
         "description": "Generative UI for DeepSeek Harness — the agent writes TSX, dsh web renders it live, inline in chat and in a canvas panel",
-        "pushedAt": "2026-08-21T21:24:37Z",
+        "pushedAt": "2026-08-22T21:23:24Z",
         "createdAt": "2026-08-20T10:38:25Z"
       },
       {
-        "name": "MingYU-kalo/dsh-https-fix",
-        "url": "https://github.com/MingYU-kalo/dsh-https-fix",
-        "stars": 1,
-        "language": "JavaScript",
-        "description": "DeepSeek Harness plugin: built-in HTTPS reverse proxy with configurable settings (设置→插件配置→Https Fix)",
-        "pushedAt": "2026-08-21T21:23:20Z",
-        "createdAt": "2026-08-21T19:58:44Z"
+        "name": "yjh051108/dsh-routing-suite",
+        "url": "https://github.com/yjh051108/dsh-routing-suite",
+        "stars": 6637,
+        "language": "PowerShell",
+        "description": "dsh-routing-suite — injector + router-standard kit: install the runtime injector first, then the task-aware reasoning-mode router preset (measured P1-P23).",
+        "pushedAt": "2026-08-22T21:20:08Z",
+        "createdAt": "2026-08-14T21:20:55Z"
       },
       {
-        "name": "menotbobbybrown/dsh-plugin-mcp",
-        "url": "https://github.com/menotbobbybrown/dsh-plugin-mcp",
-        "stars": 0,
-        "language": "TypeScript",
-        "description": "Universal Model Context Protocol (MCP) Bridge Plugin for DeepSeek Harness (dsh) — Everything is a Plugin",
-        "pushedAt": "2026-08-21T21:22:15Z",
-        "createdAt": "2026-08-21T20:57:36Z"
-      },
-      {
-        "name": "domparent/OLEDCare",
-        "url": "https://github.com/domparent/OLEDCare",
-        "stars": 2,
-        "language": "JavaScript",
-        "description": "OLED burn-in care plugin for the DeepSeek Harness Web GUI: true-black nap screensaver, pure-black surfaces, gamma-aware dimming, hue rotation",
-        "pushedAt": "2026-08-21T21:22:07Z",
-        "createdAt": "2026-08-20T00:44:33Z"
+        "name": "FuRongJun-1999/CommonTrustProtocol",
+        "url": "https://github.com/FuRongJun-1999/CommonTrustProtocol",
+        "stars": 4,
+        "language": "Python",
+        "description": "Common Trust Protocol (CTP) 共同信任协议 | Intelligentics 智能论，研究智能系统存续的底层结构条件",
+        "pushedAt": "2026-08-22T21:19:52Z",
+        "createdAt": "2026-07-24T13:18:20Z"
       },
       {
         "name": "wink-run/dsh-plugin-store",
@@ -257,44 +266,35 @@
         "stars": 4,
         "language": "Python",
         "description": "deepseek harness  plugin store",
-        "pushedAt": "2026-08-21T21:21:42Z",
+        "pushedAt": "2026-08-22T21:19:46Z",
         "createdAt": "2026-08-14T04:04:48Z"
       },
       {
-        "name": "morluto/jacobian",
-        "url": "https://github.com/morluto/jacobian",
-        "stars": 55,
-        "language": "Python",
-        "description": "A universal, atomic library of mathematics and tools for agents to compose them.",
-        "pushedAt": "2026-08-21T21:21:43Z",
-        "createdAt": "2026-07-23T09:08:45Z"
+        "name": "yjh051108/dsh-router-standard",
+        "url": "https://github.com/yjh051108/dsh-router-standard",
+        "stars": 367,
+        "language": "JavaScript",
+        "description": "Task-aware reasoning-mode router for DeepSeek Harness: three measured behavior bands (spec/mixed/react) with phase-transition evidence, persona + first-turn tool injection, agent-visible tuning. Dual-attractor policy pap",
+        "pushedAt": "2026-08-22T21:19:40Z",
+        "createdAt": "2026-08-14T18:14:16Z"
       },
       {
-        "name": "Karbo123/DSH-EvoResearch",
-        "url": "https://github.com/Karbo123/DSH-EvoResearch",
-        "stars": 11,
+        "name": "edusrez/dsh-smart-restart",
+        "url": "https://github.com/edusrez/dsh-smart-restart",
+        "stars": 2,
         "language": "TypeScript",
-        "description": "自进化科研工作流",
-        "pushedAt": "2026-08-21T21:20:19Z",
-        "createdAt": "2026-08-14T11:34:58Z"
+        "description": "Wakes the main agent after any DSH restart so interrupted work resumes automatically — adds a restart tool and an optional canary that validates the boot and warns instead of breaking.",
+        "pushedAt": "2026-08-22T21:19:17Z",
+        "createdAt": "2026-08-18T11:49:56Z"
       },
       {
-        "name": "Max-Null/dsh-plugin-center",
-        "url": "https://github.com/Max-Null/dsh-plugin-center",
+        "name": "Max-Null/seek-soul-in-darkness",
+        "url": "https://github.com/Max-Null/seek-soul-in-darkness",
         "stars": 1,
-        "language": "TypeScript",
-        "description": "",
-        "pushedAt": "2026-08-21T21:18:58Z",
-        "createdAt": "2026-08-16T21:38:01Z"
-      },
-      {
-        "name": "LilycleHeart/dsh-liuli-ui-enhance",
-        "url": "https://github.com/LilycleHeart/dsh-liuli-ui-enhance",
-        "stars": 1,
-        "language": "TypeScript",
-        "description": "琉璃 UI 增强 —— DSH 主题插件:M3 动态取色、壁纸磨砂材质、声纹可视化、dock shell、嵌入式浏览器",
-        "pushedAt": "2026-08-21T21:18:47Z",
-        "createdAt": "2026-08-20T03:28:15Z"
+        "language": "JavaScript",
+        "description": "Seek Soul in Darkness (SSiD) — DSH-based desktop AI: finding the soul of silicon life in darkness",
+        "pushedAt": "2026-08-22T21:19:08Z",
+        "createdAt": "2026-08-15T17:45:49Z"
       }
     ]
   }
