@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-09-10T22:57:52.035Z",
+  "generatedAt": "2026-09-11T23:03:20.334Z",
   "upstream": {
     "name": "deepseek-ai/deepseek-harness",
     "url": "https://github.com/deepseek-ai/deepseek-harness",
     "description": "DeepSeek Harness: Everything is a Plugin.",
-    "stars": 219094,
-    "forks": 25900,
-    "openIssues": 1,
-    "pushedAt": "2026-09-10T20:05:25Z",
+    "stars": 220515,
+    "forks": 26119,
+    "openIssues": 0,
+    "pushedAt": "2026-09-11T03:06:25Z",
     "license": "MIT",
     "version": "0.1.5-rc.2"
   },
@@ -101,75 +101,75 @@
   ],
   "plugins": {
     "topic": "dsh-plugin",
-    "total": 14262,
+    "total": 14420,
     "top": [
       {
         "name": "nexu-io/open-design",
         "url": "https://github.com/nexu-io/open-design",
-        "stars": 95410,
+        "stars": 95617,
         "language": "TypeScript",
         "description": "🎨 Best DeepSeek Harness Design Plugin. The open-source Claude Design alternative. 🖥️ Local-first desktop app. 🖼️ Your coding agent becomes the design engine: prototypes, landing pages, dashboards, slides, images & vid",
-        "pushedAt": "2026-09-10T22:11:50Z",
+        "pushedAt": "2026-09-11T21:14:21Z",
         "createdAt": "2026-04-28T04:25:20Z"
       },
       {
         "name": "ruvnet/ruflo",
         "url": "https://github.com/ruvnet/ruflo",
-        "stars": 71978,
+        "stars": 72130,
         "language": "TypeScript",
-        "description": "🌊 The original agent meta-harness. Deploy intelligent multi-player swarms, coordinate autonomous workflows, and build conversational AI systems. Features adaptive memory, self-learning intelligence, RAG integration, and",
-        "pushedAt": "2026-09-10T22:27:25Z",
+        "description": "🌊 The original agent harness. Deploy intelligent multi-player swarms, coordinate autonomous workflows, and build conversational AI systems. Features adaptive memory, self-learning intelligence, federation, vector RAG in",
+        "pushedAt": "2026-09-11T22:11:44Z",
         "createdAt": "2025-06-02T21:24:20Z"
       },
       {
         "name": "tt-a1i/archify",
         "url": "https://github.com/tt-a1i/archify",
-        "stars": 57332,
+        "stars": 58507,
         "language": "JavaScript",
         "description": "Agent skill for beautiful, verifiable architecture, workflow, sequence, data-flow, and lifecycle diagrams—self-contained HTML with motion and crisp export.",
-        "pushedAt": "2026-09-10T08:39:41Z",
+        "pushedAt": "2026-09-11T14:39:48Z",
         "createdAt": "2026-04-15T05:27:37Z"
       },
       {
-        "name": "amruthpillai/reactive-resume",
-        "url": "https://github.com/amruthpillai/reactive-resume",
-        "stars": 42438,
+        "name": "reactive-resume/app",
+        "url": "https://github.com/reactive-resume/app",
+        "stars": 42489,
         "language": "TypeScript",
         "description": "A one-of-a-kind resume builder that keeps your privacy in mind. Completely secure, customizable, portable, open-source and free forever. Try it out today!",
-        "pushedAt": "2026-09-10T22:32:09Z",
+        "pushedAt": "2026-09-11T10:54:59Z",
         "createdAt": "2020-03-25T14:08:22Z"
       },
       {
         "name": "volcengine/OpenViking",
         "url": "https://github.com/volcengine/OpenViking",
-        "stars": 36498,
+        "stars": 36697,
         "language": "Python",
         "description": "Self-evolving Context Database for AI Agents. Unify Agent Memory, Knowledge RAG and Skills.",
-        "pushedAt": "2026-09-10T13:59:40Z",
+        "pushedAt": "2026-09-11T17:34:23Z",
         "createdAt": "2026-01-05T07:11:17Z"
       },
       {
         "name": "esengine/DeepSeek-Reasonix",
         "url": "https://github.com/esengine/DeepSeek-Reasonix",
-        "stars": 35497,
+        "stars": 35502,
         "language": "Go",
         "description": "DeepSeek-native AI coding agent for your terminal. Engineered around prefix-cache stability — leave it running.",
-        "pushedAt": "2026-09-10T21:28:38Z",
+        "pushedAt": "2026-09-11T21:28:17Z",
         "createdAt": "2026-04-21T08:27:02Z"
       },
       {
         "name": "freestylefly/awesome-gpt-image-2",
         "url": "https://github.com/freestylefly/awesome-gpt-image-2",
-        "stars": 30806,
+        "stars": 31336,
         "language": "JavaScript",
         "description": "Prompt as Code | GPT Image 2 / 2.5 提示词与案例库，530+ 个案例、20+ 套工业级模板与可复用 Skills，新增 2.5 同提示词对比专区，附完整提示词与生成记录，持续更新。",
-        "pushedAt": "2026-09-09T08:31:41Z",
+        "pushedAt": "2026-09-11T13:41:32Z",
         "createdAt": "2026-04-25T09:19:13Z"
       },
       {
         "name": "Molunerfinn/PicGo",
         "url": "https://github.com/Molunerfinn/PicGo",
-        "stars": 27169,
+        "stars": 27174,
         "language": "TypeScript",
         "description": ":rocket: The Ultimate Image Uploader for Efficient Creators. Supports Obsidian, Typora, VS Code etc. and 60+ image hosting services  (S3, GitHub, Cloudflare R2, Imgur, Aliyun OSS...). Paste, upload, done.",
         "pushedAt": "2026-09-01T12:01:25Z",
@@ -178,7 +178,7 @@
       {
         "name": "anywhere-labs/dsh-desktop",
         "url": "https://github.com/anywhere-labs/dsh-desktop",
-        "stars": 25268,
+        "stars": 25705,
         "language": "TypeScript",
         "description": "为 DeepSeek Harness (DSH) 插件生态打造的现代化桌面端解决方案。万物皆「插件」，桌面本身也是「插件」。",
         "pushedAt": "2026-09-10T14:54:10Z",
@@ -187,121 +187,121 @@
       {
         "name": "titanwings/distilly",
         "url": "https://github.com/titanwings/distilly",
-        "stars": 24598,
+        "stars": 24625,
         "language": "TypeScript",
         "description": "Distilly — Distill how they think into reusable Skills for any Agent or Bot. Formerly Colleague Skill（原同事 Skill）.",
-        "pushedAt": "2026-09-10T20:29:49Z",
+        "pushedAt": "2026-09-11T05:17:30Z",
         "createdAt": "2026-03-30T05:22:23Z"
       },
       {
         "name": "nocobase/nocobase",
         "url": "https://github.com/nocobase/nocobase",
-        "stars": 24145,
+        "stars": 24164,
         "language": "TypeScript",
         "description": "NocoBase is an open-source AI + no-code platform for building business systems fast. Instead of generating everything from scratch, AI works on top of production-proven infrastructure and a WYSIWYG no-code interface, so ",
-        "pushedAt": "2026-09-10T15:01:01Z",
+        "pushedAt": "2026-09-11T08:22:33Z",
         "createdAt": "2020-10-24T07:27:48Z"
       },
       {
         "name": "Tencent/WeKnora",
         "url": "https://github.com/Tencent/WeKnora",
-        "stars": 22105,
+        "stars": 22329,
         "language": "Go",
         "description": "Open-source LLM knowledge platform: turn raw documents into a queryable RAG, an autonomous reasoning agent, and a self-maintaining Wiki.",
-        "pushedAt": "2026-09-10T06:43:00Z",
+        "pushedAt": "2026-09-11T15:56:14Z",
         "createdAt": "2025-07-22T08:01:23Z"
       }
     ],
     "recentlyActive": [
       {
-        "name": "zhengjy01/dsh-aliyun-mcp",
-        "url": "https://github.com/zhengjy01/dsh-aliyun-mcp",
-        "stars": 0,
-        "language": "TypeScript",
-        "description": "Alibaba Cloud OpenAPI MCP connection for DeepSeek Harness",
-        "pushedAt": "2026-09-10T22:57:22Z",
-        "createdAt": "2026-09-10T22:57:16Z"
+        "name": "Fishsb/dsh-shoucang-memory",
+        "url": "https://github.com/Fishsb/dsh-shoucang-memory",
+        "stars": 1,
+        "language": "JavaScript",
+        "description": "Long-term memory plugin for DeepSeek Harness (DSH): layered memory library + session distillation + deep-sleep consolidation + settings panel. 守藏记忆插件。",
+        "pushedAt": "2026-09-11T23:02:52Z",
+        "createdAt": "2026-09-07T17:19:57Z"
       },
       {
-        "name": "zhengjy01/dsh-feishu-mcp",
-        "url": "https://github.com/zhengjy01/dsh-feishu-mcp",
-        "stars": 0,
-        "language": "TypeScript",
-        "description": "Feishu (Lark) OpenAPI MCP connection for DeepSeek Harness",
-        "pushedAt": "2026-09-10T22:57:11Z",
-        "createdAt": "2026-09-10T22:57:06Z"
+        "name": "zuohaisu/dsh-ai-soul",
+        "url": "https://github.com/zuohaisu/dsh-ai-soul",
+        "stars": 3,
+        "language": "JavaScript",
+        "description": "Persistent identity layer for DeepSeek Harness. The first reference implementation of AI Soul.",
+        "pushedAt": "2026-09-11T22:59:51Z",
+        "createdAt": "2026-08-26T17:43:45Z"
       },
       {
-        "name": "zhengjy01/dsh-backup-migrator",
-        "url": "https://github.com/zhengjy01/dsh-backup-migrator",
+        "name": "AxelGoal/Deepharn",
+        "url": "https://github.com/AxelGoal/Deepharn",
+        "stars": 2,
+        "language": "JavaScript",
+        "description": "Un escritorio propio para DeepSeek Harness en macOS: frontend nuevo sobre su API, concha nativa en Swift y dos plugins.",
+        "pushedAt": "2026-09-11T22:59:21Z",
+        "createdAt": "2026-08-23T21:51:55Z"
+      },
+      {
+        "name": "lninghaha/dsh-coding-subscription-oauth",
+        "url": "https://github.com/lninghaha/dsh-coding-subscription-oauth",
+        "stars": 22,
+        "language": "JavaScript",
+        "description": "DeepSeek Harness coding-subscription OAuth: SuperGrok / Grok Build, ChatGPT Plus Codex, Kimi Code, Claude Code. No API-key pasting.",
+        "pushedAt": "2026-09-11T22:58:20Z",
+        "createdAt": "2026-08-16T08:12:22Z"
+      },
+      {
+        "name": "SiriusWJ/dsh-restart-btn",
+        "url": "https://github.com/SiriusWJ/dsh-restart-btn",
         "stars": 0,
         "language": "JavaScript",
-        "description": "Plugin environment backup and migration for DeepSeek Harness",
-        "pushedAt": "2026-09-10T22:57:00Z",
-        "createdAt": "2026-09-10T22:56:55Z"
+        "description": "DSH 重启按钮插件：设置页一键重启 dsh web，复用桌面启动器机制（node + lib/bin.js、日志重定向、TCP 就绪轮询），修复非 ASCII 路径下计划任务静默失败的问题。",
+        "pushedAt": "2026-09-11T23:03:19Z",
+        "createdAt": "2026-09-11T22:26:32Z"
       },
       {
-        "name": "zhengjy01/dsh-task-dispatcher",
-        "url": "https://github.com/zhengjy01/dsh-task-dispatcher",
+        "name": "shinzarou-eng/dsh-codebase-chat",
+        "url": "https://github.com/shinzarou-eng/dsh-codebase-chat",
+        "stars": 1,
+        "language": "JavaScript",
+        "description": "Multi-language codebase intelligence for DeepSeek Harness and MCP IDEs. Chat, search, audit, refactor, and board-ready reports from local code.",
+        "pushedAt": "2026-09-11T22:57:18Z",
+        "createdAt": "2026-09-11T19:21:57Z"
+      },
+      {
+        "name": "linkbag/dsh-swarm-orchestrator",
+        "url": "https://github.com/linkbag/dsh-swarm-orchestrator",
         "stars": 1,
         "language": "TypeScript",
-        "description": "Task dispatcher for DeepSeek Harness: use TickTick (滴答清单) 5️⃣AI as daily task dispatcher (timer + auto-execute + flomo/macOS notify)",
-        "pushedAt": "2026-09-10T22:56:49Z",
-        "createdAt": "2026-08-25T16:17:17Z"
+        "description": "Role-based AI swarm orchestration for DeepSeek Harness: per-role model pinning with fallbacks, parallel task DAG with review loops, live Swarm dashboard tab.",
+        "pushedAt": "2026-09-11T22:55:17Z",
+        "createdAt": "2026-09-02T14:21:55Z"
       },
       {
-        "name": "zhengjy01/dsh-npm",
-        "url": "https://github.com/zhengjy01/dsh-npm",
+        "name": "menantonio83-hue/tnt-house",
+        "url": "https://github.com/menantonio83-hue/tnt-house",
         "stars": 0,
         "language": "TypeScript",
-        "description": "NPM registry management for DeepSeek Harness",
-        "pushedAt": "2026-09-10T22:56:07Z",
-        "createdAt": "2026-09-10T22:56:01Z"
+        "description": "TNT House - Safe New Tokens Platform",
+        "pushedAt": "2026-09-11T22:54:56Z",
+        "createdAt": "2026-06-13T12:27:11Z"
       },
       {
-        "name": "HQ1995/deepseek-code",
-        "url": "https://github.com/HQ1995/deepseek-code",
-        "stars": 0,
+        "name": "kejixiaoliang/awesome-dsh-plugins",
+        "url": "https://github.com/kejixiaoliang/awesome-dsh-plugins",
+        "stars": 41,
+        "language": "JavaScript",
+        "description": "DeepSeek Harness (DSH) 插件精选目录 — 14 类 280+ 个社区插件，覆盖 MCP / Skill / TUI / 多 Agent / 上下文记忆 / UI 皮肤，点链接直达仓库。Curated directory of dsh plugins for DeepSeek Harness.",
+        "pushedAt": "2026-09-11T22:50:46Z",
+        "createdAt": "2026-08-13T19:54:28Z"
+      },
+      {
+        "name": "Tiee7/EzDSH",
+        "url": "https://github.com/Tiee7/EzDSH",
+        "stars": 2,
         "language": "TypeScript",
-        "description": "DeepSeek Code: Use the DeepSeek Harness via the Grok Build TUI",
-        "pushedAt": "2026-09-10T22:56:06Z",
-        "createdAt": "2026-08-15T15:22:10Z"
-      },
-      {
-        "name": "zhengjy01/dsh-goofish-mcp",
-        "url": "https://github.com/zhengjy01/dsh-goofish-mcp",
-        "stars": 0,
-        "language": "TypeScript",
-        "description": "Xianyu (Goofish) read-only monitoring MCP for DeepSeek Harness",
-        "pushedAt": "2026-09-10T22:55:56Z",
-        "createdAt": "2026-09-10T22:55:50Z"
-      },
-      {
-        "name": "zhengjy01/dsh-skill-recommender",
-        "url": "https://github.com/zhengjy01/dsh-skill-recommender",
-        "stars": 0,
-        "language": "TypeScript",
-        "description": "Session-profile skill recommender for DeepSeek Harness",
-        "pushedAt": "2026-09-10T22:55:29Z",
-        "createdAt": "2026-09-10T22:55:24Z"
-      },
-      {
-        "name": "zhengjy01/dsh-zsxq",
-        "url": "https://github.com/zhengjy01/dsh-zsxq",
-        "stars": 0,
-        "language": "TypeScript",
-        "description": "Knowledge Planet (zsxq) integration for DeepSeek Harness",
-        "pushedAt": "2026-09-10T22:55:19Z",
-        "createdAt": "2026-09-10T22:55:13Z"
-      },
-      {
-        "name": "artec/clat",
-        "url": "https://github.com/artec/clat",
-        "stars": 6,
-        "language": "Rust",
-        "description": "Cmd-Line Agent, a Rust foundation compatible with the DeepSeek Harness framework. 命令行智能体，兼容深度探索驾具的 Rust 基座。",
-        "pushedAt": "2026-09-10T22:54:34Z",
-        "createdAt": "2025-12-07T08:33:58Z"
+        "description": "Easy Way to the DeepSeek‑Harness.",
+        "pushedAt": "2026-09-11T22:49:40Z",
+        "createdAt": "2026-08-14T21:15:36Z"
       }
     ]
   }
