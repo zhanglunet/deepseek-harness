@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-07T00:40:10.242Z",
+  "generatedAt": "2026-11-08T00:14:57.569Z",
   "upstream": {
     "name": "deepseek-ai/deepseek-harness",
     "url": "https://github.com/deepseek-ai/deepseek-harness",
     "description": "DeepSeek Harness: Everything is a Plugin.",
-    "stars": 274911,
-    "forks": 33595,
+    "stars": 275741,
+    "forks": 33725,
     "openIssues": 0,
     "pushedAt": "2026-11-04T13:06:39Z",
     "license": "MIT",
@@ -101,57 +101,57 @@
   ],
   "plugins": {
     "topic": "dsh-plugin",
-    "total": 27766,
+    "total": 28199,
     "top": [
       {
         "name": "morluto/rea",
         "url": "https://github.com/morluto/rea",
-        "stars": 438011,
+        "stars": 440992,
         "language": "TypeScript",
         "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
-        "pushedAt": "2026-11-06T23:15:17Z",
+        "pushedAt": "2026-11-07T23:50:04Z",
         "createdAt": "2026-04-14T00:51:32Z"
       },
       {
         "name": "nexu-io/open-design",
         "url": "https://github.com/nexu-io/open-design",
-        "stars": 106312,
+        "stars": 106481,
         "language": "TypeScript",
         "description": "The 1st Collaborative AI Design Agent Workspace. Local-first and open source. Create motion, prototypes, websites, apps, dashboards, presentations, images, and videos with your team and AI agents. Share work, exchange fe",
-        "pushedAt": "2026-11-06T19:12:21Z",
+        "pushedAt": "2026-11-07T18:17:15Z",
         "createdAt": "2026-04-28T04:25:20Z"
       },
       {
         "name": "tt-a1i/archify",
         "url": "https://github.com/tt-a1i/archify",
-        "stars": 94197,
+        "stars": 94459,
         "language": "JavaScript",
         "description": "Turn any idea, plan, or codebase into a beautiful interactive diagram. An agent skill for Claude Code, Codex, and more.",
-        "pushedAt": "2026-11-07T00:34:42Z",
+        "pushedAt": "2026-11-08T00:02:57Z",
         "createdAt": "2026-04-15T05:27:37Z"
       },
       {
         "name": "ruvnet/ruflo",
         "url": "https://github.com/ruvnet/ruflo",
-        "stars": 81082,
+        "stars": 81179,
         "language": "TypeScript",
         "description": "🌊 The original agent harness. Deploy intelligent multi-player swarms, coordinate autonomous workflows, and build conversational AI systems. Features adaptive memory, self-learning intelligence, federation, vector RAG in",
-        "pushedAt": "2026-11-06T22:11:17Z",
+        "pushedAt": "2026-11-07T04:46:23Z",
         "createdAt": "2025-06-02T21:24:20Z"
       },
       {
         "name": "Ebony-Vinyl/dsh-our-free-model",
         "url": "https://github.com/Ebony-Vinyl/dsh-our-free-model",
-        "stars": 63968,
+        "stars": 65397,
         "language": "JavaScript",
         "description": "在 dsh 里装上这个插件即可，无需登录、注册或填 API Key，就能使用包括 DeepSeek V4.1 Flash、Kimi K3 在内的前沿模型——完全免费，不限量。 All you do is install this plugin in dsh: no login, no sign-up, no API key — the frontier models are just there, DeepSeek V4.1 Flash",
-        "pushedAt": "2026-11-05T06:24:03Z",
+        "pushedAt": "2026-11-07T16:54:28Z",
         "createdAt": "2026-09-24T16:17:19Z"
       },
       {
         "name": "reactive-resume/reactive-resume",
         "url": "https://github.com/reactive-resume/reactive-resume",
-        "stars": 45428,
+        "stars": 45452,
         "language": "TypeScript",
         "description": "A one-of-a-kind resume builder that keeps your privacy in mind. Completely secure, customizable, portable, open-source and free forever. Try it out today!",
         "pushedAt": "2026-11-06T23:17:20Z",
@@ -160,16 +160,16 @@
       {
         "name": "volcengine/OpenViking",
         "url": "https://github.com/volcengine/OpenViking",
-        "stars": 41705,
+        "stars": 41748,
         "language": "Python",
         "description": "Self-evolving Context Database for AI Agents. Unify Agent Memory, Knowledge RAG and Skills.",
-        "pushedAt": "2026-11-06T18:17:18Z",
+        "pushedAt": "2026-11-07T18:55:21Z",
         "createdAt": "2026-01-05T07:11:17Z"
       },
       {
         "name": "alchaincyf/nuwa-skill",
         "url": "https://github.com/alchaincyf/nuwa-skill",
-        "stars": 37691,
+        "stars": 37751,
         "language": "Python",
         "description": "你想蒸馏的下一个员工，何必是同事。蒸馏任何人的思维方式——心智模型、决策启发式、表达DNA。Distill how anyone thinks.",
         "pushedAt": "2026-11-03T08:51:23Z",
@@ -178,16 +178,16 @@
       {
         "name": "DayuanJiang/next-ai-draw-io",
         "url": "https://github.com/DayuanJiang/next-ai-draw-io",
-        "stars": 36747,
+        "stars": 36774,
         "language": "TypeScript",
         "description": "Draw and edit draw.io diagrams by chatting with an AI. Web app, desktop app, and an MCP server for Claude Code, Cursor, Codex and VS Code.",
-        "pushedAt": "2026-11-06T23:39:55Z",
+        "pushedAt": "2026-11-07T21:07:54Z",
         "createdAt": "2025-03-23T15:03:48Z"
       },
       {
         "name": "Tencent/WeKnora",
         "url": "https://github.com/Tencent/WeKnora",
-        "stars": 36686,
+        "stars": 36745,
         "language": "Go",
         "description": "Open-source LLM knowledge platform: turn raw documents into a queryable RAG, an autonomous reasoning agent, and a self-maintaining Wiki.",
         "pushedAt": "2026-11-03T03:33:48Z",
@@ -196,16 +196,16 @@
       {
         "name": "esengine/DeepSeek-Reasonix",
         "url": "https://github.com/esengine/DeepSeek-Reasonix",
-        "stars": 36116,
+        "stars": 36131,
         "language": "Go",
         "description": "A reliable coding agent for complex software engineering tasks.",
-        "pushedAt": "2026-11-06T18:02:38Z",
+        "pushedAt": "2026-11-07T18:17:27Z",
         "createdAt": "2026-04-21T08:27:02Z"
       },
       {
         "name": "freestylefly/awesome-gpt-image-2",
         "url": "https://github.com/freestylefly/awesome-gpt-image-2",
-        "stars": 35531,
+        "stars": 35555,
         "language": "JavaScript",
         "description": "Prompt as Code | GPT Image 2 / 2.5 提示词与案例库，530+ 个案例、20+ 套工业级模板与可复用 Skills，新增 2.5 同提示词对比专区，附完整提示词与生成记录，持续更新。",
         "pushedAt": "2026-11-05T03:17:57Z",
@@ -214,94 +214,94 @@
     ],
     "recentlyActive": [
       {
-        "name": "JiamingShi-JsPhys/dsh-token-steward",
-        "url": "https://github.com/JiamingShi-JsPhys/dsh-token-steward",
-        "stars": 1,
-        "language": "TypeScript",
-        "description": "DSH 模型矩阵调度中枢：本地 OpenAI 兼容网关 + 四种调度模式（含白嫖）+ 自动容灾 + SQLite 精确缓存",
-        "pushedAt": "2026-11-07T00:39:51Z",
-        "createdAt": "2026-11-06T12:56:03Z"
+        "name": "ccch1mneyyy/dsh-Go",
+        "url": "https://github.com/ccch1mneyyy/dsh-Go",
+        "stars": 14353,
+        "language": "Dart",
+        "description": "dsh-go — DeepSeek Harness 装进口袋：手机本机运行，也能遥控你的电脑。",
+        "pushedAt": "2026-11-08T00:14:16Z",
+        "createdAt": "2026-10-25T08:09:52Z"
       },
       {
-        "name": "narkco-kang/dsh-team-workbench",
-        "url": "https://github.com/narkco-kang/dsh-team-workbench",
+        "name": "ll4514dvdvdb/dsh-cache-workspace",
+        "url": "https://github.com/ll4514dvdvdb/dsh-cache-workspace",
         "stars": 0,
         "language": "JavaScript",
-        "description": "智能体团队 · 技能管理工作台：17 人具名智能体，每人专属表情与配色，可回退模型路由，三级审批流水线（DSH Desktop 工作台）",
-        "pushedAt": "2026-11-07T00:37:53Z",
-        "createdAt": "2026-11-06T15:01:45Z"
+        "description": "DSH 插件：输入框工具栏的缓存工作区选择器，支持工作区外目录（自动加 ACL 写权限）与独立进程清理，并给 agent 注入缓存使用规则",
+        "pushedAt": "2026-11-08T00:14:13Z",
+        "createdAt": "2026-11-07T13:38:20Z"
       },
       {
-        "name": "EliteOtaku/dsh-opendesign-go",
-        "url": "https://github.com/EliteOtaku/dsh-opendesign-go",
-        "stars": 6,
-        "language": "TypeScript",
-        "description": "为opendesign订阅开发的DSH插件",
-        "pushedAt": "2026-11-07T00:37:42Z",
-        "createdAt": "2026-10-18T21:19:33Z"
-      },
-      {
-        "name": "BuvkB/dsh-vaultwarden",
-        "url": "https://github.com/BuvkB/dsh-vaultwarden",
-        "stars": 2,
-        "language": "JavaScript",
-        "description": "Vaultwarden/Bitwarden real-time sync for DeepSeek Harness: WebSocket push, incremental sync, read/write tools and an entry browser panel.",
-        "pushedAt": "2026-11-07T00:37:02Z",
-        "createdAt": "2026-09-29T08:21:49Z"
-      },
-      {
-        "name": "andrewngg/dsh-superagent-battlestar",
-        "url": "https://github.com/andrewngg/dsh-superagent-battlestar",
-        "stars": 0,
-        "language": "JavaScript",
-        "description": "多设备 AI 管家：母机统一管理设备能力申报、在线检测与任务路由；支持 CLI、ComfyUI、Mika 手机工作机；附 Android APK 与 DeepSeek Harness 插件。Multi-device AI butler for DSH.",
-        "pushedAt": "2026-11-07T00:35:56Z",
-        "createdAt": "2026-11-05T10:50:53Z"
-      },
-      {
-        "name": "sdiwenchen-lang/DeepSeek-Usage",
-        "url": "https://github.com/sdiwenchen-lang/DeepSeek-Usage",
+        "name": "TLEWA/dsh-sidebar-row-menu",
+        "url": "https://github.com/TLEWA/dsh-sidebar-row-menu",
         "stars": 1,
         "language": "JavaScript",
-        "description": "DSH 用量插件：官方接口取账单余额与逐日逐模型用量，本地会话日志聚合实际 Token 与估算费用，两种口径并排对账。",
-        "pushedAt": "2026-11-07T00:35:51Z",
-        "createdAt": "2026-10-28T00:52:47Z"
+        "description": "Right-click menus for DSH sidebar rows: workspace menu and native session menu extensions, with open-with submenus, pinned apps, settings and archived-session cleanup.",
+        "pushedAt": "2026-11-08T00:13:47Z",
+        "createdAt": "2026-11-01T18:06:42Z"
       },
       {
-        "name": "borui1757-cmd/dsh-guard",
-        "url": "https://github.com/borui1757-cmd/dsh-guard",
+        "name": "baby7/dsh-siyuan-sender",
+        "url": "https://github.com/baby7/dsh-siyuan-sender",
+        "stars": 1,
+        "language": "JavaScript",
+        "description": "把 DeepSeek Harness 对话里生成的 Markdown 文档，一键发送到你自己部署的思源笔记（SiYuan）",
+        "pushedAt": "2026-11-08T00:13:56Z",
+        "createdAt": "2026-10-28T05:29:26Z"
+      },
+      {
+        "name": "FrankieeW/dsh-remote-agents",
+        "url": "https://github.com/FrankieeW/dsh-remote-agents",
         "stars": 0,
         "language": "JavaScript",
-        "description": "Danger-zone guard for DSH: single-instance check (two hosts on one profile lose 72% of writes), rolling snapshots, session integrity check, restore from the latest healthy snapshot.",
-        "pushedAt": "2026-11-07T00:35:20Z",
-        "createdAt": "2026-11-07T00:35:04Z"
+        "description": "Unified DSH workspaces for Claude Code, Codex and OMP, with local and SSH conversations, tool approvals and persistent history.",
+        "pushedAt": "2026-11-08T00:13:32Z",
+        "createdAt": "2026-11-06T13:40:44Z"
       },
       {
-        "name": "borui1757-cmd/dsh-gate",
-        "url": "https://github.com/borui1757-cmd/dsh-gate",
-        "stars": 0,
-        "language": "JavaScript",
-        "description": "Deploy gate for DSH plugins: organ-level host simulation, parallel fault-injection scenarios, contract drift check. tools/lab.mjs or scenarios/*.scenario.mjs plus exit code.",
-        "pushedAt": "2026-11-07T00:34:58Z",
-        "createdAt": "2026-11-07T00:34:28Z"
-      },
-      {
-        "name": "adengou/dsh-chubby-whale",
-        "url": "https://github.com/adengou/dsh-chubby-whale",
-        "stars": 0,
-        "language": "JavaScript",
-        "description": "DSH 网页版桌面宠物「肥鲸」——蓝发鲸鱼娘：语音对话、念诗说书、饭点提醒",
-        "pushedAt": "2026-11-07T00:34:11Z",
-        "createdAt": "2026-11-05T14:48:54Z"
-      },
-      {
-        "name": "GreenLv/dsh-completion-guard",
-        "url": "https://github.com/GreenLv/dsh-completion-guard",
+        "name": "sredevopsorg/dsh-plugins",
+        "url": "https://github.com/sredevopsorg/dsh-plugins",
         "stars": 1,
         "language": "TypeScript",
-        "description": "Task-contract and completion-certification layer for DeepSeek Harness",
-        "pushedAt": "2026-11-07T00:32:36Z",
-        "createdAt": "2026-08-26T10:40:36Z"
+        "description": "Our Deepseek Harness custom plugins, skills and tools",
+        "pushedAt": "2026-11-08T00:13:25Z",
+        "createdAt": "2026-09-29T03:42:17Z"
+      },
+      {
+        "name": "awesome-dsh-plugin/awesome-dsh-plugin",
+        "url": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin",
+        "stars": 23568,
+        "language": "JavaScript",
+        "description": "A curated list of plugins for DeepSeek Harness (dsh) · DeepSeek Harness 插件精选列表",
+        "pushedAt": "2026-11-08T00:12:55Z",
+        "createdAt": "2026-08-13T13:55:31Z"
+      },
+      {
+        "name": "youyang145/dsh-plugin-local-kb",
+        "url": "https://github.com/youyang145/dsh-plugin-local-kb",
+        "stars": 1,
+        "language": "JavaScript",
+        "description": "DeepSeek Harness 插件：把本地经验库接进 DSH——五个工具、每轮索引注入、右下角挂件、MCP。骨架见 local-experience-kb。",
+        "pushedAt": "2026-11-08T00:12:04Z",
+        "createdAt": "2026-11-07T13:21:56Z"
+      },
+      {
+        "name": "kingOfSoySauce/dsh-skin-market",
+        "url": "https://github.com/kingOfSoySauce/dsh-skin-market",
+        "stars": 314,
+        "language": "TypeScript",
+        "description": "DSH皮肤市场Skin Market 已收录五百+皮肤、桌宠、开屏动画等；有便捷的社区收录入口，并且已有多位开发者提交皮肤；有在线页面方便在线浏；有方便安装管理本地皮肤的插件",
+        "pushedAt": "2026-11-08T00:11:28Z",
+        "createdAt": "2026-08-16T12:31:32Z"
+      },
+      {
+        "name": "GnaneshKunal/dsh-hermes-facade",
+        "url": "https://github.com/GnaneshKunal/dsh-hermes-facade",
+        "stars": 0,
+        "language": "JavaScript",
+        "description": "Drive a local DeepSeek Harness agent from the Hermex iOS app - a DSH host plugin that impersonates a hermes-webui server (HTTP + SSE): sessions, streaming tokens, thinking, tool cards, approvals, images and projects.",
+        "pushedAt": "2026-11-08T00:10:05Z",
+        "createdAt": "2026-11-06T15:19:54Z"
       }
     ]
   }
