@@ -1,17 +1,31 @@
 {
-  "generatedAt": "2026-11-21T21:07:19.573Z",
+  "generatedAt": "2026-11-22T21:07:27.139Z",
   "upstream": {
     "name": "deepseek-ai/deepseek-harness",
     "url": "https://github.com/deepseek-ai/deepseek-harness",
     "description": "DeepSeek Harness: Everything is a Plugin.",
-    "stars": 285054,
-    "forks": 35433,
+    "stars": 285515,
+    "forks": 35517,
     "openIssues": 0,
-    "pushedAt": "2026-11-18T12:48:10Z",
+    "pushedAt": "2026-11-22T11:00:05Z",
     "license": "MIT",
-    "version": "0.2.2-rc.5"
+    "version": "0.2.3-alpha.2"
   },
   "releases": [
+    {
+      "tag": "dsh-v0.2.3-alpha.2",
+      "name": "v0.2.3-alpha.2",
+      "publishedAt": "2026-11-22T11:00:39Z",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.3-alpha.2",
+      "prerelease": true
+    },
+    {
+      "tag": "dsh-v0.2.3-alpha.1",
+      "name": "v0.2.3-alpha.1",
+      "publishedAt": "2026-11-22T03:19:36Z",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.3-alpha.1",
+      "prerelease": true
+    },
     {
       "tag": "dsh-v0.2.2-rc.5",
       "name": "v0.2.2-rc.5",
@@ -32,126 +46,112 @@
       "publishedAt": "2026-11-13T07:56:55Z",
       "url": "https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.2-rc.3",
       "prerelease": true
-    },
-    {
-      "tag": "dsh-v0.2.2-rc.2",
-      "name": "v0.2.2-rc.2",
-      "publishedAt": "2026-11-11T11:33:06Z",
-      "url": "https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.2-rc.2",
-      "prerelease": true
-    },
-    {
-      "tag": "dsh-v0.2.2-rc.1",
-      "name": "v0.2.2-rc.1",
-      "publishedAt": "2026-11-04T13:07:14Z",
-      "url": "https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.2-rc.1",
-      "prerelease": true
     }
   ],
   "tags": [],
   "commits": [
     {
-      "sha": "2e39e70",
-      "message": "Merge pull request #8736 from deepseek-harness/worktree-sync-release-dsh-0.2.2-0.2.2-rc.5-to-master",
-      "date": "2026-11-18T10:58:42Z",
-      "url": "https://github.com/deepseek-ai/deepseek-harness/commit/2e39e70496aa02986ca6a820c5d497e816b69d7e"
+      "sha": "4b399c3",
+      "message": "Merge pull request #8961 from deepseek-harness/worktree-release-dsh-0.2.3-alpha.2",
+      "date": "2026-11-22T08:50:28Z",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/commit/4b399c39a6d1479cd84ca591b4d7c88e24d38a96"
     },
     {
-      "sha": "964f570",
-      "message": "chore(release): align master-only packages to 0.2.2-rc.5",
-      "date": "2026-11-18T10:34:28Z",
-      "url": "https://github.com/deepseek-ai/deepseek-harness/commit/964f5703d67eb5e2abcbbe19b5daa474978a6833"
+      "sha": "267805d",
+      "message": "release(dsh): 0.2.3-alpha.2",
+      "date": "2026-11-22T07:27:28Z",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/commit/267805d20da3ba5417bd8d8f3f92cfb7fe232d71"
     },
     {
-      "sha": "a3d319b",
-      "message": "chore(release): sync latest master for 0.2.2-rc.5",
-      "date": "2026-11-18T10:33:54Z",
-      "url": "https://github.com/deepseek-ai/deepseek-harness/commit/a3d319bdac5b60bcea943b542f4b6bcbeb755a40"
+      "sha": "5d8fdab",
+      "message": "release(vendor): cordis 4.2.0-alpha.1, cosmokit 1.10.0-alpha.1, group 1.2.0-alpha.1, hmr 1.2.0-alpha.1, include 1.2.0-alpha.1, loader 1.2.0-",
+      "date": "2026-11-22T07:18:14Z",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/commit/5d8fdab85addfce3dbb133b7f00b868c63d2ac64"
     },
     {
-      "sha": "26ac56f",
-      "message": "chore(release): align master-only packages to 0.2.2-rc.5",
-      "date": "2026-11-18T10:29:39Z",
-      "url": "https://github.com/deepseek-ai/deepseek-harness/commit/26ac56f78018b4366f08dcfa3245ccfb2bf5d37f"
+      "sha": "bae489e",
+      "message": "release(vendor): cordis 4.2.0-alpha.1, cosmokit 1.10.0-alpha.1, group 1.2.0-alpha.1, hmr 1.2.0-alpha.1, include 1.2.0-alpha.1, loader 1.2.0-",
+      "date": "2026-11-22T07:15:43Z",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/commit/bae489ee61ca9355fd156d4b1debb9b159baba61"
     },
     {
-      "sha": "35f1614",
-      "message": "Merge pull request #5933 from deepseek-harness/feat/notion-plugin",
-      "date": "2026-11-18T10:28:12Z",
-      "url": "https://github.com/deepseek-ai/deepseek-harness/commit/35f1614ba02850d24c818121d8d81ed28379c018"
+      "sha": "09d9609",
+      "message": "Merge pull request #8837 from deepseek-harness/chore/node-24-22-3-floor",
+      "date": "2026-11-22T03:23:51Z",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/commit/09d9609a28e5a201d3113a1854049ead07c31ebe"
     },
     {
-      "sha": "30b6684",
-      "message": "chore(release): sync release/dsh-0.2.2 0.2.2-rc.5 to master",
-      "date": "2026-11-18T10:26:56Z",
-      "url": "https://github.com/deepseek-ai/deepseek-harness/commit/30b668495d3c8daf6e135f5e30cb2268718b775f"
+      "sha": "d98f5d6",
+      "message": "Merge pull request #8945 from deepseek-harness/worktree-release-dsh-0.2.3-alpha.1",
+      "date": "2026-11-21T16:45:52Z",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/commit/d98f5d68519215da48f3002da2cb9c9d2068d81d"
     },
     {
-      "sha": "88ae563",
-      "message": "Merge pull request #8321 from deepseek-harness/feat/forge-review-page",
-      "date": "2026-11-18T10:04:17Z",
-      "url": "https://github.com/deepseek-ai/deepseek-harness/commit/88ae5632ab0b87d60d32176981f27e92eb183904"
+      "sha": "aae91d6",
+      "message": "release(dsh): 0.2.3-alpha.1",
+      "date": "2026-11-21T10:29:41Z",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/commit/aae91d692e2802f63a4a92fd073fe21259795e59"
     },
     {
-      "sha": "9c2670d",
-      "message": "Merge pull request #8728 from deepseek-harness/worktree-release-dsh-0.2.2-rc.5",
-      "date": "2026-11-18T09:45:47Z",
-      "url": "https://github.com/deepseek-ai/deepseek-harness/commit/9c2670d3bce5275e0d1610272958121af87787bb"
+      "sha": "5927327",
+      "message": "Merge pull request #8061 from deepseek-harness/feat/office-single-skill",
+      "date": "2026-11-21T04:53:01Z",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/commit/5927327ea90cf2dc3debd91a46b8cf490f64d892"
     }
   ],
   "plugins": {
     "topic": "dsh-plugin",
-    "total": 33628,
+    "total": 33937,
     "top": [
       {
         "name": "morluto/rea",
         "url": "https://github.com/morluto/rea",
-        "stars": 472657,
+        "stars": 473947,
         "language": "TypeScript",
         "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
-        "pushedAt": "2026-11-21T21:04:24Z",
+        "pushedAt": "2026-11-22T21:06:39Z",
         "createdAt": "2026-04-14T00:51:32Z"
       },
       {
         "name": "nexu-io/open-design",
         "url": "https://github.com/nexu-io/open-design",
-        "stars": 108829,
+        "stars": 108968,
         "language": "TypeScript",
         "description": "The 1st Collaborative AI Design Agent Workspace. Local-first and open source. Create motion, prototypes, websites, apps, dashboards, presentations, images, and videos with your team and AI agents. Share work, exchange fe",
-        "pushedAt": "2026-11-21T18:04:14Z",
+        "pushedAt": "2026-11-22T18:04:52Z",
         "createdAt": "2026-04-28T04:25:20Z"
       },
       {
         "name": "tt-a1i/archify",
         "url": "https://github.com/tt-a1i/archify",
-        "stars": 98563,
+        "stars": 98774,
         "language": "JavaScript",
         "description": "Turn any idea, plan, or codebase into a beautiful interactive diagram. An agent skill for Claude Code, Codex, and more.",
-        "pushedAt": "2026-11-21T15:34:09Z",
+        "pushedAt": "2026-11-22T18:17:36Z",
         "createdAt": "2026-04-15T05:27:37Z"
       },
       {
         "name": "Ebony-Vinyl/dsh-our-free-model",
         "url": "https://github.com/Ebony-Vinyl/dsh-our-free-model",
-        "stars": 83059,
+        "stars": 83921,
         "language": "JavaScript",
         "description": "在 dsh 里装上这个插件即可，无需登录、注册或填 API Key，就能使用包括 DeepSeek V4.1 Flash、Kimi K3 在内的前沿模型——完全免费，不限量。 All you do is install this plugin in dsh: no login, no sign-up, no API key — the frontier models are just there, DeepSeek V4.1 Flash",
-        "pushedAt": "2026-11-21T10:49:38Z",
+        "pushedAt": "2026-11-22T16:01:28Z",
         "createdAt": "2026-09-24T16:17:19Z"
       },
       {
         "name": "tw93/Mole",
         "url": "https://github.com/tw93/Mole",
-        "stars": 75784,
+        "stars": 75856,
         "language": "Shell",
         "description": "🐹 Open-source Mac and PC cleaner. Keep your machine clean, light, and running like new. Fast CLI, plus native Mac and Windows apps.",
-        "pushedAt": "2026-11-21T14:53:25Z",
+        "pushedAt": "2026-11-22T12:12:39Z",
         "createdAt": "2025-09-23T06:38:40Z"
       },
       {
         "name": "reactive-resume/reactive-resume",
         "url": "https://github.com/reactive-resume/reactive-resume",
-        "stars": 45960,
+        "stars": 45989,
         "language": "TypeScript",
         "description": "A one-of-a-kind resume builder that keeps your privacy in mind. Completely secure, customizable, portable, open-source and free forever. Try it out today!",
         "pushedAt": "2026-11-20T03:14:03Z",
@@ -160,16 +160,16 @@
       {
         "name": "volcengine/OpenViking",
         "url": "https://github.com/volcengine/OpenViking",
-        "stars": 42566,
+        "stars": 42609,
         "language": "Python",
         "description": "Self-evolving Context Database for AI Agents. Unify Agent Memory, Knowledge RAG and Skills.",
-        "pushedAt": "2026-11-21T16:30:47Z",
+        "pushedAt": "2026-11-22T14:57:55Z",
         "createdAt": "2026-01-05T07:11:17Z"
       },
       {
         "name": "alchaincyf/nuwa-skill",
         "url": "https://github.com/alchaincyf/nuwa-skill",
-        "stars": 38755,
+        "stars": 38808,
         "language": "Python",
         "description": "你想蒸馏的下一个员工，何必是同事。蒸馏任何人的思维方式——心智模型、决策启发式、表达DNA。Distill how anyone thinks.",
         "pushedAt": "2026-11-21T09:57:56Z",
@@ -178,7 +178,7 @@
       {
         "name": "Tencent/WeKnora",
         "url": "https://github.com/Tencent/WeKnora",
-        "stars": 37953,
+        "stars": 38000,
         "language": "Go",
         "description": "Open-source LLM knowledge platform: turn raw documents into a queryable RAG, an autonomous reasoning agent, and a self-maintaining Wiki.",
         "pushedAt": "2026-11-21T18:51:50Z",
@@ -187,25 +187,25 @@
       {
         "name": "DayuanJiang/next-ai-draw-io",
         "url": "https://github.com/DayuanJiang/next-ai-draw-io",
-        "stars": 37104,
+        "stars": 37123,
         "language": "TypeScript",
         "description": "Draw and edit draw.io diagrams by chatting with an AI. Web app, desktop app, and an MCP server for Claude Code, Cursor, Codex and VS Code.",
-        "pushedAt": "2026-11-21T02:59:02Z",
+        "pushedAt": "2026-11-22T09:04:02Z",
         "createdAt": "2025-03-23T15:03:48Z"
       },
       {
         "name": "anywhere-labs/dsh-desktop",
         "url": "https://github.com/anywhere-labs/dsh-desktop",
-        "stars": 36546,
+        "stars": 36617,
         "language": "TypeScript",
         "description": "为 DeepSeek Harness (DSH) 插件生态打造的现代化桌面端解决方案。万物皆「插件」，桌面本身也是「插件」。",
-        "pushedAt": "2026-11-20T07:23:51Z",
+        "pushedAt": "2026-11-22T20:51:19Z",
         "createdAt": "2026-08-13T16:30:50Z"
       },
       {
         "name": "esengine/DeepSeek-Reasonix",
         "url": "https://github.com/esengine/DeepSeek-Reasonix",
-        "stars": 36087,
+        "stars": 36082,
         "language": "Go",
         "description": "A reliable coding agent for complex software engineering tasks.",
         "pushedAt": "2026-11-12T08:30:31Z",
@@ -214,94 +214,94 @@
     ],
     "recentlyActive": [
       {
-        "name": "Yukikaze-Ai/dsh-ladder-superagents",
-        "url": "https://github.com/Yukikaze-Ai/dsh-ladder-superagents",
-        "stars": 1,
-        "language": "JavaScript",
-        "description": "Deepseek Harness Superagents with Dispatch",
-        "pushedAt": "2026-11-21T21:07:10Z",
-        "createdAt": "2026-11-10T01:17:05Z"
-      },
-      {
-        "name": "bruc3van/awesome-dsh-plugin-pro",
-        "url": "https://github.com/bruc3van/awesome-dsh-plugin-pro",
-        "stars": 529,
-        "language": "JavaScript",
-        "description": "DSH 插件精选专业版：核实真插件，剔除蹭标签和非插件项目，提供场景分类、精选推荐、热度排行与可订阅数据。",
-        "pushedAt": "2026-11-21T21:06:01Z",
-        "createdAt": "2026-08-13T13:24:25Z"
-      },
-      {
-        "name": "tonyous/DSH-AMP-Radio",
-        "url": "https://github.com/tonyous/DSH-AMP-Radio",
+        "name": "M0Yun/dsh-computer-control",
+        "url": "https://github.com/M0Yun/dsh-computer-control",
         "stars": 0,
-        "language": "JavaScript",
-        "description": "AMP Radio + AMP Bar for DeepSeek Harness: internet radio with a live visualiser, and every chat stat in one tidy bar (top or bottom, each one switchable, phone-friendly).",
-        "pushedAt": "2026-11-21T21:05:47Z",
-        "createdAt": "2026-10-13T10:07:08Z"
-      },
-      {
-        "name": "Dushiqi1987/dsh-sweeper",
-        "url": "https://github.com/Dushiqi1987/dsh-sweeper",
-        "stars": 0,
-        "language": "JavaScript",
-        "description": "DSH plugin: audit and safely clean up what tool execution leaves behind in your sessions. Report-only by default, everything removable is restorable.",
-        "pushedAt": "2026-11-21T21:05:10Z",
-        "createdAt": "2026-11-19T08:32:17Z"
+        "language": "C#",
+        "description": "DeepSeek Harness 插件：控制电脑（点得准、看得见、验得出来）与观看学习两种状态，可主动切换。",
+        "pushedAt": "2026-11-22T21:06:46Z",
+        "createdAt": "2026-11-22T19:39:46Z"
       },
       {
         "name": "morluto/rea",
         "url": "https://github.com/morluto/rea",
-        "stars": 472657,
+        "stars": 473947,
         "language": "TypeScript",
         "description": "Reverse engineer anything with agents, from app behavior down to native binaries.",
-        "pushedAt": "2026-11-21T21:04:24Z",
+        "pushedAt": "2026-11-22T21:06:39Z",
         "createdAt": "2026-04-14T00:51:32Z"
+      },
+      {
+        "name": "agentrq/agentrq",
+        "url": "https://github.com/agentrq/agentrq",
+        "stars": 1195,
+        "language": "Go",
+        "description": "AgentRQ: Human-in-loop realtime conversational task manager for AI Agents. Self-hosted! Control your own agents from wherever you want Mobile, Web, Desktop. Designed to work well with your own Claude subscriptions and an",
+        "pushedAt": "2026-11-22T21:06:39Z",
+        "createdAt": "2026-03-24T08:35:45Z"
       },
       {
         "name": "AdamPlatin123/dsh-plugin-radar",
         "url": "https://github.com/AdamPlatin123/dsh-plugin-radar",
-        "stars": 1508,
+        "stars": 1509,
         "language": "Python",
         "description": "DSH Plugin Radar — open-source ecosystem radar for DeepSeek Harness plugins: continuous discovery (21k+ candidates), k8s runtime validation (13k+ tests), 15-min snapshots; the catalog is a generated artifact — 开源 DSH 插件生",
-        "pushedAt": "2026-11-21T21:03:06Z",
+        "pushedAt": "2026-11-22T21:03:06Z",
         "createdAt": "2026-08-04T21:46:54Z"
       },
       {
-        "name": "pearjelly/dsh-heros",
-        "url": "https://github.com/pearjelly/dsh-heros",
+        "name": "ccch1mneyyy/dsh-Go",
+        "url": "https://github.com/ccch1mneyyy/dsh-Go",
+        "stars": 30143,
+        "language": "Dart",
+        "description": "dsh-go — DeepSeek Harness 装进口袋：手机本机运行，也能遥控你的电脑。",
+        "pushedAt": "2026-11-22T21:01:56Z",
+        "createdAt": "2026-10-25T08:09:52Z"
+      },
+      {
+        "name": "writeCasually/deepseek-harness-plugins",
+        "url": "https://github.com/writeCasually/deepseek-harness-plugins",
         "stars": 1,
         "language": "JavaScript",
-        "description": "DSH-Heros · 深度荣耀 — pick Agent Presets as heroes, equip real tools and plugins, and level up through work.",
-        "pushedAt": "2026-11-21T21:02:52Z",
-        "createdAt": "2026-11-13T11:42:38Z"
+        "description": "deepseek harness plugins view",
+        "pushedAt": "2026-11-22T21:01:32Z",
+        "createdAt": "2026-08-14T03:02:56Z"
       },
       {
-        "name": "JoblessJoe/deep-projects",
-        "url": "https://github.com/JoblessJoe/deep-projects",
-        "stars": 0,
-        "language": "JavaScript",
-        "description": "Project rooms for the DeepSeek Harness (dsh) web GUI: a goal, memory, instructions and knowledge per project, auto-loaded into every chat. Claude-Desktop-style Projects for dsh.",
-        "pushedAt": "2026-11-21T21:00:46Z",
-        "createdAt": "2026-11-21T20:00:42Z"
+        "name": "Minglink/dsh-jailbreak-workflow",
+        "url": "https://github.com/Minglink/dsh-jailbreak-workflow",
+        "stars": 1210,
+        "language": "TypeScript",
+        "description": "Visual soft-workflow plugin for DeepSeek Harness (dsh-workflow-lite 0.11.0): canvas-to-plan-prompt engine paired with Minglink/dsh-workflows for LLM red-teaming & safety research.",
+        "pushedAt": "2026-11-22T21:00:31Z",
+        "createdAt": "2026-11-01T04:50:41Z"
       },
       {
-        "name": "JayYuen666/dsh-danger-guard",
-        "url": "https://github.com/JayYuen666/dsh-danger-guard",
+        "name": "ROSESSSSS66/dsh-memory",
+        "url": "https://github.com/ROSESSSSS66/dsh-memory",
         "stars": 1,
         "language": "TypeScript",
-        "description": "",
-        "pushedAt": "2026-11-21T20:59:54Z",
-        "createdAt": "2026-09-20T13:16:02Z"
+        "description": "专为 DeepSeek Desktop (DSH) 打造的零依赖纯本地自进化长期记忆插件：全量内存向量矩阵 + SQLite FTS5 毫秒级召回（10k p95 ~7ms）、Hindsight & OpenViking 认知洞察、4 个精简模型工具与极简自治面板。",
+        "pushedAt": "2026-11-22T20:58:51Z",
+        "createdAt": "2026-11-04T15:07:49Z"
       },
       {
-        "name": "JimLiu/open-artifact",
-        "url": "https://github.com/JimLiu/open-artifact",
-        "stars": 131,
+        "name": "hccccc01333/dsh-eval",
+        "url": "https://github.com/hccccc01333/dsh-eval",
+        "stars": 2,
         "language": "TypeScript",
-        "description": "Open, agent- and model-agnostic artifacts, all saved locally as plain files — edit, comment on, and export slides, UI designs, design systems, whiteboards, sheets, dashboards, docs, and motion.",
-        "pushedAt": "2026-11-21T20:59:06Z",
-        "createdAt": "2026-11-17T02:25:25Z"
+        "description": "Agent evaluation platform for DeepSeek Harness: benchmark YAML, headless dsh orchestration, trace-based metrics, LLM judge, paired A/B, keyless replay, and cross-harness import.",
+        "pushedAt": "2026-11-22T20:57:27Z",
+        "createdAt": "2026-08-14T01:44:04Z"
+      },
+      {
+        "name": "kunkundi/crossdesk",
+        "url": "https://github.com/kunkundi/crossdesk",
+        "stars": 5986,
+        "language": "C++",
+        "description": "A lightweight, cross-platform remote desktop software with support for Web Client access | 一款支持 Web 客户端访问的轻量级跨平台远程桌面软件。",
+        "pushedAt": "2026-11-22T20:56:50Z",
+        "createdAt": "2023-11-20T06:31:52Z"
       }
     ]
   }
